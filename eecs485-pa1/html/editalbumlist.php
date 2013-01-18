@@ -25,7 +25,7 @@
             
             mysql_select_db($db_name) or die("Could not select:" . $db_name);
             
-            $query = 'SELECT title,access FROM Album';
+            $query = "SELECT title,access FROM Album WHERE access='public'";
             $result = mysql_query($query) or die("Query failed: " . mysql_error());
             
             while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -45,14 +45,16 @@
           ?>
         </tbody>
 
-        <tfoot>
-           <tr>
-           <td class='span3'><input type="text" placeholder="new album"></td> 
-           <td class='span3'><input type="text"></td>
-           <td class='span1'><a class='btn btn-success'>Add</a></td>
-        </tfoot>
       </table>
 
+          <form action="addalbum.php" method="post">
+            <input type="text" placeholder="user" name="username">
+            <input type="text" placeholder="new album" name="title">
+            <input name="access" type="radio" value="public">public&nbsp
+            <input name="access" type="radio" value="private">private
+            <input name="op" type="hidden" value="add">
+            <input class='btn btn-success' type="submit" value="Add">
+          </form>
     <!-- edit above -->
     </div> <!-- /container -->
 

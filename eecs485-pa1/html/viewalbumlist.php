@@ -25,18 +25,30 @@
             or die("Connect Error: " . mysql_error());
             
             mysql_select_db($db_name) or die("Could not select:" . $db_name);
-            
-            $query = 'SELECT * FROM Album';
-            $result = mysql_query($query) or die("Query failed: " . mysql_error());
-            
+            $url_prefix = "viewalbum.php?albumid=";
+
+            if (!isset($_GET['username']) ) {
+          
+              
+              $query = "SELECT * FROM Album WHERE access='public'";
+              $result = mysql_query($query) or die("Query failed: " . mysql_error());
+              
+            } else {
+              $cur_username = $_GET['username'];
+              echo "<h1>$cur_username</h1>";
+              $query = "SELECT * FROM Album WHERE username='$cur_username'";
+              $result = mysql_query($query) or die("Query failed: " . mysql_error());
+            }
+
             while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
-              echo "<tr> <td>" . $line['title'] . "</td>"
+              $url = $url_prefix . $line['albumid'];
+              echo "<tr> <td><a href=" . $url . ">" . $line['title'] . "</a></td>"
                  . "<td>" . $line['username'] . "</td>"
                  . "<td>" . $line['access'] . "</td>"
                  . "<td>" . $line['created'] . "</td>"
                  . "<td>" . $line['lastupdated'] . "</td> </tr>";
             }
-
+            
             mysql_free_result($result);
             mysql_close($conn);
           ?>
