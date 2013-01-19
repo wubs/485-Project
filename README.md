@@ -1,9 +1,14 @@
 485-Project
 ===========
 
+
 Project Structure
 -----------------
 
+Editing
+-------
+
+Use 2 spaces indentation for all our files (.html, .php, etc). Please config the editor accordingly.
 
 Git
 ---
