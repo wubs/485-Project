@@ -7,6 +7,12 @@
     height:300px;
     background-color:#b0e0e6;
   }
+  .photoModal {
+    left:5%; 
+    width:90%; 
+    height:600px;
+    margin-left:0px; 
+  }
   </style>
   <body>
     <div class="container">
@@ -14,7 +20,9 @@
 
     <!-- start edit from here -->
       <h2> Album -> <?php echo $albumid ?></h2>
-      <a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+
+      <a href="#" role="button" class="btn btn-primary" >Add a photo</a>
+      <a href="#" role="button" class="btn " >Edit</a>
 
       <table width="100%" height="100%" algin="center" valign="center">
         <?php 
@@ -65,24 +73,24 @@
       </table>
 
       <!-- Modal -->
-      <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-          <h3 id="myModalLabel">Modal header</h3>
-        </div>
-        <div class="modal-body">
+      <div id="myModal" class="modal hide fade photoModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-body" style="height:100%; width=100%; max-height: 800px; padding:0px">
           <!-- Start of Carousel -->
-          <div id="myCarousel" class="carousel slide">
+          <div id="myCarousel" class="carousel slide" style="height:100%;width:70%;margin-bottom:0px">
             <!-- Carousel items -->
-            <div class="carousel-inner">
+            <div class="carousel-inner" style="height: 100%; width:100%;">
             <?php
               $flag = 0;
               foreach ($photos as $photo) {
                 if ($flag == 0) {
-                  echo "<div class='item active'><img src=" . $photo['url'] . "></div>";
+                  echo "<div class='item active'>"
+                     . "<img style='height:100%;margin-left:auto;margin-right:auto;'" 
+                     . "src=" . $photo['url'] . "></div>";
                   $flag = 1;
                 } else {
-                  echo "<div class='item'><img src=" . $photo['url'] . "></div>";
+                  echo "<div class='item'>"
+                     . "<img style='height:100%;margin-left:auto;margin-right:auto;'" 
+                     . "src=" . $photo['url'] . "></div>";
                 }
               }
               mysql_free_result($result);
@@ -94,9 +102,16 @@
             <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
           </div>
           <!-- End of Carousel -->
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary">Option</button>
+            <div style="width=30%;position: absolute;right:0px;top: 0px; padding:10px">
+              <h2 style="width=100%"> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+            </div>
         </div>
       </div>
       <!-- End of Modal -->
