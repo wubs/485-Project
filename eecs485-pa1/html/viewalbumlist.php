@@ -38,13 +38,21 @@
               echo "<h1>$cur_username</h1>";
               $query = "SELECT * FROM Album WHERE username='$cur_username'";
               $result = mysql_query($query) or die("Query failed: " . mysql_error());
-            }
 
-            while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+							$queryprivate = "SELECT * FROM Album WHERE access='private'";
+							$userlist = mysql_query($queryprivate) or die("Query failed: " . mysql_error());
+							
+						
+            }
+				
+
+            
+					while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
               $url = $url_prefix . $line['albumid'];
               echo "<tr> <td>";
-								if($line['access']=='private'){
+								if($line['access']=='private' && $cur_username!= $line['username']){
 									echo $line['title'] . "</td>";
+									
 								}else{
 									echo "<a href=" . $url . ">" . $line['title'] . "</a></td>";						
 								}
