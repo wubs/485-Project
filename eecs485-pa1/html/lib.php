@@ -5,7 +5,7 @@ $config_team_members = array("Baishun Wu", "Dailin Liu", "Ruoran Wang");
 
 // db 
 
-$db_name = "group36";
+$db_name = "pa1_db";
 $db_host = "localhost";
-$db_user = "group36";
-$db_passwd = "485Group36";
+$db_user = "ruoran";
+$db_passwd = "1216";
