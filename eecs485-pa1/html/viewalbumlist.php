@@ -30,7 +30,7 @@
             if (!isset($_GET['username']) ) {
           
               
-              $query = "SELECT * FROM Album WHERE access='public'";
+              $query = "SELECT * FROM Album order by access desc";
               $result = mysql_query($query) or die("Query failed: " . mysql_error());
               
             } else {
@@ -42,8 +42,13 @@
 
             while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
               $url = $url_prefix . $line['albumid'];
-              echo "<tr> <td><a href=" . $url . ">" . $line['title'] . "</a></td>"
-                 . "<td>" . $line['username'] . "</td>"
+              echo "<tr> <td>";
+								if($line['access']=='private'){
+									echo $line['title'] . "</td>";
+								}else{
+									echo "<a href=" . $url . ">" . $line['title'] . "</a></td>";						
+								}
+                 echo "<td>" . $line['username'] . "</td>"
                  . "<td>" . $line['access'] . "</td>"
                  . "<td>" . $line['created'] . "</td>"
                  . "<td>" . $line['lastupdated'] . "</td> </tr>";
