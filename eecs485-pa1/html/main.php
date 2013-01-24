@@ -15,6 +15,22 @@
           echo "<li>$member</li>";
         }
       ?>
+			<br>
+			<p> Users: </p>
+			<?php
+				$conn = mysql_connect($db_host, $db_user, $db_passwd)
+           or die("Connect Error: " . mysql_error());
+            
+           mysql_select_db($db_name) or die("Could not select:" . $db_name);
+					
+					$query = "SELECT * FROM User";
+          $result = mysql_query($query) or die("Query failed: " . mysql_error());
+
+					while ($user = mysql_fetch_array($result, MYSQL_ASSOC)) {
+              echo "<li>".$user['username']."</li>";
+            }
+							
+			?>
       <form action="viewalbumlist.php", method="get"> 
         <input type="text" name="username" placeholder="user id">
         <input class="btn" type="submit" value="go">
