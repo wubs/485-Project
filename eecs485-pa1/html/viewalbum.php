@@ -44,24 +44,77 @@
             if ($counter % $num == 0) {
               echo "<tr>"
                 . "<td height='400px' align='center'>" 
-                . "<a href='viewpicture.php?url=" . $photo['url'] . "'>"
                 . "<img class='img-rounded center click_photo' value=" 
-                . $photo['sequencenum'] . " src=" . $photo['url'] . "></a>"
-                . "<p>" . $photo['caption'] . "</p>"
+                . $photo['sequencenum'] . " src=" . $photo['url'] . ">"
+                . "<div>" . $photo['caption'] . "</div>"
                 . "</td>";
             } else {
               echo "<td height='400px' align='center'>"
-                . "<a href='viewpicture.php?url=" . $photo['url'] . "'>"
                 . "<img class='img-rounded center click_photo' value="
-                . $photo['sequencenum'] . " src=" . $photo['url'] . "></a>"
+                . $photo['sequencenum'] . " src=" . $photo['url'] . ">"
                 . "<p>" . $photo['caption'] . "</p>"
                 . "</td>"
                 . "</tr>";
             }
             $counter = $counter + 1;
+            //if ($counter % $num == 0) {
+            //  echo "<div class='row-fluid' style='height:300px'>"
+            //    . "<div class='span5'>" 
+            //    . "<img style='height:200px' class='img-rounded' src=" . $photo['url'] . ">"
+            //    . "</div>";
+            //} else {
+            //  echo "<div class='span5'>"
+            //    . "<img class='img-rounded' src=" . $photo['url'] . ">"
+            //    . "</div>"
+            //    . "</div>";
+            //}
           }
         ?>
       </table>
+
+      <!-- Modal -->
+      <div id="myModal" class="modal hide fade photoModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-body" style="height:100%; width=100%; max-height: 800px; padding:0px">
+          <!-- Start of Carousel -->
+          <div id="myCarousel" class="carousel slide" style="height:100%;width:70%;margin-bottom:0px">
+            <!-- Carousel items -->
+            <div class="carousel-inner" style="height: 100%; width:100%;">
+            <?php
+              $flag = 0;
+              foreach ($photos as $photo) {
+                if ($flag == 0) {
+                  echo "<div class='item active'>"
+                     . "<img style='height:100%;margin-left:auto;margin-right:auto;'" 
+                     . "src=" . $photo['url'] . "></div>";
+                  $flag = 1;
+                } else {
+                  echo "<div class='item'>"
+                     . "<img style='height:100%;margin-left:auto;margin-right:auto;'" 
+                     . "src=" . $photo['url'] . "></div>";
+                }
+              }
+              mysql_free_result($result);
+              mysql_close($conn);
+            ?>
+            </div>
+            <!-- Carousel nav -->
+            <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+            <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+          </div>
+          <!-- End of Carousel -->
+            <div style="width=30%;position: absolute;right:0px;top: 0px; padding:10px">
+              <h2 style="width=100%"> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+              <h2> Comments </h2>
+            </div>
+        </div>
+      </div>
+      <!-- End of Modal -->
 
     <!-- edit above -->
     </div> <!-- /container -->
@@ -70,7 +123,14 @@
 
     <script type="text/javascript">
     $(function () {
+      $("#myCarousel").carousel({
+        interval: false 
+      });
+
       $(".click_photo").live("click", function() { 
+        $("#myModal").modal("show");
+        //$("#" + $(this).attr('value')).addClass("active");
+        $("#myCarousel").carousel(parseInt($(this).attr('value')-1)); 
       });
     });
       
