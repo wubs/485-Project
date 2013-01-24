@@ -21,15 +21,20 @@
       //               . $albumid . ' ORDER BY sequencenum';
       //$result = mysql_query($query) or die("Query failed: " . mysql_error());
 
-      if (isset($_GET['url']))  {
-        $url = $_GET['url'];
-        include('viewpicture_get.php');
-      }
-      else {
-        $url = $_POST['url'];
-        $albumid = $_POST['albumid'];
-        include('vewpicture_post.php');
-      }
+      $url = $_GET['url'];
+      <div class="row">
+        <div class="img_container span8">
+        <div class="row">
+        <a href="#" role="button" class="btn btn-primary" id="left"><i class="icon-arrow-left"></i></a>
+        <a href="#" role="button" class="btn btn-primary" id="right"><i class="icon-arrow-right"></i></a>
+        </div>
+        <img id="cur_image" src=<?php echo $url?>>
+        </div>
+        <div class="img_container span2">
+        <h2> Comments </h2>
+        <h2> Comments </h2>
+        </div>
+      </div>
     ?>
     <!-- edit above -->
     </div> <!-- /container -->
@@ -40,17 +45,20 @@
       $(function () { ///
 
         $("#left").live("click", function() { 
-          $.post("viewpicture_post.php", {"url": url, "albumid": albumid},
+          $.post("viewpicture_post.php", {"url": url, "albumid": albumid, "seq":seq},
             function(data) {
               $("#cur_image").attr("src", data);
             }); 
         });
 
         $("#right").live("click", function() { 
-
+          $.post("viewpicture_post.php", {"url": url, "albumid": albumid, "seq":seq},
+            function(data) {
+              $("#cur_image").attr("src", data);
+            }); 
         });
 
-      }); ///
+      }); 
     </script>
   </body>
 </html>
