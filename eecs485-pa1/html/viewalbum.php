@@ -15,11 +15,25 @@
   }
   .myWell {
     padding: 20px;
-    height: 480px;
+    height: auto;
     margin-top: 30px;
     margin-bottom: 20px;
     background-color: #f5f5f5;
     border: 1px solid #e3e3e3;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+  }
+  .commentWell {
+    padding: 20px;
+    height: auto;
+    margin-top: 10px;
+    margin-left: 0px;
+    background-color: #f5f5f5;
+    border: 4px solid #e3e3e3;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
@@ -85,7 +99,7 @@
 
       <div id="single" style="display:none;z-index:10;">
         <!-- Start of Carousel -->
-        <div id="myCarousel" class="carousel slide span12 round_border" style="height:630px;;margin-bottom:0px">
+        <div id="myCarousel" class="carousel slide round_border" style="height:630px;;margin-bottom:0px">
           <!-- Carousel items -->
           <div class="carousel-inner" style="height: 100%; width:100%;">
           <?php
@@ -94,13 +108,25 @@
               if ($flag == 0) {
                 echo "<div class='item active round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $photo['url'] . "></div>";
+                   . "src=" . $photo['url'] . "><div class='carousel-caption'><p>" 
+                   . $photo['caption'] . "</p></div></div>";
                 $flag = 1;
               } else {
                 echo "<div class='item round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $photo['url'] . "></div>";
+                   . "src=" . $photo['url'] . "><div class='carousel-caption'><p>" 
+                   . $photo['caption'] . "</p></div></div>";
               }
+              //if ($flag == 0) {
+              //  echo "<div class='item active round_border'>"
+              //     . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
+              //     . "src=" . $photo['url'] . "></div>";
+              //  $flag = 1;
+              //} else {
+              //  echo "<div class='item round_border'>"
+              //     . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
+              //     . "src=" . $photo['url'] . "></div>";
+              //}
             }
             mysql_free_result($result);
             mysql_close($conn);
@@ -119,17 +145,24 @@
           ?>
         </div>
         End of Comments-->
-        <div  class="span12 myWell" style="height:auto">
+        <div  class="myWell" >
           <div class="row-fluid">
             <a href="#" role="button" class="btn btn-primary click_back span3" >Back</a>
             <a href="#" role="button" class="btn btn-success click_back span3" >Email</a>
             <a href="#" role="button" class="btn btn-success click_back span3" >Edit</a>
-            <a href="#" role="button" class="btn btn-success click_back span3" >Edit</a>
+            <a role="button" class="btn btn-info click_collapse span3" >Comments</a>
+
+          </div>
+          <div id="comments" class="collapse">
+            <div class="commentWell">
+              <p> comment </p>
+            </div>
+            <div class="commentWell">
+              <p> comment </p>
+            </div>
           </div>
         </div>
-        <div  class="span12 myWell">
 
-        </div>
         <!-- End of Comments-->
 
       </div> <!-- end of div single -->
@@ -154,6 +187,10 @@
       $(".click_back").live("click", function() { 
         setTimeout(function() {$("#single").css("display","none");}, 10);
         setTimeout(function() {$("#list").css("display", "inline");}, 50);
+      });
+
+      $(".click_collapse").live("click", function() { 
+        $("#comments").collapse('toggle');
       });
     });
       
