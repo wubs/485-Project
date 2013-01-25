@@ -3,8 +3,8 @@
 <?php include('lib.php'); ?>
 <?php include('include/head.php'); ?>
   <body>
-    <div class="container">
     <?php include('include/navbar.php'); ?>
+    <div class="container">
     <!-- start edit from here -->
 
       <h1> AEKWfalwfaifjweofajwe </h1>

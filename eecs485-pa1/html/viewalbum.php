@@ -13,12 +13,31 @@
     height:600px;
     margin-left:0px; 
   }
+  .myWell {
+    padding: 20px;
+    height: 480px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+  }
+  .round_border {
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+  }
   </style>
   <body>
-    <div class="container">
     <?php include('include/navbar.php'); ?>
+    <div class="container">
 
-    <div id="list" class="span12">
+    <div id="list">
       <!-- start edit from here -->
         <h2> Album -> <?php echo $albumid ?></h2>
 
@@ -58,68 +77,61 @@
                   . "</tr>";
               }
               $counter = $counter + 1;
-              //if ($counter % $num == 0) {
-              //  echo "<div class='row-fluid' style='height:300px'>"
-              //    . "<div class='span5'>" 
-              //    . "<img style='height:200px' class='img-rounded' src=" . $photo['url'] . ">"
-              //    . "</div>";
-              //} else {
-              //  echo "<div class='span5'>"
-              //    . "<img class='img-rounded' src=" . $photo['url'] . ">"
-              //    . "</div>"
-              //    . "</div>";
-              //}
             }
           ?>
         </table>
 
-        <!-- Modal -->
-        <div id="myModal" class="modal hide fade photoModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-          <div class="modal-body" style="height:100%; width=100%; max-height: 800px; padding:0px">
-              <div style="width=30%;position: absolute;right:0px;top: 0px; padding:10px">
-                <h2 style="width=100%"> Comments </h2>
-                <h2> Comments </h2>
-                <h2> Comments </h2>
-                <h2> Comments </h2>
-                <h2> Comments </h2>
-                <h2> Comments </h2>
-                <h2> Comments </h2>
-                <h2> Comments </h2>
-              </div>
-          </div>
-        </div>
-        <!-- End of Modal -->
       </div> <!-- end of div list -->
 
-      <div id="single" class="span12" style="visibility:hidden;position:absolute;z-index: 10; top:0; padding-top:60px;">
-        <h1> single Picture </h1> 
-            <!-- Start of Carousel -->
-            <div id="myCarousel" class="carousel slide" style="height:100%;width:70%;margin-bottom:0px">
-              <!-- Carousel items -->
-              <div class="carousel-inner" style="height: 100%; width:100%;">
-              <?php
-                $flag = 0;
-                foreach ($photos as $photo) {
-                  if ($flag == 0) {
-                    echo "<div class='item active'>"
-                       . "<img style='height:100%;margin-left:auto;margin-right:auto;'" 
-                       . "src=" . $photo['url'] . "></div>";
-                    $flag = 1;
-                  } else {
-                    echo "<div class='item'>"
-                       . "<img style='height:100%;margin-left:auto;margin-right:auto;'" 
-                       . "src=" . $photo['url'] . "></div>";
-                  }
-                }
-                mysql_free_result($result);
-                mysql_close($conn);
-              ?>
-              </div>
-              <!-- Carousel nav -->
-              <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-              <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
-            </div>
-            <!-- End of Carousel -->
+      <div id="single" style="display:none;z-index:10;">
+        <!-- Start of Carousel -->
+        <div id="myCarousel" class="carousel slide span12 round_border" style="height:630px;;margin-bottom:0px">
+          <!-- Carousel items -->
+          <div class="carousel-inner" style="height: 100%; width:100%;">
+          <?php
+            $flag = 0;
+            foreach ($photos as $photo) {
+              if ($flag == 0) {
+                echo "<div class='item active round_border'>"
+                   . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
+                   . "src=" . $photo['url'] . "></div>";
+                $flag = 1;
+              } else {
+                echo "<div class='item round_border'>"
+                   . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
+                   . "src=" . $photo['url'] . "></div>";
+              }
+            }
+            mysql_free_result($result);
+            mysql_close($conn);
+          ?>
+          </div>
+          <!-- Carousel nav -->
+          <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+          <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+        </div>
+        <!-- End of Carousel -->
+
+        <!-- Start of Comments
+        <div class="span3 myWell" style"height:100%">
+          
+          <?php 
+          ?>
+        </div>
+        End of Comments-->
+        <div  class="span12 myWell" style="height:auto">
+          <div class="row-fluid">
+            <a href="#" role="button" class="btn btn-primary click_back span3" >Back</a>
+            <a href="#" role="button" class="btn btn-success click_back span3" >Email</a>
+            <a href="#" role="button" class="btn btn-success click_back span3" >Edit</a>
+            <a href="#" role="button" class="btn btn-success click_back span3" >Edit</a>
+          </div>
+        </div>
+        <div  class="span12 myWell">
+
+        </div>
+        <!-- End of Comments-->
+
       </div> <!-- end of div single -->
 
     <!-- edit above -->
@@ -134,12 +146,14 @@
       });
 
       $(".click_photo").live("click", function() { 
-        //$("#myModal").modal("show");
-        ////$("#" + $(this).attr('value')).addClass("active");
-        //$("#myCarousel").carousel(parseInt($(this).attr('value')-1)); 
-        $("#list").css("visibility", "hidden");
-        $("#single").css("visibility", "visible");
+        $("#myCarousel").carousel(parseInt($(this).attr('value')-1)); 
+        setTimeout(function() {$("#list").css("display", "none");}, 350);
+        setTimeout(function() {$("#single").css("display","inline");}, 400);
+      });
 
+      $(".click_back").live("click", function() { 
+        setTimeout(function() {$("#single").css("display","none");}, 10);
+        setTimeout(function() {$("#list").css("display", "inline");}, 50);
       });
     });
       

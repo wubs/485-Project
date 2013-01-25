@@ -3,8 +3,8 @@
 <?php include('lib.php'); ?>
 <?php include('include/head.php'); ?>
   <body>
-    <div class="container">
     <?php include('include/navbar.php'); ?>
+    <div class="container">
     <!-- start edit from here -->
 
       <h2> <a href="viewalbumlist.php">Albums</a> -> Edit </h2>
@@ -70,14 +70,13 @@
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
     
     <script type="text/javascript">
-      $(function () { ///
-
+      $(function () { // jQuery main()
         $(".Del").live("click", function() {     
           var albumid = $(this).attr('albumid');
           $.post("deletealbum.php", {"op": 'delete', "albumid": albumid }, function(data) {
-            location.reload();
             // refresh 
-              // data: [data_item: {title, access albumid}, ...  ]
+            location.reload();
+            // comment: data: [data_item: {title, access albumid}, ...  ]
              // $("#table_body").empty();
 
              // for (i=0; i<data.length; i++) {
@@ -91,9 +90,7 @@
               
             });   
         });
-
-
-     }); ///
+     }); // jQuery main() end 
     </script>
 
 </body>

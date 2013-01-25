@@ -9,8 +9,8 @@
   }
   </style>
   <body>
-    <div class="container">
     <?php include('include/navbar.php'); ?>
+    <div class="container">
     <?php
       //$conn = mysql_connect($db_host, $db_user, $db_passwd)
       //           or die("Connect Error: " . mysql_error());
