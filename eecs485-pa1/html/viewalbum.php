@@ -46,6 +46,39 @@
     -moz-border-radius: 8px;
     border-radius: 8px;
   }
+  .btn-file {
+    position:relative;
+    overflow:hidden;
+  }
+  .btn-file > input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    font-size: 23px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    transform: translate(-300px, 0) scale(4);
+    direction: ltr;
+  }
+  input[type="file"] {
+    height: 30px;
+    line-height: 30px;
+    width: auto;
+  }
+  .fileupload-preview {
+    display: inline-block;
+    margin-bottom: 5px;
+    overflow: hidden;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .fileupload .thumbnail > img {
+    display: inline-block;
+    max-height: 100%;
+    vertical-align: middle;
+  }
   </style>
   <body>
     <?php include('include/navbar.php'); ?>
@@ -55,8 +88,16 @@
       <!-- start edit from here -->
         <h2> Album -> <?php echo $albumid ?></h2>
 
-        <a href="#" role="button" class="btn btn-primary" >Add a photo</a>
-        <a href="#" role="button" class="btn " >Edit</a>
+
+        <!-- file uploader -->
+        <div class="fileupload fileupload-new" data-provides="fileupload">
+          <div class="fileupload-preview thumbnail" style="width: 300px; height: 250px;"></div>
+          <div>
+            <span class="btn btn-file"><span class="fileupload-new">Select image</span><span class="fileupload-exists"></span><input type="file" /></span>
+            <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+          </div>
+        </div>
+
 
         <table width="100%" height="100%" algin="center" valign="center">
           <?php 
@@ -171,6 +212,7 @@
     </div> <!-- /container -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+    <script src="static/js/bootstrap-fileupload.js"></script>
 
     <script type="text/javascript">
     $(function () {
