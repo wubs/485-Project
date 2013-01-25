@@ -16,8 +16,10 @@
   .myWell {
     padding: 20px;
     height: auto;
-    margin-top: 30px;
-    margin-bottom: 20px;
+    width: 50%;
+    margin: 0px auto;
+    margin-top: 10px;
+    margin-bottom: 40px;
     background-color: #f5f5f5;
     border: 1px solid #e3e3e3;
     -webkit-border-radius: 6px;
@@ -78,6 +80,12 @@
     display: inline-block;
     max-height: 100%;
     vertical-align: middle;
+  }
+  .opt {
+    width: 25%;  
+    padding: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
   </style>
   <body>
@@ -146,28 +154,28 @@
           <?php
             $flag = 0;
             foreach ($photos as $photo) {
-              if ($flag == 0) {
-                echo "<div class='item active round_border'>"
-                   . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $photo['url'] . "><div class='carousel-caption'><p>" 
-                   . $photo['caption'] . "</p></div></div>";
-                $flag = 1;
-              } else {
-                echo "<div class='item round_border'>"
-                   . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $photo['url'] . "><div class='carousel-caption'><p>" 
-                   . $photo['caption'] . "</p></div></div>";
-              }
               //if ($flag == 0) {
               //  echo "<div class='item active round_border'>"
               //     . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-              //     . "src=" . $photo['url'] . "></div>";
+              //     . "src=" . $photo['url'] . "><div class='carousel-caption'><p>" 
+              //     . $photo['caption'] . "</p></div></div>";
               //  $flag = 1;
               //} else {
               //  echo "<div class='item round_border'>"
               //     . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-              //     . "src=" . $photo['url'] . "></div>";
+              //     . "src=" . $photo['url'] . "><div class='carousel-caption'><p>" 
+              //     . $photo['caption'] . "</p></div></div>";
               //}
+              if ($flag == 0) {
+                echo "<div class='item active round_border'>"
+                   . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
+                   . "src=" . $photo['url'] . "></div>";
+                $flag = 1;
+              } else {
+                echo "<div class='item round_border'>"
+                   . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
+                   . "src=" . $photo['url'] . "></div>";
+              }
             }
             mysql_free_result($result);
             mysql_close($conn);
@@ -187,13 +195,13 @@
         </div>
         End of Comments-->
         <div  class="myWell" >
-          <div class="row-fluid">
-            <a href="#" role="button" class="btn btn-primary click_back span3" >Back</a>
-            <a href="#" role="button" class="btn btn-success click_back span3" >Email</a>
-            <a href="#" role="button" class="btn btn-success click_back span3" >Edit</a>
-            <a role="button" class="btn btn-info click_collapse span3" >Comments</a>
-
+          <div class="row-fluid btn-group">
+              <a href="#" role="button" class="btn click_back opt" >Back</a>
+              <a href="#" role="button" class="btn click_back opt" >Email</a>
+              <a href="#" role="button" class="btn click_back opt" >Edit</a>
+              <a role="button" class="btn btn-info click_collapse opt" >Comments</a>
           </div>
+
           <div id="comments" class="collapse">
             <div class="commentWell">
               <p> comment </p>

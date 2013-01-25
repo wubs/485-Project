@@ -42,13 +42,12 @@ albumid INT,
 username VARCHAR(20),
 FOREIGN KEY (albumid) references Album(albumid), 
 FOREIGN KEY (username) references User(username) 
-)
+);
 
 CREATE TABLE IF NOT EXISTS
 Comment(
 url varchar(255),
 commentseqnum int,
-name varchar(20),
 comments varchar(255),
 PRIMARY KEY (url, commentseqnum),
 FOREIGN KEY (url) references Photo(url)

@@ -55,9 +55,13 @@
 
           <form action="addalbum.php" method="post">
             <input type="text" placeholder="user" name="username">
+            <br>
             <input type="text" placeholder="new album" name="title">
-            <input name="access" type="radio" value="public">public&nbsp
-            <input name="access" type="radio" value="private">private
+            <br>
+            <div class="btn-group" data-toggle="buttons-radio">
+              <button type="button" class="btn active">Public</button>
+              <button type="button" class="btn ">Private</button>
+            </div>
             <input name="op" type="hidden" value="add">
             <input class='btn btn-success' type="submit" value="Add">
           </form>
