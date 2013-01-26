@@ -15,8 +15,6 @@
   $query = "INSERT INTO Album (title, created, lastupdated, access, username) values ('$new_title', NOW(), NOW(), '$new_access', '$new_username')";
 
   $result = mysql_query($query) or die("Query failed: " . mysql_error());
-  
-  echo "OK";
 
   mysql_free_result($result);
   mysql_close($conn);

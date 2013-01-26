@@ -7,8 +7,23 @@
     <div class="container">
     <!-- start edit from here -->
 
-      <h2> <a href="viewalbumlist.php">Albums</a> -> Edit </h2>
-      <table class="table table-hover">
+      <ul class="breadcrumb">
+        <li><a href="viewalbumlist.php">Album List</a><span class="divider">/</span></li>
+        <li class="active"><a href="#">Edit Album List</a><span class="divider">/</span></li>
+      </ul>
+
+      <form class="form-inline" action="#" method="post">
+        <input id="username" type="text" placeholder="username" name="username">
+        <input id="title" type="text" placeholder="new album title" name="title">
+        <div class="btn-group" data-toggle="buttons-radio">
+          <button type="button" value="public" class="btn active">Public</button>
+          <button type="button" value="private" class="btn ">Private</button>
+        </div>
+        <input name="op" type="hidden" value="add">
+        <a class='btn btn-success Add' > Add</a>
+      </form>
+
+      <table class="table table-large table-hover">
         <thead>
           <tr>
             <td class="span3">Album</td> 
@@ -53,18 +68,6 @@
 
       </table>
 
-          <form action="addalbum.php" method="post">
-            <input type="text" placeholder="user" name="username">
-            <br>
-            <input type="text" placeholder="new album" name="title">
-            <br>
-            <div class="btn-group" data-toggle="buttons-radio">
-              <button type="button" class="btn active">Public</button>
-              <button type="button" class="btn ">Private</button>
-            </div>
-            <input name="op" type="hidden" value="add">
-            <input class='btn btn-success' type="submit" value="Add">
-          </form>
 
 
     <!-- edit above -->
@@ -90,10 +93,22 @@
              //   var tr = "<tr> <td>" + ttitle +  "</td><td>" + taccess + "</td><td><a class='btn btn-primary'>Edit</a></td><td><a class='btn btn-danger Del' albumid='" + tid + "'>Del</a></td>";
              //   $("#table_body").append(tr);
              // }
-              
-              
             });   
         });
+
+        $(".Add").live("click", function() {     
+          var username = $("#username").val();
+          var title = $("#title").val();
+          var access = $(".btn.active").val();
+
+          $.post("addalbum.php", 
+            {"op": 'add', "username": username, "title": title, "access": access},
+            function(data) {
+              location.reload();
+            }
+          );   
+        });
+
      }); // jQuery main() end 
     </script>
 

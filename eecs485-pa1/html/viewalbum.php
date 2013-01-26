@@ -105,28 +105,47 @@
   <body>
     <?php include('include/navbar.php'); ?>
     <div class="container">
+    <?php 
+      $albumid = $_GET['albumid']; 
+      $conn = mysql_connect($db_host, $db_user, $db_passwd) or die("Connect Error: " . mysql_error());
+      mysql_select_db($db_name) or die("Could not select:" . $db_name);
+      $query = "SELECT title FROM Album WHERE albumid=$albumid";
+      $result = mysql_query($query) or die("Query failed: " . mysql_error());
+      $temp = mysql_fetch_array($result, MYSQL_ASSOC); 
+      $album_title = $temp['title']; 
+    ?>
+    <ul class="breadcrumb">
+      <li><a href="viewalbumlist.php">Album List</a><span class="divider">/</span></li>
+      <li class="active">
+        <a class="click_back" ref="#">Album: "<?php echo $album_title; ?>"</a><span class="divider">/</span>
+      </li>
+    </ul>
 
     <div id="list">
       <!-- start edit from here -->
-        <h2> Album -> <?php $albumid = $_GET['albumid']; echo $albumid; ?></h2>
-            
-        <!-- file uploader -->
-        <div class="fileupload fileupload-new" data-provides="fileupload">
-          <div class="fileupload-preview thumbnail" style="width: 300px; height: 250px;"></div>
-          <div>
-            <span class="btn btn-file"><span class="fileupload-new">Select image</span><span class="fileupload-exists"></span><input type="file" /></span>
-            <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
-          </div>
-        </div>
 
+        <a href="#myModal" role="button" class="btn btn-primary" data-toggle="modal">Add Photo</a>
+        <!-- Modal -->
+        <div id="myModal" class="modal hide fade" style="width:auto;left:60%" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-body">
+            <!-- file uploader -->
+            <div class="fileupload fileupload-new" data-provides="fileupload">
+              <div class="fileupload-preview thumbnail" style="width: 300px; height: 250px;"></div>
+              <div>
+                <input style="width:296px" type="text" placeholder="Caption">
+              </div>
+              <div>
+                <span class="btn btn-file"><span class="fileupload-new">Select image</span><span class="fileupload-exists"></span><input type="file" /></span>
+                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+                <a href="#" class="btn btn-primary pull-right" >Upload</a>
+              </div>
+            </div>
+          </div>
+        </div>  
 
         <table width="100%" height="100%" algin="center" valign="center">
           <?php 
 
-            $conn = mysql_connect($db_host, $db_user, $db_passwd)
-            or die("Connect Error: " . mysql_error());
-            
-            mysql_select_db($db_name) or die("Could not select:" . $db_name);
             
             $query = 'SELECT * FROM Contain WHERE albumid=' 
               . $albumid . ' ORDER BY sequencenum';
@@ -203,8 +222,8 @@
 
           <div class="row-fluid btn-group">
               <a href="#" role="button" class="btn click_back opt" >Back</a>
-              <a href="#" role="button" class="btn click_back opt" >Email</a>
-              <a href="#" role="button" class="btn click_back opt" >Edit</a>
+              <a href="#" role="button" class="btn opt" >Email</a>
+              <a href="#" role="button" class="btn opt" >Edit</a>
               <a role="button" class="btn btn-info click_comments click_collapse opt" >Comments</a>
           </div>
 
@@ -239,18 +258,32 @@
         setTimeout(function() {$("#list").css("display", "none");}, 350);
         setTimeout(function() {$("#single").css("display","inline");}, 400);
         fetch_comments();
+        setTimeout(function () {
+          var s = $(".item.active > img").attr("src")
+          var img_name = s.substring(s.lastIndexOf('/')+1);
+          $(".breadcrumb").append("<li id='active_breadcrumb' class='active'>"+img_name+"</li>");
+        }, 700);
       });
 
       $(".click_back").live("click", function() { 
         setTimeout(function() {$("#single").css("display","none");}, 10);
         setTimeout(function() {$("#list").css("display", "inline");}, 50);
+        $("#active_breadcrumb").remove();
       });
 
       $(".click_collapse").live("click", function() { 
         $("#comments").collapse('toggle');
       });
 
-      $(".carousel-control").live("click", fetch_comments);
+      $(".carousel-control").live("click", function() {
+        fetch_comments();
+        $("#active_breadcrumb").remove();
+        setTimeout(function () {
+          var s = $(".item.active > img").attr("src")
+          var img_name = s.substring(s.lastIndexOf('/')+1);
+          $(".breadcrumb").append("<li id='active_breadcrumb' class='active'>"+img_name+"</li>");
+        }, 700);
+      });
 
       $("#click_newcomment").live("click", function() { 
         // data.datetime data.comments data.username
@@ -264,7 +297,6 @@
       function fetch_comments() {
         setTimeout(function() {
           var url = $(".item.active > img").attr("src");
-          console.log(url);
           
           $.post('fetch_comments.php', {url: url}, function(raw_data) {
             // empty comments div, poppulate with new data

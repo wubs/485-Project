@@ -6,8 +6,12 @@
     <?php include('include/navbar.php'); ?>
     <div class="container">
     <!-- start edit from here -->
-
-      <h2> Albums -> <a href="editalbumlist.php">Edit</a></h2>
+      <ul class="breadcrumb">
+        <li class="active"><a href="#">Album List</a><span class="divider">/</span></li>
+      </ul>
+      <a href="editalbumlist.php" class="btn btn-primary"> Edit Album List </a>
+      <br>
+      <br>
       <table class="table table-hover">
         <thead>
           <tr>
