@@ -18,6 +18,7 @@ PART 4 Building photo album website (50)
 1. index.php (DONE)
 * REQUIREMENT:
 	1. <title><meta>tags, header and footer for the page (DONE)
+	
 	2. Text describing the website (DONE)
 	3. A list of users whose albums can be browsed (DONE)
 	
