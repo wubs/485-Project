@@ -98,3 +98,11 @@ values
 ('static/images/space_HelixNebula.jpg', 'jpg', NOW()),
 ('static/images/space_MilkyWay.jpg', 'jpg', NOW()),
 ('static/images/space_OrionNebula.jpg', 'jpg', NOW());
+
+INSERT INTO Comment
+(url, commentseqnum, comments)
+values
+('static/images/sports_s1.jpg', 1, "This is awesome!"),
+('static/images/sports_s1.jpg', 2, "This is awesome! Really?"),
+('static/images/sports_s2.jpg', 3, "This is also awesome!"),
+('static/images/sports_s3.jpg', 4, "This is awesome too!");

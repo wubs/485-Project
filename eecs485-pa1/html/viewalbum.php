@@ -43,6 +43,20 @@
     -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
   }
+  .newcommentWell {
+    padding: 20px;
+    height: auto;
+    margin-top: 10px;
+    margin-left: 0px;
+    background-color: #f5f5f5;
+    border: 4px solid #e3e3e3;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+  }
   .round_border {
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
@@ -94,9 +108,8 @@
 
     <div id="list">
       <!-- start edit from here -->
-        <h2> Album -> <?php echo $albumid ?></h2>
-
-
+        <h2> Album -> <?php $albumid = $_GET['albumid']; echo $albumid; ?></h2>
+            
         <!-- file uploader -->
         <div class="fileupload fileupload-new" data-provides="fileupload">
           <div class="fileupload-preview thumbnail" style="width: 300px; height: 250px;"></div>
@@ -109,7 +122,6 @@
 
         <table width="100%" height="100%" algin="center" valign="center">
           <?php 
-            $albumid = $_GET['albumid'];
 
             $conn = mysql_connect($db_host, $db_user, $db_passwd)
             or die("Connect Error: " . mysql_error());
@@ -187,30 +199,24 @@
         </div>
         <!-- End of Carousel -->
 
-        <!-- Start of Comments
-        <div class="span3 myWell" style"height:100%">
-          
-          <?php 
-          ?>
-        </div>
-        End of Comments-->
-        <div  class="myWell" >
+        <div  class="myWell" > <!-- Buttons and comments -->
+
           <div class="row-fluid btn-group">
               <a href="#" role="button" class="btn click_back opt" >Back</a>
               <a href="#" role="button" class="btn click_back opt" >Email</a>
               <a href="#" role="button" class="btn click_back opt" >Edit</a>
-              <a role="button" class="btn btn-info click_collapse opt" >Comments</a>
+              <a role="button" class="btn btn-info click_comments click_collapse opt" >Comments</a>
           </div>
 
+          <!-- Start of Comments -->
           <div id="comments" class="collapse">
-            <div class="commentWell">
-              <p> comment </p>
-            </div>
-            <div class="commentWell">
-              <p> comment </p>
-            </div>
+            <p style="color:#f5f5f5"> placeholder </p>
+            <textarea id="new_comment" rows ="3" placeholder="New comment" style="width:70%;display:inline-block" ></textarea>
+            <a id="click_newcomment" role="button" class="btn btn-info" style="display:inline-block;margin-bottom:15px;margin-left:30px;padding:15px 20px 15px 20px;" >Submit</a>
           </div>
-        </div>
+          <!-- End of Comments-->
+
+        </div> <!-- End of Buttons and comments -->
 
         <!-- End of Comments-->
 
@@ -232,6 +238,7 @@
         $("#myCarousel").carousel(parseInt($(this).attr('value')-1)); 
         setTimeout(function() {$("#list").css("display", "none");}, 350);
         setTimeout(function() {$("#single").css("display","inline");}, 400);
+        fetch_comments();
       });
 
       $(".click_back").live("click", function() { 
@@ -242,6 +249,40 @@
       $(".click_collapse").live("click", function() { 
         $("#comments").collapse('toggle');
       });
+
+      $(".carousel-control").live("click", fetch_comments);
+
+      $("#click_newcomment").live("click", function() { 
+        // data.datetime data.comments data.username
+        var url = $(".item.active > img").attr("src");
+        var text = $("#new_comment").val();
+        $.post('new_comment.php', {url: url, datetime: '', comments: text, username: ''}, function(data) {
+          fetch_comments();
+        });
+      });
+
+      function fetch_comments() {
+        setTimeout(function() {
+          var url = $(".item.active > img").attr("src");
+          console.log(url);
+          
+          $.post('fetch_comments.php', {url: url}, function(raw_data) {
+            // empty comments div, poppulate with new data
+            // data.datetime data.comments data.username
+            var data = $.parseJSON(raw_data);
+            var block = "";
+            var comments_block = $("#comments");
+            $(".commentWell").remove();
+
+            for (i=0;i<data.length;i++) {
+              block = "<div class='commentWell'><p>" + data[i].comments + "</p></div>";
+              comments_block.append(block);
+            }
+          });
+        }, 700);
+      }
+
+
     });
       
     </script>
