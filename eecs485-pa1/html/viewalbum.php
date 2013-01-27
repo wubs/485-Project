@@ -124,6 +124,7 @@
     <div id="list">
       <!-- start edit from here -->
 
+        <a href="#" class="btn" rel="popover" data-placement="top" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." title="Popover on top">Popover on top</a>
         <a href="#myModal" role="button" class="btn btn-primary" data-toggle="modal">Add Photo</a>
         <!-- Modal -->
         <div id="myModal" class="modal hide fade" style="width:auto;left:60%" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -230,12 +231,17 @@
         </div>
         <!-- End of Carousel -->
 
+
         <div  class="myWell" > <!-- Buttons and comments -->
 
           <div class="row-fluid btn-group">
               <a href="#" role="button" class="btn click_back opt" >Back</a>
-              <a href="#" role="button" class="btn opt" >Email</a>
-              <a href="#" role="button" class="btn opt" >Edit</a>
+              <a href="#" role="button" class="btn opt click_email" >Email</a>
+              <a id="click_edit" value=false class="btn opt" rel="popover" data-html=true 
+                data-trigger="click" data-placement="top"
+                data-content="<a class='btn btn-danger'>Del</a>" >
+                Edit
+              </a>
               <a role="button" class="btn btn-info click_comments click_collapse opt" >Comments</a>
           </div>
 
@@ -306,6 +312,17 @@
         });
       });
 
+      $("#click_edit").live("click", function() { 
+        if ( $(this).val() == 0 ) {
+          $(this).popover("show");
+          $(this).val(1);
+        } else {
+          $(this).popover("hide");
+          $(this).val(0);
+        }
+      });
+
+
       function fetch_comments() {
         setTimeout(function() {
           var url = $(".item.active > img").attr("src");
@@ -325,7 +342,6 @@
           });
         }, 700);
       }
-
 
     });
       
