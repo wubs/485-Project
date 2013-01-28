@@ -174,13 +174,13 @@
                 echo "<tr>"
                   . "<td height='400px' align='center'>" 
                   . "<img class='img-rounded center click_photo' value=" 
-                  . $photo['sequencenum'] . " src=" . $base64 . ">"
+                  . ($counter+1) . " src=" . $base64 . ">"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "</td>";
               } else {
                 echo "<td height='400px' align='center'>"
                   . "<img class='img-rounded center click_photo' value="
-                  . $photo['sequencenum'] . " src=" . $base64 . ">"
+                  . ($counter+1) . " src=" . $base64 . ">"
                   . "<p>" . $photo['caption'] . "</p>"
                   . "</td>"
                   . "</tr>";
@@ -278,13 +278,13 @@
       $(".click_photo").live("click", function() { 
         $("#myCarousel").carousel(parseInt($(this).attr('value')) - 1); 
         setTimeout(function() {$("#list").css("display", "none");}, 350);
-        setTimeout(function() {$("#single").css("display","inline");}, 400);
+        setTimeout(function() {$("#single").css("display","inline");}, 550);
         fetch_comments();
         setTimeout(function () {
           var s = $(".item.active > img").attr("url")
           var img_name = s.substring(s.lastIndexOf('/')+1);
           $(".breadcrumb").append("<li id='active_breadcrumb' class='active'>"+img_name+"</li>");
-        }, 700);
+        }, 1000);
       });
 
       $(".click_back").live("click", function() { 
