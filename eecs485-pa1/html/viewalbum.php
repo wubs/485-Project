@@ -214,12 +214,12 @@
 								
                 echo "<div class='item active round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $photo['base64'] . "></div>";
+                   . "src=" . $base64 . "></div>";
                 $flag = 1;
               } else {
                 echo "<div class='item round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $photo['base64'] . "></div>";
+                   . "src=" . $base64 . "></div>";
               }
             }
             mysql_free_result($result);
@@ -325,12 +325,16 @@
         }
       });
 
-			/*$("#delete_photo").live("click", function() { 
-			  var url = $("#url_value").attr("cur_photo_url");
-       	$.post('fetch_comments.php', {url: url}, function(raw_data) {
+			$("#delete_photo").live("click", function() { 
+				var albumid = $(this).attr('albumid');
+				var url = var url = $(".item.active > img").attr("src");
+			  //var url = $("#url_value").attr("cur_photo_url");//
+				//var id = $("#albumid_value").attr("cur_album_id");//
+       	$.post('delete_photo.php', {url: url, albumid: id}, 
+				function(raw_data) {
 					window.reload();
 				}
-      });*/
+      });
 
       function fetch_comments() {
         setTimeout(function() {

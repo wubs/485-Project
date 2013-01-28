@@ -1,8 +1,8 @@
 <?php 
   include('lib.php'); 
-  $new_id = $_POST['albumid'];
-  $new_title = $_POST['title'];
-  $new_access = $_POST['access'];
+  $new_id = $_GET['albumid'];
+  $new_title = $_GET['title'];
+  $new_access = $_GET['access'];
 
   $conn = mysql_connect($db_host, $db_user, $db_passwd)
   or die("Connect Error: " . mysql_error());

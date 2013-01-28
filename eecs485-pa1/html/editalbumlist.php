@@ -154,7 +154,7 @@
             var access = "public"; 
           }
 
-          $.post("editalbum.php", 
+          $.get("editalbum.php", 
             {"albumid": id, "title": title, "access": access},
             function(data) {
               location.reload();
