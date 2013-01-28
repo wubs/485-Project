@@ -32,7 +32,8 @@ FOREIGN KEY (url) references Photo(url)
 CREATE TABLE IF NOT EXISTS
 Photo(
 url VARCHAR(255) PRIMARY KEY,
-format CHAR(3), 
+code BLOB,
+format CHAR(3),
 date DATETIME
 );
 
