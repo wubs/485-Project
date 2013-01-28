@@ -209,7 +209,9 @@
               //     . "src=" . $photo['url'] . "><div class='carousel-caption'><p>" 
               //     . $photo['caption'] . "</p></div></div>";
               //}
+							$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
               if ($flag == 0) {
+								
                 echo "<div class='item active round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
                    . "src=" . $photo['base64'] . "></div>";
@@ -238,7 +240,7 @@
               <a href="#" role="button" class="btn opt click_email" >Email</a>
               <a id="click_edit" value=false class="btn opt" rel="popover" data-html=true 
                 data-trigger="click" data-placement="top"
-                data-content="<a class='btn btn-danger'>Del</a>" >
+                data-content="<a id='delete_photo' class='btn btn-danger'>Del</a>" >
                 Edit
               </a>
               <a role="button" class="btn btn-info click_comments click_collapse opt" >Comments</a>
@@ -322,6 +324,13 @@
           $(this).val(0);
         }
       });
+
+			/*$("#delete_photo").live("click", function() { 
+			  var url = $("#url_value").attr("cur_photo_url");
+       	$.post('fetch_comments.php', {url: url}, function(raw_data) {
+					window.reload();
+				}
+      });*/
 
       function fetch_comments() {
         setTimeout(function() {
