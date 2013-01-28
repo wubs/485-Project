@@ -124,23 +124,27 @@
     <div id="list">
       <!-- start edit from here -->
 
-        <a href="#" class="btn" rel="popover" data-placement="top" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." title="Popover on top">Popover on top</a>
         <a href="#myModal" role="button" class="btn btn-primary" data-toggle="modal">Add Photo</a>
         <!-- Modal -->
         <div id="myModal" class="modal hide fade" style="width:auto;left:60%" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-body">
+
+            <form action="upload.php" method="post" enctype="multipart/form-data">
+            <input type='hidden' name='albumid' value='<?php echo $albumid; ?>'>
             <!-- file uploader -->
             <div class="fileupload fileupload-new" data-provides="fileupload">
               <div class="fileupload-preview thumbnail" style="width: 300px; height: 250px;"></div>
               <div>
-                <input style="width:296px" type="text" placeholder="Caption">
+                <input style="width:296px" type="text" placeholder="Caption" name="caption">
               </div>
               <div>
                 <span class="btn btn-file"><span class="fileupload-new">Select image</span><span class="fileupload-exists"></span><input type="file" name="file" id="file" /></span>
                 <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
-                <a href="#" class="btn btn-primary pull-right" >Upload</a>
+                <input class="btn btn-primary pull-right" type="submit" name="addSubmit" value="Upload">
               </div>
             </div>
+            </form>
+
           </div>
         </div>  
 
@@ -196,7 +200,6 @@
           <?php
             $flag = 0;
             foreach ($photos as $photo) {
-							$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
               //if ($flag == 0) {
               //  echo "<div class='item active round_border'>"
               //     . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
@@ -214,12 +217,12 @@
 								
                 echo "<div class='item active round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $base64 . "></div>";
+                   . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
                 $flag = 1;
               } else {
                 echo "<div class='item round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $base64 . "></div>";
+                   . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
               }
             }
             mysql_free_result($result);
@@ -240,7 +243,7 @@
               <a href="#" role="button" class="btn opt click_email" >Email</a>
               <a id="click_edit" value=false class="btn opt" rel="popover" data-html=true 
                 data-trigger="click" data-placement="top"
-                data-content="<a id='delete_photo' class='btn btn-danger'>Del</a>" >
+                data-content="<a id='delete_photo' albumid='<?php echo $albumid ?>' class='btn btn-danger'>Del</a>" >
                 Edit
               </a>
               <a role="button" class="btn btn-info click_comments click_collapse opt" >Comments</a>
@@ -273,13 +276,12 @@
       });
 
       $(".click_photo").live("click", function() { 
-        alert($(this).attr('value'));
-        $("#myCarousel").carousel(parseInt($(this).attr('value'))); 
+        $("#myCarousel").carousel(parseInt($(this).attr('value')) - 1); 
         setTimeout(function() {$("#list").css("display", "none");}, 350);
         setTimeout(function() {$("#single").css("display","inline");}, 400);
         fetch_comments();
         setTimeout(function () {
-          var s = $(".item.active > img").attr("src")
+          var s = $(".item.active > img").attr("url")
           var img_name = s.substring(s.lastIndexOf('/')+1);
           $(".breadcrumb").append("<li id='active_breadcrumb' class='active'>"+img_name+"</li>");
         }, 700);
@@ -299,7 +301,7 @@
         fetch_comments();
         $("#active_breadcrumb").remove();
         setTimeout(function () {
-          var s = $(".item.active > img").attr("src")
+          var s = $(".item.active > img").attr("url")
           var img_name = s.substring(s.lastIndexOf('/')+1);
           $(".breadcrumb").append("<li id='active_breadcrumb' class='active'>"+img_name+"</li>");
         }, 700);
@@ -307,7 +309,7 @@
 
       $("#click_newcomment").live("click", function() { 
         // data.datetime data.comments data.username
-        var url = $(".item.active > img").attr("src");
+        var url = $(".item.active > img").attr("url");
         var text = $("#new_comment").val();
         $.post('new_comment.php', {url: url, datetime: '', comments: text, username: ''}, function(data) {
           fetch_comments();
@@ -325,20 +327,23 @@
         }
       });
 
-			$("#delete_photo").live("click", function() { 
-				var albumid = $(this).attr('albumid');
-				var url = var url = $(".item.active > img").attr("src");
-			  //var url = $("#url_value").attr("cur_photo_url");//
-				//var id = $("#albumid_value").attr("cur_album_id");//
-       	$.post('delete_photo.php', {url: url, albumid: id}, 
-				function(raw_data) {
-					window.reload();
-				}
+      $("#delete_photo").live("click", function() { 
+        var albumid = $(this).attr('albumid');
+        var url = $(".item.active > img").attr("url");
+        $.post('delete_photo.php', {url: url, albumid: id}, function(raw_data) {
+          window.reload(); 
+        });
+      });
+
+      $("#upload").live("click", function() { 
+        $.post('upload.php', {url: url}, function(raw_data) {
+          window.reload(); 
+        });
       });
 
       function fetch_comments() {
         setTimeout(function() {
-          var url = $(".item.active > img").attr("src");
+          var url = $(".item.active > img").attr("url");
           
           $.post('fetch_comments.php', {url: url}, function(raw_data) {
             // empty comments div, poppulate with new data
