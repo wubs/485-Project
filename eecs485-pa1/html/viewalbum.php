@@ -153,8 +153,6 @@
 -->
         <table width="100%" height="100%" algin="center" valign="center">
           <?php 
-
-            
             //$query = 'SELECT * FROM Contain WHERE albumid=' 
             //  . $albumid . ' ORDER BY sequencenum';
             //Change the query to include the column Photo.code;
@@ -198,6 +196,7 @@
           <?php
             $flag = 0;
             foreach ($photos as $photo) {
+							$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
               //if ($flag == 0) {
               //  echo "<div class='item active round_border'>"
               //     . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
@@ -213,12 +212,12 @@
               if ($flag == 0) {
                 echo "<div class='item active round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $base64 . "></div>";
+                   . "src=" . $photo['base64'] . "></div>";
                 $flag = 1;
               } else {
                 echo "<div class='item round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $base64 . "></div>";
+                   . "src=" . $photo['base64'] . "></div>";
               }
             }
             mysql_free_result($result);
@@ -272,7 +271,8 @@
       });
 
       $(".click_photo").live("click", function() { 
-        $("#myCarousel").carousel(parseInt($(this).attr('value')-1)); 
+        alert($(this).attr('value'));
+        $("#myCarousel").carousel(parseInt($(this).attr('value'))); 
         setTimeout(function() {$("#list").css("display", "none");}, 350);
         setTimeout(function() {$("#single").css("display","inline");}, 400);
         fetch_comments();
@@ -323,7 +323,6 @@
         }
       });
 
-
       function fetch_comments() {
         setTimeout(function() {
           var url = $(".item.active > img").attr("src");
@@ -343,7 +342,6 @@
           });
         }, 700);
       }
-
     });
       
     </script>

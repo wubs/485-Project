@@ -56,7 +56,6 @@
               echo "<tr> <td>";
 								if($line['access']=='private' && $cur_username!= $line['username']){
 									echo $line['title'] . "</td>";
-									
 								}else{
 									echo "<a href=" . $url . ">" . $line['title'] . "</a></td>";						
 								}
