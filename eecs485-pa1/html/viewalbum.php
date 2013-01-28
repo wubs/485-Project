@@ -136,7 +136,7 @@
                 <input style="width:296px" type="text" placeholder="Caption">
               </div>
               <div>
-                <span class="btn btn-file"><span class="fileupload-new">Select image</span><span class="fileupload-exists"></span><input type="file" /></span>
+                <span class="btn btn-file"><span class="fileupload-new">Select image</span><span class="fileupload-exists"></span><input type="file" name="file" id="file" /></span>
                 <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
                 <a href="#" class="btn btn-primary pull-right" >Upload</a>
               </div>
@@ -297,6 +297,7 @@
         var text = $("#new_comment").val();
         $.post('new_comment.php', {url: url, datetime: '', comments: text, username: ''}, function(data) {
           fetch_comments();
+          $("#new_comment").val("");
         });
       });
 
