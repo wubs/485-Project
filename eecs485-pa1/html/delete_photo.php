@@ -8,30 +8,27 @@
   
   mysql_select_db($db_name) or die("Could not select:" . $db_name);
 
-  $query = "DELETE from Contain where albumid =". $new_albumid. "and url=".$new_url;
+  $query = "DELETE from Contain where albumid =". $new_albumid. " and url='".$new_url."'";
 
   $result = mysql_query($query) or die(mysql_error());
-  
-  //$query = "DELETE from AlbumAccess where albumid =". $new_albumid;
 
-	$query = "DELETE from Comment where url=".$new_url;
+	$query = "DELETE from Comment where url='".$new_url."'";
   
 	$result = mysql_query($query) or die(mysql_error());
   
-  $query = "SELECT albumid, COUNT(*) FROM Contain WHERE url =". $new_url." GROUP BY albumid";   
+  $query = "SELECT albumid FROM Contain WHERE url='". $new_url."'"; 
 
   $result = mysql_query($query) or die("Query failed: " . mysql_error());
 
-  while($row = mysql_fetch_array($result,MYSQL_ASSOC)){
-    if($row['COUNT(*)'] == 0)
+
+  $row = mysql_fetch_array($result,MYSQL_ASSOC);
+    if($row['albumid'] == null)
     {
-      $query = "DELETE from Photo WHERE url = '". $row['url'] ."'";
+      $query = "DELETE from Photo WHERE url='". $new_url."'";
       $result2 = mysql_query($query) or die(mysql_error());
       unlink($row['url']);
     }
-  }
-
-  //$query = "DELETE from Contain where albumid =". $new_albumid;
+	echo $query;
   $query = "UPDATE Album SET lastupdated=NOW() WHERE albumid=".$new_albumid;
   $result = mysql_query($query) or die(mysql_error());
 

@@ -330,8 +330,9 @@
       $("#delete_photo").live("click", function() { 
         var albumid = $(this).attr('albumid');
         var url = $(".item.active > img").attr("url");
-        $.post('delete_photo.php', {url: url, albumid: id}, function(raw_data) {
-          window.reload(); 
+        $.post('delete_photo.php', {url: url, albumid: albumid}, function(raw_data) {
+          //window.reload(true); 
+          alert(raw_data);
         });
       });
 
