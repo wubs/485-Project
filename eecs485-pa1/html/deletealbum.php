@@ -16,12 +16,12 @@
 
   $result = mysql_query($query) or die(mysql_error());
   
-  $query = "SELECT url, COUNT(*) FROM Contain WHERE albumid =". $new_albumid." GROUP BY url";   
+  $query = "SELECT url, albumid, COUNT(*) FROM Contain GROUP BY url";   
 
   $result = mysql_query($query) or die("Query failed: " . mysql_error());
 
   while($row = mysql_fetch_array($result,MYSQL_ASSOC)){
-    if($row['COUNT(*)'] == 1)
+    if($row['COUNT(*)'] == 1 && $row['albumid']==$new_albumid)
     {
       $query = "DELETE from Photo WHERE url = '". $row['url'] ."'";
       $result2 = mysql_query($query) or die(mysql_error());
@@ -32,19 +32,7 @@
   $query = "DELETE from Contain where albumid =". $new_albumid;
   $result = mysql_query($query) or die(mysql_error());
 
-  // find album list after deletion 
-  //$query = "SELECT * FROM Album";   
-
-  //$result = mysql_query($query) or die("Query failed: " . mysql_error());
-  // array of dada 
-  
-  //echo  data;
 
   mysql_free_result($result);
   mysql_close($conn);
-  /*
-  foreach ($all_albums as $album) {
-    echo $album->$name . $album->$access
-  }
-  */
 ?>
