@@ -8,10 +8,10 @@
   $new_to = $_POST['to'];
 
 
-  $subject = "testing email";
-  $to = "wubaishun@gmail.com,wubs@umich.edu,ruoran@umich.edu,dailin@umich.edu";
-  $url = "static\images\football_s1.jpg"; 
-  $contents = "Hello guys, this is Group36.     I believe email part is working!!\r\n\r\nsent from our website"; 
+  $subject = "Email from album of EECS485-group36";
+  $to = $new_to;
+  $url = $new_url; 
+  $contents = "Hello guys, this is Group36. I believe email part is working!!"; 
   $from = "eecs485group36@example.com";
   $filename = explode("static\\images\\",$url);
 

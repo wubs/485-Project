@@ -13,6 +13,7 @@
     height:600px;
     margin-left:0px; 
   }
+
   .myWell {
     padding: 20px;
     height: auto;
@@ -240,7 +241,13 @@
 
           <div class="row-fluid btn-group">
               <a href="#" role="button" class="btn click_back opt" >Back</a>
-              <a href="#" role="button" class="btn opt click_email" >Email</a>
+
+              <a id="click_email" value=false class="btn opt" rel="popover" data-html=true 
+                data-trigger="click" data-placement="top"
+                data-content="<input id='email_to' type='email' style='width:194px'><a albumid='<?php echo $albumid ?>' id='email_photo' class='btn'>Send</a>" >
+                Email
+              </a>
+
               <a id="click_edit" value=false class="btn opt" rel="popover" data-html=true 
                 data-trigger="click" data-placement="top"
                 data-content="<a id='delete_photo' albumid='<?php echo $albumid ?>' class='btn btn-danger'>Del</a>" >
@@ -318,6 +325,24 @@
       });
 
       $("#click_edit").live("click", function() { 
+        if ( $(this).val() == 0 ) {
+          $(this).popover("show");
+          $(this).val(1);
+        } else {
+          $(this).popover("hide");
+          $(this).val(0);
+        }
+      });
+
+      $("#email_photo").live("click", function() { 
+        var to = $("#email_to").val();
+        var url = $(".item.active > img").attr("url")
+        $.post('email_photo.php', {subject:'testing subject', url:url, contents:'testing', from:'foo', to:to}, function(data) {
+          location.reload();
+        });
+      });
+
+      $("#click_email").live("click", function() { 
         if ( $(this).val() == 0 ) {
           $(this).popover("show");
           $(this).val(1);
