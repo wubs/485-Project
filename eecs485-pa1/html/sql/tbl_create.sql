@@ -25,6 +25,7 @@ albumid INT,
 url VARCHAR(255),
 caption VARCHAR(255),
 sequencenum INT,
+PRIMARY KEY (albumid, url),
 FOREIGN KEY (albumid) references Album(albumid), 
 FOREIGN KEY (url) references Photo(url) 
 );
@@ -41,6 +42,7 @@ CREATE TABLE IF NOT EXISTS
 AlbumAccess(
 albumid INT,
 username VARCHAR(20),
+PRIMARY KEY (albumid, username),
 FOREIGN KEY (albumid) references Album(albumid), 
 FOREIGN KEY (username) references User(username) 
 );
