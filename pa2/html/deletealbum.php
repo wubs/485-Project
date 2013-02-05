@@ -1,3 +1,13 @@
+<?php include('lib.php'); ?>
+<?php include('include/head.php'); ?>
+  <body>
+    <?php include('include/navbar.php'); ?>
+    <div class="container">
+    <!-- start edit from here -->
+
+
+
+
 <?php 
   include('lib.php'); 
   $new_op = $_POST['op'];
@@ -36,3 +46,12 @@
   mysql_free_result($result);
   mysql_close($conn);
 ?>
+
+
+<!-- edit above -->
+    </div> <!-- /container -->
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

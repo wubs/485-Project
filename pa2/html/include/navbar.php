@@ -7,12 +7,12 @@
         <span class="icon-bar"></span>
       </a>
 
-      <a class="brand" href="main.php"><? echo $config_title ?></a>
+      <a class="brand" href="index.php"><? echo $config_title ?></a>
       <div class="nav-collapse collapse">
         <ul class="nav">
 
           <!-- customize bellow -->
-          <li class="active"><a href="main.php">Home</a></li>
+          <li class="active"><a href="index.php">Home</a></li>
           <li><a href="viewalbumlist.php">Albums</a></li>
           <li><a href="about.php">About</a></li>
 

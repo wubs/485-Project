@@ -59,7 +59,7 @@
             
             mysql_select_db($db_name) or die("Could not select:" . $db_name);
             
-            $query = "SELECT title,access,albumid FROM Album WHERE access='public'";
+            $query = "SELECT title,access,albumid FROM Album ";
             $result = mysql_query($query) or die("Query failed: " . mysql_error());
             
             while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {

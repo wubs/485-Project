@@ -18,7 +18,7 @@
   $conn = mysql_connect($db_host, $db_user, $db_passwd) or die("Connect Error: " . mysql_error());
   mysql_select_db($db_name) or die("Could not select:" . $db_name);
   
-  $query = 'SELECT Photo.code, Photo.format FROM Photo WHERE url=Photo.url';
+  $query = "SELECT Photo.code, Photo.format FROM Photo WHERE url='$url'";
   $result = mysql_query($query) or die(mysql_error());
   $photo = mysql_fetch_array($result, MYSQL_ASSOC);
 
@@ -37,7 +37,7 @@
         .$contents."\r\n"
           .$bound;
 
-  $message .= $contents."\r\n".$bound;
+  $message .= "\r\n" . $contents."\r\n".$bound;
      
   $message .= "Content-Type: imgae/".$photo['format']."; name=\"".$filename[0]."\"\r\n"
       ."Content-Transfer-Encoding: base64\r\n"
