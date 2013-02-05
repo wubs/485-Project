@@ -12,9 +12,18 @@
         <ul class="nav">
 
           <!-- customize bellow -->
-          <li class="active"><a href="index.php">Home</a></li>
+          <li><a href="index.php">Home</a></li>
           <li><a href="viewalbumlist.php">Albums</a></li>
           <li><a href="about.php">About</a></li>
+
+        </ul>
+        <ul class="nav pull-right"> 
+          <form method="post" action="login.php" class="navbar-form pull-left">
+            <input class="input-small" type="text" name="username" class="span2" placeholder="Username">
+            <input class="input-small" type="password" name="passwd" class="span2" placeholder="Password">
+            <button class="btn btn-small btn-warning" type="submit">Login</button>
+          </form>
+          <li><a href="signup.php">Or sign up</a></li>
 
         </ul>
       </div><!--/.nav-collapse -->
