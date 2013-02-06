@@ -9,15 +9,14 @@
     // if user logged in
     $login_display = "none";
     $user_display = "inline";
+    $username = $_SESSION['username'];
   }
-
-  session_destroy();
 
   // check admin
   
-  $admin_display = "none";
+  $admin_display = false;
   if (empty($_SESSION['admin'])) {
-    $admin_display = "inline";
+    $admin_display = true;
   }   
   // check if user allow to enter here
 
@@ -56,10 +55,9 @@
 
         <!-- logged in -->
         <ul style="display:<?php echo $user_display; ?>" class="nav pull-right"> 
-          <li style="display:<?php echo $admin_display; ?>">You are admin</li>
           <li>
             <a href='<?php echo "edituser.php?username=$username"; ?>'>
-              <?php echo $username; ?></a>
+              <?php echo $username; if ($admin) { echo "(admin)"; }?></a>
           </li>
           <li><a href="logout.php">Logout</a></li>
         </ul>
