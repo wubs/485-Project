@@ -46,8 +46,6 @@
 
 							$queryprivate = "SELECT * FROM Album WHERE access='private'";
 							$userlist = mysql_query($queryprivate) or die("Query failed: " . mysql_error());
-							
-						
             }
 				
 
