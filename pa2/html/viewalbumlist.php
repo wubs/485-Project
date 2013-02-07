@@ -9,6 +9,7 @@
       <ul class="breadcrumb">
         <li class="active"><a href="#">Album List</a><span class="divider">/</span></li>
       </ul>
+      <h2> Welcome! <?php echo "$username: $firstname $lastname"; ?></h2>
       <a href="editalbumlist.php" class="btn btn-primary"> Edit Album List </a>
       <br>
       <br>

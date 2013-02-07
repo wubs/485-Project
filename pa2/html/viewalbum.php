@@ -110,15 +110,16 @@
       $albumid = $_GET['albumid']; 
       $conn = mysql_connect($db_host, $db_user, $db_passwd) or die("Connect Error: " . mysql_error());
       mysql_select_db($db_name) or die("Could not select:" . $db_name);
-      $query = "SELECT title FROM Album WHERE albumid=$albumid";
+      $query = "SELECT title, username FROM Album WHERE albumid=$albumid";
       $result = mysql_query($query) or die("Query failed: " . mysql_error());
       $temp = mysql_fetch_array($result, MYSQL_ASSOC); 
       $album_title = $temp['title']; 
+      $album_owner = $temp['username']; 
     ?>
     <ul class="breadcrumb">
       <li><a href="viewalbumlist.php">Album List</a><span class="divider">/</span></li>
       <li class="active">
-        <a class="click_back" ref="#">Album: "<?php echo $album_title; ?>"</a><span class="divider">/</span>
+        <a class="click_back" ref="#">Album: <?php echo "'$album_title', Owner: '$album_owner'"; ?></a><span class="divider">/</span>
       </li>
     </ul>
 
@@ -161,7 +162,7 @@
             //$query = 'SELECT * FROM Contain WHERE albumid=' 
             //  . $albumid . ' ORDER BY sequencenum';
             //Change the query to include the column Photo.code;
-						$query = 'SELECT Contain.albumid, Contain.caption, Contain.url, Contain.sequencenum, Photo.code, Photo.format FROM Contain, Photo WHERE Contain.albumid='
+						$query = 'SELECT Contain.albumid, Contain.caption, Contain.url, Contain.sequencenum, Photo.code, Photo.format, Photo.date FROM Contain, Photo WHERE Contain.albumid='
 							.$albumid
 							.' and Contain.url=Photo.url ORDER BY Contain.sequencenum';
             $result = mysql_query($query) or die("Query failed: " . mysql_error());
@@ -177,12 +178,14 @@
                   . "<img class='img-rounded center click_photo' value=" 
                   . ($counter+1) . " src=" . $base64 . ">"
                   . "<div>" . $photo['caption'] . "</div>"
+                  . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
               } else {
                 echo "<td height='400px' align='center'>"
                   . "<img class='img-rounded center click_photo' value="
                   . ($counter+1) . " src=" . $base64 . ">"
-                  . "<p>" . $photo['caption'] . "</p>"
+                  . "<div>" . $photo['caption'] . "</div>"
+                  . "<div>" . $photo['date'] . "</div>"
                   . "</td>"
                   . "</tr>";
               }

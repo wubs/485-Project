@@ -10,6 +10,8 @@
     $login_display = "none";
     $user_display = "inline";
     $username = $_SESSION['username'];
+    $firstname = $_SESSION['firstname'];
+    $lastname = $_SESSION['lastname'];
   }
 
   // check admin
@@ -22,6 +24,14 @@
 
   // redirect if necessary
 
+
+  // some variables
+   
+  if($user_display=="inline") { 
+    $home_url = "viewalbumlist.php";
+  } else { 
+    $home_url = "index.php";
+  }
 ?>
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
@@ -32,13 +42,16 @@
         <span class="icon-bar"></span>
       </a>
 
-      <a class="brand" href="index.php"><? echo $config_title ?></a>
+      <a class="brand" href="<?php echo $home_url;?>"><?php echo $config_title ?></a>
       <div class="nav-collapse collapse">
         <ul class="nav">
 
           <!-- customize bellow -->
-          <li><a href="index.php">Home</a></li>
-          <li><a href="viewalbumlist.php">Albums</a></li>
+          
+          <li><a href="<?php echo $home_url; ?>">Home</a></li>
+
+          <li><a href="viewalbumlist.php">All Albums</a></li>
+          <li><a href="myalbumlist.php">My Albums</a></li>
           <li><a href="about.php">About</a></li>
         </ul>
 

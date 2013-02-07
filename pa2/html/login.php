@@ -12,13 +12,15 @@
     or die("Connect Error: " . mysql_error());
 
   mysql_select_db($db_name) or die("Could not select:" . $db_name);
-  $query = "SELECT COUNT(*) FROM User WHERE username='$username' and password='$passwd20'";
+  $query = "SELECT firstname, lastname, COUNT(*) FROM User WHERE username='$username' and password='$passwd20'";
   $result = mysql_query($query) or die(mysql_error());
   $row = mysql_fetch_array($result, MYSQL_ASSOC);
 
   if($row['COUNT(*)'] == 1) {
     $_SESSION['username'] = $username;
-    header("Location: index.php");
+    $_SESSION['firstname'] = $row['firstname'];
+    $_SESSION['lastname'] = $row['lastname'];
+    header("Location: viewalbumlist.php");
   } else {
     echo "failed";
     echo "<p>$username</p>";
@@ -26,5 +28,4 @@
     echo "<p>$md5passwd</p>";
     echo "<p>$passwd20</p>";
   }
-
 ?>
