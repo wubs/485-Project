@@ -1,8 +1,17 @@
 <?php 
   session_start();
 
+  $sensative_array = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php");
+  $cur_url = $_SERVER["REQUEST_URI"];
+
   if (empty($_SESSION['username'])) {
     // user not logged in  ----- visitor
+    
+    if (in_array($cur_url, $sensative_array)) {
+      session_destroy();
+      $_SESSION['tring_to_access'] = $cur_url;
+      header("Location: sensative.php");
+    }
 
     $login_display = "inline";
     $user_display = "none";
@@ -15,7 +24,7 @@
     //
     // 1. Check timeout or Update lastactivity
 
-    if (time() - $_SESSION['lastactivity'] > 60) {
+    if (time() - $_SESSION['lastactivity'] > 5 * 60) {
       // in active for 5 mins, login again
       session_destroy();
       header("Location: timeout.php");

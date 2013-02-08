@@ -4,12 +4,17 @@
 <?php include('include/head.php'); ?>
   <body>
     <?php include('include/navbar.php'); ?>
+    <?php
+      //if ( $username == "visitor" ) {
+      //  $_SESSION['msg'] = "You don't have privilege to access this page";
+      //  header("Location: index.php");
+      //}
+    ?>
     <div class="container">
     <!-- start edit from here -->
       <ul class="breadcrumb">
         <li class="active"><a href="#">My Albums</a><span class="divider">/</span></li>
       </ul>
-
       <span style="display:<?php echo $display_msg?>" class="label label-warning">
         <?php 
           if (isset($_SESSION['msg'])) 
