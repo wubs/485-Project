@@ -18,7 +18,7 @@
   if($row['username']==null){
       $query2 = "INSERT INTO User (username, password, firstname, lastname, email) values('$new_username', MD5('$new_password'), '$new_f_name', '$new_l_name', '$new_email')";
       echo $query2;
-      $result2 = mysql_query($query) or die("Query failed: " . mysql_error());
+      $result2 = mysql_query($query2) or die("Query failed: " . mysql_error());
       echo '<script type="text/javascript">'
         .'alert("success");'
         .'history.back();'
