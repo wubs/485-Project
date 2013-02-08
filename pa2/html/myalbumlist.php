@@ -46,7 +46,7 @@
             //if (!isset($_SESSION['username']) ) {
           
               
-              $query = "SELECT * FROM Album order by access desc";
+              $query = "SELECT * FROM Album where username = '$username' order by access desc";
               $result = mysql_query($query) or die("Query failed: " . mysql_error());
               
             //} else {

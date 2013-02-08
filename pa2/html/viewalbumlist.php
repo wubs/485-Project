@@ -67,7 +67,18 @@
                   continue; 
                 }
                 if($line['access']=='private' && $username!= $line['username'] ){
-									echo $line['title'] . "</td>";
+                  $query2 = "SELECT username FROM AlbumAccess where albumid='$line[albumid]'";
+                  $result2 = mysql_query($query2) or die("Query failed: " . mysql_error());
+                  while ($lineuser = mysql_fetch_array($result2, MYSQL_ASSOC)){
+                    $found=0;
+                    if($username==$lineuser['username']){
+                        echo "<a href=" . $url . ">" . $line['title'] . "</a></td>";
+                        $found=1;
+                    }               
+                  }
+                  if($found==0){
+									  echo $line['title'] . "</td>";
+                  }
 								}else{
 									echo "<a href=" . $url . ">" . $line['title'] . "</a></td>";						
 								}

@@ -10,7 +10,7 @@
     <h1> Welcome, New Member! </h1>
     <div class="row-fluid">
     <div class="span8">
-        <form action="addnewuser.php" method="post" name="frm" accept-charset="utf-8">
+        <form name="frm" action="addnewuser.php" method="post">
             <p>
             <label><label for="username">Username</label></label>
             <input id="username" name="username" type="text">           
@@ -52,7 +52,7 @@
 
             
             </p>
-            <input class="btn btn-success" type="submit" name="signup" value="Sign Up">
+            <input class="btn btn-success signup" value="Sign Up">
         </form>
         
 
@@ -70,7 +70,7 @@
 
     <script type="text/javascript">
     $(function () { // jQuery main()
-    $(".signup").live("click", function() {  
+    $(".signup").live("click", function() {  
           var username = $("#username").val();
           var email = $("#email").val();
           var password = $("#password").val();
@@ -80,7 +80,6 @@
           var message = "";
           function validform(){this.value=1;}
           var validateform = new validform();
-
           validateUsername();
           validateEmail();
           validatePassword();
@@ -92,14 +91,14 @@
             $.post("addnewuser.php", 
               {username: username, email:email, password:password, f_name:f_name, l_name:l_name},
               function() {
-                location.reload();
+                //location.reload();
               }
             );
           }
           else{
             alert("Sign up failed.");
             alert(message);
-            message="";
+            signup.disabled="disabled";
           }
 
           function validateUsername(){
@@ -173,7 +172,7 @@
          }
           
           
-      
+      
     });
 });
 </script>

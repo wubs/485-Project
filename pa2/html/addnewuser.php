@@ -17,18 +17,21 @@
   
   if($row['username']==null){
       $query2 = "INSERT INTO User (username, password, firstname, lastname, email) values('$new_username', MD5('$new_password'), '$new_f_name', '$new_l_name', '$new_email')";
-      echo $query2;
+      //echo $query2;
       $result2 = mysql_query($query2) or die("Query failed: " . mysql_error());
-      echo '<script type="text/javascript">'
-        .'alert("success");'
-        .'history.back();'
-      .'</script>';
+      $_SESSION['username'] = $new_username;
+      $_SESSION['firstname'] = $new_f_name;
+      $_SESSION['lastname'] = $new_l_name;
+      $_SESSION['lastactivity'] = time();
+      $_SESSION['msg'] = "login success";
+      $_SESSION['msg_flag'] = 1;
+
+      header("Location: viewalbumlist.php");
   }
   else{
-      echo '<script type="text/javascript">'
-        .'alert("The username '.$new_username.' is already registered.");'
-        .'history.back();'
-      .'</script>';
+      $_SESSION['msg'] = "login error";
+      $_SESSION['msg_flag'] = 1;
+      header("Location: index.php");
   }
 
   mysql_free_result($result);
