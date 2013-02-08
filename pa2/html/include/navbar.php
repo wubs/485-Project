@@ -1,16 +1,17 @@
 <?php 
   session_start();
 
-  $sensative_array = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php");
+  $sensitive_array = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php");
   $cur_url = $_SERVER["REQUEST_URI"];
 
   if (empty($_SESSION['username'])) {
     // user not logged in  ----- visitor
     
-    if (in_array($cur_url, $sensative_array)) {
+    if (in_array($cur_url, $sensitive_array)) {
       session_destroy();
+      session_start();
       $_SESSION['tring_to_access'] = $cur_url;
-      header("Location: sensative.php");
+      header("Location: sensitive.php");
     }
 
     $login_display = "inline";

@@ -25,7 +25,12 @@
     $_SESSION['msg'] = "login success";
     $_SESSION['msg_flag'] = 1;
 
-    header("Location: viewalbumlist.php");
+    if (isset($_SESSION['tring_to_access'])) {
+      $trying_to_access = $_SESSION['tring_to_access'];
+      header("Location: $trying_to_access"); 
+    } else {
+      header("Location: viewalbumlist.php");
+    }
   } else {
     $_SESSION['msg'] = "login success";
     // login fail
