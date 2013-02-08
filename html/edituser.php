@@ -73,7 +73,6 @@
     <script type="text/javascript">
     $(function () { // jQuery main()
     $(".edit").live("click", function() {  
-    			alert("clicked");
           var username = $("#username").val();
           var email = $("#inputEmail").val();
           var password = $("#inputPassword").val();
@@ -92,12 +91,12 @@
 
           if(validateform.value==1){
 	          alert(validateform.value);
-            //$.post("modUser.php", 
-            //  {username: username, inputEmail:email, inputPassword:password, inputFirstName:f_name, inputLastName:l_name},
-            //  function() {
-            //    location.reload();
-            //  }
-            //);
+            $.post("modUser.php", 
+              {username: username, inputEmail:email, inputPassword:password, inputFirstName:f_name, inputLastName:l_name},
+              function() {
+                location.reload();
+              }
+            );
           }
           else{
             alert("Change failed.");
