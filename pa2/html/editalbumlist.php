@@ -28,7 +28,7 @@
 
       <ul class="breadcrumb">
         <li><a href="viewalbumlist.php">Album List</a><span class="divider">/</span></li>
-        <li class="active"><a href="#">Edit Album List</a><span class="divider">/</span></li>
+        <li class="active"><a href="#">Edit My Albums </a><span class="divider">/</span></li>
       </ul>
 
       <form class="form-inline" action="#" method="post">
