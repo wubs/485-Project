@@ -1,39 +1,12 @@
 <?php 
   session_start();
 
-  $sensitive_array = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php");
-  $cur_url = $_SERVER["REQUEST_URI"];
-
   if (empty($_SESSION['username'])) {
     // user not logged in  ----- visitor
-    
-    if (in_array($cur_url, $sensitive_array)) {
-      session_destroy();
-      session_start();
-      $_SESSION['tring_to_access'] = $cur_url;
-      header("Location: sensitive.php");
-    }
-
     $login_display = "inline";
     $user_display = "none";
-    $username = "visitor";
-    $firstname = "Anonymous";
-    $lastname = "Visitor";
-
   } else {
     // if user logged in
-    //
-    // 1. Check timeout or Update lastactivity
-
-    if (time() - $_SESSION['lastactivity'] > 5 * 60) {
-      // in active for 5 mins, login again
-      session_destroy();
-      header("Location: timeout.php");
-    } else {
-      $_SESSION['lastactivity'] = time();
-    }
-
-    //
     $login_display = "none";
     $user_display = "inline";
     $username = $_SESSION['username'];
@@ -42,8 +15,9 @@
   }
 
   // check admin
+  
   $admin_display = false;
-  if (!empty($_SESSION['admin'])) {
+  if (empty($_SESSION['admin'])) {
     $admin_display = true;
   }   
   // check if user allow to enter here
@@ -57,12 +31,6 @@
     $home_url = "viewalbumlist.php";
   } else { 
     $home_url = "index.php";
-  }
-
-  if (!empty($_SESSION['msg'])) {
-    $display_msg = "inline";
-  } else {
-    $display_msg = "none";
   }
 ?>
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -82,8 +50,9 @@
           
           <li><a href="<?php echo $home_url; ?>">Home</a></li>
 
-          <li style="display:<?php echo $login_display; ?>"><a href="viewalbumlist.php">All Albums</a></li>
-          <li style="display:<?php echo $user_display; ?>"><a href="myalbumlist.php">My Albums</a></li>
+          <li><a href="viewalbumlist.php">All Albums</a></li>
+          <li><a href="myalbumlist.php">My Albums</a></li>
+          <li><a href="about.php">About</a></li>
         </ul>
 
         <!-- not logged in yet -->
@@ -101,7 +70,7 @@
         <ul style="display:<?php echo $user_display; ?>" class="nav pull-right"> 
           <li>
             <a href='<?php echo "edituser.php?username=$username"; ?>'>
-              <?php echo $username; if ($admin_display) { echo "(admin)"; }?></a>
+              <?php echo $username; if ($admin) { echo "(admin)"; }?></a>
           </li>
           <li><a href="logout.php">Logout</a></li>
         </ul>
