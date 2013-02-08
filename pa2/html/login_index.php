@@ -7,17 +7,7 @@
     <div class="container">
     <!-- start edit from here -->
       <div class="offset2">
-        <span style="display:<?php echo $display_msg?>"class="label label-warning">
-          <?php
-            if (isset($_SESSION['msg']))
-            {
-              echo $_SESSION['msg'];
-              unset($_SESSION['msg']);
-            }
-          ?> 
-        </span>
-        <h2> Welcome! </h2>
-        <p> This is <?php echo $config_title ?> <b>group36</b> </p>
+        <h2> Welcome! <?php echo "$username: $firstname $lastname"; ?></h2>
       </div>
       <div class="offset2 row-fluid">
         <div class="span4">
@@ -42,12 +32,10 @@
                 echo "<li>".$user['username']."</li>";
               }
           ?>
-          <!---
           <form action="viewalbumlist.php", method="get"> 
             <input type="text" name="username" placeholder="user id">
             <input class="btn" type="submit" value="go">
           </form>
-          -->
         </div>
       </div>
     <!-- edit above -->

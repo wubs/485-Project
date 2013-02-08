@@ -4,12 +4,17 @@
 <?php include('include/head.php'); ?>
   <body>
     <?php include('include/navbar.php'); ?>
+    <?php
+      //if ( $username == "visitor" ) {
+      //  $_SESSION['msg'] = "You don't have privilege to access this page";
+      //  header("Location: index.php");
+      //}
+    ?>
     <div class="container">
     <!-- start edit from here -->
       <ul class="breadcrumb">
-        <li class="active"><a href="#">Album List</a><span class="divider">/</span></li>
+        <li class="active"><a href="#">My Albums</a><span class="divider">/</span></li>
       </ul>
-
       <span style="display:<?php echo $display_msg?>" class="label label-warning">
         <?php 
           if (isset($_SESSION['msg'])) 
@@ -20,8 +25,8 @@
         ?>
       </span>
 
-      <h4> Hi <?php echo "$firstname $lastname"; ?>, here are all the accessible albums</h4>
-      <!--a href="editalbumlist.php" class="btn btn-primary"> Edit Album List </a-->
+      <h4> <?php echo "$username: $firstname $lastname"; ?> Here are all your albums</h4>
+      <a href="editalbumlist.php" class="btn btn-primary"> Edit My Album </a>
       <br>
       <br>
       <table class="table table-hover">
@@ -44,6 +49,7 @@
             $url_prefix = "viewalbum.php?albumid=";
 
             //if (!isset($_SESSION['username']) ) {
+          
               
               $query = "SELECT * FROM Album order by access desc";
               $result = mysql_query($query) or die("Query failed: " . mysql_error());
@@ -57,16 +63,13 @@
 						//	$queryprivate = "SELECT * FROM Album WHERE access='private'";
 						//	$userlist = mysql_query($queryprivate) or die("Query failed: " . mysql_error());
             //}
+				
 
             
 					while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
               $url = $url_prefix . $line['albumid'];
               echo "<tr> <td>";
-                if ($line['access']=='private' && $username == "visitor") {
-                  echo "</td></tr>";
-                  continue; 
-                }
-                if($line['access']=='private' && $username!= $line['username'] ){
+								if($line['access']=='private' && $username!= $line['username']){
 									echo $line['title'] . "</td>";
 								}else{
 									echo "<a href=" . $url . ">" . $line['title'] . "</a></td>";						
