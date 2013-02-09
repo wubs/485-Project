@@ -87,16 +87,16 @@
           validateName();
 
           if(validateform.value==1){
-	          alert(validateform.value);
-            $.post("addnewuser.php", 
-              {username: username, email:email, password:password, f_name:f_name, l_name:l_name},
-              function() {
-                //location.reload();
-              }
-            );
+            $("form").submit();
+	          //alert(validateform.value);
+            //$.post("addnewuser.php", 
+            //  {username: username, email:email, password:password, f_name:f_name, l_name:l_name},
+            //  function() {
+            //     
+            //  }
+            //);
           }
           else{
-            alert("Sign up failed.");
             alert(message);
             signup.disabled="disabled";
           }
