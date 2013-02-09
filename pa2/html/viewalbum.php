@@ -126,30 +126,6 @@
     <div id="list">
       <!-- start edit from here -->
 
-        <a href="#myModal" role="button" class="btn btn-primary" data-toggle="modal">Add Photo</a>
-        <!-- Modal -->
-        <div id="myModal" class="modal hide fade" style="width:auto;left:60%" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-          <div class="modal-body">
-
-            <form action="upload.php" method="post" enctype="multipart/form-data">
-            <input type='hidden' name='albumid' value='<?php echo $albumid; ?>'>
-            <!-- file uploader -->
-            <div class="fileupload fileupload-new" data-provides="fileupload">
-              <div class="fileupload-preview thumbnail" style="width: 300px; height: 250px;"></div>
-              <div>
-                <input style="width:296px" type="text" placeholder="Caption" name="caption">
-              </div>
-              <div>
-                <span class="btn btn-file"><span class="fileupload-new">Select image</span><span class="fileupload-exists"></span><input type="file" name="file" id="file" /></span>
-                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
-                <input class="btn btn-primary pull-right" type="submit" name="addSubmit" value="Upload">
-              </div>
-            </div>
-            </form>
-
-          </div>
-        </div>  
-
 <!-- When adding a photo, do as follows
 		 $path = "/path/to/image.jpg";
      $imagesrc = file_get_contents($path);
@@ -276,7 +252,6 @@
     </div> <!-- /container -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
-    <script src="static/js/bootstrap-fileupload.js"></script>
 
     <script type="text/javascript">
     $(function () {
@@ -354,20 +329,6 @@
         }
       });
 
-      $("#delete_photo").live("click", function() { 
-        var albumid = $(this).attr('albumid');
-        var url = $(".item.active > img").attr("url");
-        $.post('delete_photo.php', {url: url, albumid: albumid}, function(raw_data) {
-          //window.reload(true); 
-          alert(raw_data);
-        });
-      });
-
-      $("#upload").live("click", function() { 
-        $.post('upload.php', {url: url}, function(raw_data) {
-          window.reload(); 
-        });
-      });
 
       function fetch_comments() {
         setTimeout(function() {

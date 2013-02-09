@@ -14,7 +14,9 @@
   // TO-DO validate title
 
   $query = "INSERT INTO Album (title, created, lastupdated, access, username) values ('$new_title', NOW(), NOW(), '$new_access', '$new_username')";
+  $result = mysql_query($query) or die("Query failed: " . mysql_error());
 
+  $query = "INSERT INTO AlbumAccess (albumid, username) values (LAST_INSERT_ID(), '$new_username')";
   $result = mysql_query($query) or die("Query failed: " . mysql_error());
 
   mysql_free_result($result);
