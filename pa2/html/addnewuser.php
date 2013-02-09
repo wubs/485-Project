@@ -24,7 +24,7 @@
       $_SESSION['firstname'] = $new_f_name;
       $_SESSION['lastname'] = $new_l_name;
       $_SESSION['lastactivity'] = time();
-      $_SESSION['msg'] = "login success";
+      $_SESSION['msg'] = "Signup success!";
       $_SESSION['msg_flag'] = 1;
 
       header("Location: viewalbumlist.php");

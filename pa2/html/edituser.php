@@ -7,7 +7,7 @@
     <div class="container">
     
     <?php
-			$username = $_GET['username']; 
+			$username = $_SESSION['username']; 
 			$conn = mysql_connect($db_host, $db_user, $db_passwd) or die("Connect Error: " . mysql_error());
 			mysql_select_db($db_name) or die("Could not select:" . $db_name);
 			
@@ -22,7 +22,7 @@
     
     <!-- start edit from here -->
      
-		<form class="form-horizontal">
+		<form class="form-horizontal" method="post" action="modUser.php">
 			<input type='hidden' name='username' value='<?php echo $username; ?>'>
 			<div class="control-group">
 				<label class="control-label" for="inputFirstName">First Name</label>
@@ -56,13 +56,13 @@
 			</div>
 			<div class="control-group">
 				<div class="controls">
-						<button class="btn btn-primary edit" >Submit
-						</button><INPUT type="reset" class="btn btn-primary">
+						<button class="btn btn-primary edit" >Submit </button>
+            <input type="reset" class="btn btn-primary">
+		        <button type="delete" class="btn btn-danger">Delete</button>
 				</div>
 			</div>
 		</form>
 		
-		<button type="delete" class="btn btn-danger">Delete</button>
 
     <!-- edit above -->
     </div> <!-- /container -->
@@ -83,23 +83,27 @@
           function validform(){this.value=1;}
           var validateform = new validform();
 
-          validateUsername();
-          validateEmail();
-          validatePassword();
-          validateConfirm();
-          validateName();
+          if (username) {
+            validateUsername();
+          }
+          if (email) {
+            validateEmail();
+          }
+          if (password) {
+            validatePassword();
+            validateConfirm();
+          }
+          if (f_name) {
+            validateFName();
+          }
+          if (l_name) {
+            validateLName();
+          }
 
           if(validateform.value==1){
-	          alert(validateform.value);
-            $.post("modUser.php", 
-              {username: username, inputEmail:email, inputPassword:password, inputFirstName:f_name, inputLastName:l_name},
-              function() {
-                location.reload();
-              }
-            );
+            $("form").submit();
           }
           else{
-            alert("Change failed.");
             alert(message);
             message="";
           }
@@ -163,11 +167,13 @@
             //return message;
          }
          
-         function validateName(){
+         function validateFName(){
             if(typeof f_name=='undefined' || f_name.length==0){
                message+="Please enter your first name.\n";
                validateform.value=0;
             }
+
+         function validateLName(){
             if(typeof l_name=='undefined' || l_name.length==0){
                 message+="Please enter your last name.\n";
                 validateform.value=0;

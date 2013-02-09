@@ -16,7 +16,7 @@
             }
           ?> 
         </span>
-        <h2> Welcome! </h2>
+        <h2> PA2 </h2>
         <p> This is <?php echo $config_title ?> <b>group36</b> </p>
       </div>
       <div class="offset2 row-fluid">

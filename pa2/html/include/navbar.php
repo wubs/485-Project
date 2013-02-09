@@ -1,7 +1,13 @@
 <?php 
   session_start();
 
-  $sensitive_array = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php");
+  $sensitive_array = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php", "/delete_photo.php", "/modUser.php", "/viewmyalbum.php", "/email_photo.php");
+
+
+  // If visitor was trying to access those page, after login, they will be directed there.
+  $redirect_allow = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php", "/viewmyalbum.php");
+
+
   $cur_url = $_SERVER["REQUEST_URI"];
 
   if (empty($_SESSION['username'])) {
@@ -10,7 +16,9 @@
     if (in_array($cur_url, $sensitive_array)) {
       session_destroy();
       session_start();
-      $_SESSION['tring_to_access'] = $cur_url;
+      if (in_array($cur_url, $redirect_allow)) {
+        $_SESSION['tring_to_access'] = $cur_url;
+      }
       header("Location: sensitive.php");
     }
 
@@ -100,7 +108,7 @@
         <!-- logged in -->
         <ul style="display:<?php echo $user_display; ?>" class="nav pull-right"> 
           <li>
-            <a href='<?php echo "edituser.php?username=$username"; ?>'>
+            <a href='<?php echo "edituser.php"; ?>'>
               <?php echo $username; if ($admin_display) { echo "(admin)"; }?></a>
           </li>
           <li><a href="logout.php">Logout</a></li>
