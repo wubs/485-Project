@@ -15,8 +15,8 @@
         <div class="modal-body">
           <input style="margin-bottom:0px" id="cur_title" type="text" placeholder="" >
           <div class="btn-group" data-toggle="buttons-radio">
-            <button id="cur_public" type="button" value="public" class="btn active">Public</button>
-            <button id="cur_private" type="button" value="private" class="btn ">Private</button>
+            <button id="cur_public" type="button" value="public" class="btn active edit_album_group">Public</button>
+            <button id="cur_private" type="button" value="private" class="btn edit_album_group">Private</button>
           </div>
           <input type="hidden" id="cur_id">
         </div>
@@ -50,8 +50,8 @@
       <form class="form-inline" action="#" method="post">
         <input id="title" type="text" placeholder="new album title" name="title">
         <div class="btn-group" data-toggle="buttons-radio">
-          <button type="button" value="public" class="btn active">Public</button>
-          <button type="button" value="private" class="btn ">Private</button>
+          <button type="button" value="public" class="btn active add_album_group">Public</button>
+          <button type="button" value="private" class="btn add_album_group">Private</button>
         </div>
         <input name="op" type="hidden" value="add">
         <a class='btn btn-success Add' > Add</a>
@@ -75,35 +75,42 @@
             
             mysql_select_db($db_name) or die("Could not select:" . $db_name);
             
-            $query = "SELECT Album.title,Album.access,Album.albumid, AlbumAccess.username FROM Album, AlbumAccess where Album.username='$username' and AlbumAccess.albumid=Album.albumid order by Album.albumid";
+            $query = "SELECT title, access, albumid FROM Album where username='$username' order by albumid";
             $result = mysql_query($query) or die("Query failed: " . mysql_error());
             
             while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
-							if($line['username']==$username){
+                // always
               	echo "<tr> <td>" . $line['title'] . "</td>"
                 	. "<td>" . $line['access'] . "</td>";
-									if($line['access']=='private'){
+								if($line['access']=='private'){
 											echo "<td><a href='#shareModal' class='btn click_share' data-toggle='modal' albumid=" . $line['albumid']
 													." >Share</a> </td>";
-									}
-									else{
-											echo "<td></td>";
-									}
-                	echo "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" . $line['albumid'] . " album_title=" . $line['title'] . ">Edit</a></td>"
-                	. "<td><a class='btn btn-danger Del' albumid='". $line['albumid'] . "'>Del</a></td>";
-							}
-							else{
-								echo "<tr> <td></td>"
-                	. "<td>".$line['username']. "</td><td></td><td></td><td></td>";
-							}
+								}
+								else{
+									echo "<td></td>";
+								}
 
-							
-							
-							
+
+               	echo "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" . $line['albumid'] . " album_title='" . $line['title'] . "' album_access='" . $line['access'] . "'>Edit</a></td>"
+                	. "<td><a class='btn btn-danger Del' albumid='". $line['albumid'] . "'>Del</a></td></tr>";
+
+                //
+                $cur_albumid = $line['albumid'];
+                $query2 = "SELECT username FROM AlbumAccess where albumid=$cur_albumid";
+                $result2 = mysql_query($query2) or die("Query failed: " . mysql_error());
+
+                while ($user_row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
+                  $cur_username = $user_row['username'];
+                  if ($cur_username != $username) {
+                    echo "<tr><td></td><td>$cur_username</td> <td><a class='btn' id='del_share'>Withdarw</a> </td> <td></td><td></td></tr>";
+                  }
+                }
+                //
 
             }
             
             mysql_free_result($result);
+            mysql_free_result($result2);
             mysql_close($conn);
           ?>
         </tbody>
@@ -137,7 +144,7 @@
         $(".Add").live("click", function() {     
           var username = $("#username").val();
           var title = $("#title").val();
-          var access = $(".btn.active").val();
+          var access = $(".btn.active.add_album_group").val();
 
           $.post("addalbum.php", 
             {"op": 'add', "username": username, "title": title, "access": access},
@@ -148,12 +155,12 @@
         });
 
         $(".click_edit").live("click", function() {     
-          var access = $(this).parent().prev().text();
+          var access = $(this).attr("album_access");
           var title = $(this).attr("album_title");
           var cur_id = $(this).attr("albumid");
           $("#cur_title").val(title);
           $("#cur_id").val(cur_id);
-          
+
           if (access=="private") {
             $('#cur_private').addClass("active");
             $('#cur_public').removeClass("active");
