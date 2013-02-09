@@ -25,9 +25,25 @@
           <button class="btn btn-primary Edit">Save changes</button>
         </div>
       </div>
+      
+      <!-- second modal -->
+      <div id="shareModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="shareModalLabel">Sharing album access</h3>
+        </div>
+        <div class="modal-body">
+          <input style="margin-bottom:0px" id="to_username" type="text" placeholder="" >
+          <input type="hidden" id="sharing_albumid">
+        </div>
+        <div class="modal-footer">
+          <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+          <button class="btn btn-primary Share">Apply</button>
+        </div>
+      </div>
 
       <ul class="breadcrumb">
-        <li><a href="viewalbumlist.php">Album List</a><span class="divider">/</span></li>
+        <li><a href="myalbumlist.php">My Albums</a><span class="divider">/</span></li>
         <li class="active"><a href="#">Edit My Albums </a><span class="divider">/</span></li>
       </ul>
 
@@ -47,8 +63,9 @@
           <tr>
             <td class="span3">Album</td> 
             <td class="span3">Access</td> 
-            <td class="span1">Action1</td> 
-            <td class="span1">Action2</td>
+            <td class="span1">Actions</td> 
+            <td class="span1"></td>
+            <td class="span1"></td>
           </tr>
         </thead>
 
@@ -65,23 +82,13 @@
             while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
               echo "<tr> <td>" . $line['title'] . "</td>"
                 . "<td>" . $line['access'] . "</td>"
+                . "<td><a href='#shareModal' class='btn click_share' data-toggle='modal' albumid=" . $line['albumid'] . " >Share</a> </td>"
                 . "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" . $line['albumid'] . " >Edit</a></td>"
                 . "<td><a class='btn btn-danger Del' albumid='". $line['albumid'] . "'>Del</a></td>";
-                /*
-                . "<form action='deletealbum.php' method='post'>"
-                . "<input name='op' type='hidden' value='delete'>"
-                . "<input name='albumid' type='hidden' value=".$line['albumid'].">"
-                . "<input class='btn btn-danger' type='submit' value='Del'></form>";
-                */
             }
             
             mysql_free_result($result);
             mysql_close($conn);
-            /*
-            foreach ($all_albums as $album) {
-              echo $album->$name . $album->$access
-            }
-            */
           ?>
         </tbody>
 
@@ -102,16 +109,6 @@
           $.post("deletealbum.php", {"op": 'delete', "albumid": albumid }, function(data) {
             // refresh 
             location.reload();
-            // comment: data: [data_item: {title, access albumid}, ...  ]
-             // $("#table_body").empty();
-
-             // for (i=0; i<data.length; i++) {
-             //   var ttitle = data[i].title;
-             //   var taccess = data[i].access;
-             //   var tid = data[i].albumid;
-             //   var tr = "<tr> <td>" + ttitle +  "</td><td>" + taccess + "</td><td><a class='btn btn-primary'>Edit</a></td><td><a class='btn btn-danger Del' albumid='" + tid + "'>Del</a></td>";
-             //   $("#table_body").append(tr);
-             // }
             });   
         });
 
@@ -158,6 +155,22 @@
             {"albumid": id, "title": title, "access": access},
             function(data) {
               location.reload();
+            }
+          );   
+        });
+
+        $(".click_share").live("click", function() {     
+          var cur_id = $(this).attr("albumid");
+          $("#sharing_albumid").val(cur_id);
+        });
+
+        $(".Share").live("click", function() {     
+          var to_username = $("#to_username").val();
+          var id = $("#sharing_albumid").val();
+          $.post("share.php", 
+            {"albumid": id, "to_username": to_username},
+            function(data) {
+              alert(data); 
             }
           );   
         });

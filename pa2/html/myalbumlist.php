@@ -33,7 +33,6 @@
         <thead>
           <tr>
             <td class="span3">Album</td> 
-            <td class="span2">Created by</td> 
             <td class="span1">Access</td> 
             <td class="span1">Created</td> 
             <td class="span1">Last Updated</td>
@@ -46,35 +45,15 @@
             or die("Connect Error: " . mysql_error());
             
             mysql_select_db($db_name) or die("Could not select:" . $db_name);
-            $url_prefix = "viewalbum.php?albumid=";
+            $url_prefix = "viewmyalbum.php?albumid=";
 
-            //if (!isset($_SESSION['username']) ) {
-          
+            $query = "SELECT * FROM AlbumAccess, Album where AlbumAccess.albumid = Album.albumid and AlbumAccess.username = '$username' order by access desc";
+            $result = mysql_query($query) or die("Query failed: " . mysql_error());
               
-              $query = "SELECT * FROM Album where username = '$username' order by access desc";
-              $result = mysql_query($query) or die("Query failed: " . mysql_error());
-              
-            //} else {
-            //  $cur_username = $_SESSION['username'];
-            //  echo "<h1>$cur_username</h1>";
-            //  $query = "SELECT * FROM Album WHERE username='$cur_username'";
-            //  $result = mysql_query($query) or die("Query failed: " . mysql_error());
-
-						//	$queryprivate = "SELECT * FROM Album WHERE access='private'";
-						//	$userlist = mysql_query($queryprivate) or die("Query failed: " . mysql_error());
-            //}
-				
-
-            
-					while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+				    while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
               $url = $url_prefix . $line['albumid'];
-              echo "<tr> <td>";
-								if($line['access']=='private' && $username!= $line['username']){
-									echo $line['title'] . "</td>";
-								}else{
-									echo "<a href=" . $url . ">" . $line['title'] . "</a></td>";						
-								}
-                 echo "<td>" . $line['username'] . "</td>"
+              echo "<tr> <td>"
+								 . "<a href=" . $url . ">" . $line['title'] . "</a></td>"						
                  . "<td>" . $line['access'] . "</td>"
                  . "<td>" . $line['created'] . "</td>"
                  . "<td>" . $line['lastupdated'] . "</td> </tr>";

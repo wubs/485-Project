@@ -1,7 +1,9 @@
 <?php 
   session_start();
 
-  $sensitive_array = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php");
+  $sensitive_array = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php", "/delete_photo.php", "/modUser.php", "/viewmyalbum.php", "/email_photo.php");
+
+
   $cur_url = $_SERVER["REQUEST_URI"];
 
   if (empty($_SESSION['username'])) {
