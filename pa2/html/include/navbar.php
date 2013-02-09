@@ -4,6 +4,10 @@
   $sensitive_array = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php", "/delete_photo.php", "/modUser.php", "/viewmyalbum.php", "/email_photo.php");
 
 
+  // If visitor was trying to access those page, after login, they will be directed there.
+  $redirect_allow = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php", "/viewmyalbum.php");
+
+
   $cur_url = $_SERVER["REQUEST_URI"];
 
   if (empty($_SESSION['username'])) {
@@ -12,7 +16,9 @@
     if (in_array($cur_url, $sensitive_array)) {
       session_destroy();
       session_start();
-      $_SESSION['tring_to_access'] = $cur_url;
+      if (in_array($cur_url, $redirect_allow)) {
+        $_SESSION['tring_to_access'] = $cur_url;
+      }
       header("Location: sensitive.php");
     }
 
