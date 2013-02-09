@@ -48,7 +48,6 @@
       </ul>
 
       <form class="form-inline" action="#" method="post">
-        <input id="username" type="text" placeholder="username" name="username">
         <input id="title" type="text" placeholder="new album title" name="title">
         <div class="btn-group" data-toggle="buttons-radio">
           <button type="button" value="public" class="btn active">Public</button>
