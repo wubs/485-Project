@@ -89,7 +89,7 @@
 									else{
 											echo "<td></td>";
 									}
-                	echo "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" . $line['albumid'] . " >Edit</a></td>"
+                	echo "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" . $line['albumid'] . " album_title=" . $line['title'] . ">Edit</a></td>"
                 	. "<td><a class='btn btn-danger Del' albumid='". $line['albumid'] . "'>Del</a></td>";
 							}
 							else{
@@ -149,7 +149,7 @@
 
         $(".click_edit").live("click", function() {     
           var access = $(this).parent().prev().text();
-          var title = $(this).parent().prev().prev().text();
+          var title = $(this).attr("album_title");
           var cur_id = $(this).attr("albumid");
           $("#cur_title").val(title);
           $("#cur_id").val(cur_id);
