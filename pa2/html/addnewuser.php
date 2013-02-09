@@ -1,5 +1,6 @@
 <?php 
   include('lib.php'); 
+  session_start();
   $new_username = $_POST['username'];
   $new_email = $_POST['email'];
   $new_password = $_POST['password'];
