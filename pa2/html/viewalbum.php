@@ -252,8 +252,7 @@
               </a>
 
               <a id="click_edit" value=false class="btn opt" rel="popover" data-html=true 
-                data-trigger="click" data-placement="top"
-                data-content="<a id='delete_photo' albumid='<?php echo $albumid ?>' class='btn btn-danger'>Del</a>" >
+                data-trigger="click" data-placement="top" >
                 Edit
               </a>
               <a role="button" class="btn btn-info click_comments click_collapse opt" >Comments</a>
