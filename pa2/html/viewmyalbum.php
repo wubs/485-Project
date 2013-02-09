@@ -360,7 +360,10 @@
         var url = $(".item.active > img").attr("url");
         $.post('delete_photo.php', {url: url, albumid: albumid}, function(raw_data) {
           //window.reload(true); 
-          alert(raw_data);
+          //alert(raw_data);
+          if (raw_data == "index"){
+            window.location="index.php";
+          }
         });
       });
 

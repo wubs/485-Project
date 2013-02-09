@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<?php include('lib.php'); ?>
-<?php include('include/head.php'); ?>
-  <body>
-    <?php include('include/navbar.php'); ?>
-    <div class="container">
-    <!-- start edit from here -->
-
-
 <?php 
   include('lib.php'); 
+  session_start();
   $new_albumid = $_POST['albumid'];
   $new_url = $_POST['url'];
 
@@ -18,51 +9,40 @@
   
   mysql_select_db($db_name) or die("Could not select:" . $db_name);
 
-  $query = "DELETE from Contain where albumid =". $new_albumid. " and url='".$new_url."'";
+  $current_user = $_SESSION['username'];
 
+  $query = "SELECT COUNT(*) from Contain, Album where Contain.albumid =". $new_albumid. " and Contain.url='".$new_url."' and Album.username='$current_user' ";
   $result = mysql_query($query) or die(mysql_error());
-
-	$query = "DELETE from Comment where url='".$new_url."'";
-  
-	$result = mysql_query($query) or die(mysql_error());
-  
-  $query = "SELECT albumid FROM Contain WHERE url='". $new_url."'"; 
-
-  $result = mysql_query($query) or die("Query failed: " . mysql_error());
-
-
   $row = mysql_fetch_array($result,MYSQL_ASSOC);
-    if($row['albumid'] == null)
-    {
-      $query = "DELETE from Photo WHERE url='". $new_url."'";
-      $result2 = mysql_query($query) or die(mysql_error());
-      unlink($row['url']);
-    }
-  $query = "UPDATE Album SET lastupdated=NOW() WHERE albumid=".$new_albumid;
-  $result = mysql_query($query) or die(mysql_error());
 
-  // find album list after deletion 
-  //$query = "SELECT * FROM Album";   
+  if ($row['COUNT(*)'] !=1) {
+    $_SESSION['msg'] = "Action not allowed";
+    echo "index";
+  } else {
+    $query = "DELETE from Contain where albumid =". $new_albumid. " and url='".$new_url."'";
 
-  //$result = mysql_query($query) or die("Query failed: " . mysql_error());
-  // array of dada 
-  
-  //echo  data;
+    $result = mysql_query($query) or die(mysql_error());
 
+	  $query = "DELETE from Comment where url='".$new_url."'";
+    
+	  $result = mysql_query($query) or die(mysql_error());
+    
+    $query = "SELECT albumid FROM Contain WHERE url='". $new_url."'"; 
+
+    $result = mysql_query($query) or die("Query failed: " . mysql_error());
+
+
+    $row = mysql_fetch_array($result,MYSQL_ASSOC);
+      if($row['albumid'] == null)
+      {
+        $query = "DELETE from Photo WHERE url='". $new_url."'";
+        $result2 = mysql_query($query) or die(mysql_error());
+        unlink($row['url']);
+      }
+    $query = "UPDATE Album SET lastupdated=NOW() WHERE albumid=".$new_albumid;
+    $result = mysql_query($query) or die(mysql_error());
+  }
+  error_log($result);
   mysql_free_result($result);
   mysql_close($conn);
-  /*
-  foreach ($all_albums as $album) {
-    echo $album->$name . $album->$access
-  }
-  */
 ?>
-
-
-<!-- edit above -->
-    </div> <!-- /container -->
-
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
-  </body>
-</html>
