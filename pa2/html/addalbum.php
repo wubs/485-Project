@@ -1,9 +1,10 @@
 <?php 
   include('lib.php'); 
+  session_start();
   $new_op = $_POST['op'];
   $new_title = $_POST['title'];
   $new_access = $_POST['access'];
-  $new_username = $_POST['username'];
+  $new_username = $_SESSION['username'];
 
   $conn = mysql_connect($db_host, $db_user, $db_passwd)
   or die("Connect Error: " . mysql_error());
