@@ -44,6 +44,7 @@
       // password not correct 
       $_SESSION['msg'] = "Password incorrect!";
       $_SESSION['msg_flag'] = 1;
+      $_SESSION['correct_username'] = $username;
       header("Location: index.php");
     }
   } else {
