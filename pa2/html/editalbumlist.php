@@ -76,15 +76,32 @@
             
             mysql_select_db($db_name) or die("Could not select:" . $db_name);
             
-            $query = "SELECT title,access,albumid FROM Album where username='$username' order by albumid";
+            $query = "SELECT Album.title,Album.access,Album.albumid, AlbumAccess.username FROM Album, AlbumAccess where Album.username='$username' and AlbumAccess.albumid=Album.albumid order by Album.albumid";
             $result = mysql_query($query) or die("Query failed: " . mysql_error());
             
             while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
-              echo "<tr> <td>" . $line['title'] . "</td>"
-                . "<td>" . $line['access'] . "</td>"
-                . "<td><a href='#shareModal' class='btn click_share' data-toggle='modal' albumid=" . $line['albumid'] . " >Share</a> </td>"
-                . "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" . $line['albumid'] . " >Edit</a></td>"
-                . "<td><a class='btn btn-danger Del' albumid='". $line['albumid'] . "'>Del</a></td>";
+							if($line['username']==$username){
+              	echo "<tr> <td>" . $line['title'] . "</td>"
+                	. "<td>" . $line['access'] . "</td>";
+									if($line['access']=='private'){
+											echo "<td><a href='#shareModal' class='btn click_share' data-toggle='modal' albumid=" . $line['albumid']
+													." >Share</a> </td>";
+									}
+									else{
+											echo "<td></td>";
+									}
+                	echo "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" . $line['albumid'] . " >Edit</a></td>"
+                	. "<td><a class='btn btn-danger Del' albumid='". $line['albumid'] . "'>Del</a></td>";
+							}
+							else{
+								echo "<tr> <td></td>"
+                	. "<td>".$line['username']. "</td><td></td><td></td><td></td>";
+							}
+
+							
+							
+							
+
             }
             
             mysql_free_result($result);
@@ -104,12 +121,18 @@
     
     <script type="text/javascript">
       $(function () { // jQuery main()
-        $(".Del").live("click", function() {     
+        $(".Del").live("click", function() { 
+					var confirmbox=confirm("Do you really want to delete this album?");    
           var albumid = $(this).attr('albumid');
-          $.post("deletealbum.php", {"op": 'delete', "albumid": albumid }, function(data) {
-            // refresh 
-            location.reload();
-            });   
+					if(confirmbox="true"){
+          	$.post("deletealbum.php", {"op": 'delete', "albumid": albumid }, function(data) {
+            	// refresh 
+            	location.reload();
+            	});  
+					}
+					else{ 
+							location.reload();
+					}
         });
 
         $(".Add").live("click", function() {     
