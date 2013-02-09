@@ -127,7 +127,7 @@
 
         $(".click_edit").live("click", function() {     
           var access = $(this).parent().prev().text();
-          var title = $(this).parent().prev().prev().text();
+          var title = $(this).parent().prev().prev().prev().text();
           var cur_id = $(this).attr("albumid");
           $("#cur_title").val(title);
           $("#cur_id").val(cur_id);
