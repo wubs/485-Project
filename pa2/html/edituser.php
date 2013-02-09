@@ -17,50 +17,59 @@
 			$first_name = $temp['firstname']; 
 			$last_name = $temp['lastname']; 
 			$email = $temp['email']; 
-			mysql_close($conn);
+			mysql_free_result($result);
+      mysql_close($conn);
     ?>
     
     <!-- start edit from here -->
      
-		<form class="form-horizontal" method="post" action="modUser.php">
+		<form name="frm" action="modUser.php" method="post">
+		
 			<input type='hidden' name='username' value='<?php echo $username; ?>'>
+			
 			<div class="control-group">
-				<label class="control-label" for="inputFirstName">First Name</label>
+				<label class="control-label" for="f_name">First Name</label>
 				<div class="controls">
-					<input type="text" id="inputFirstName" name="inputFirstName" placeholder="<?php echo $first_name?>">
+					<input type="text" id="f_name" name="f_name" placeholder="<?php echo $first_name?>">
 				</div>
 			</div>
+			
 			<div class="control-group">
-				<label class="control-label" for="inputLastName">Last Name</label>
+				<label class="control-label" for="l_name">Last Name</label>
 				<div class="controls">
-					<input type="text" name="inputLastName" id="inputLastName" placeholder="<?php echo $last_name?>">
+					<input type="text" name="l_name" id="l_name" placeholder="<?php echo $last_name?>">
 				</div>
 			</div>
+			
 			<div class="control-group">
-				<label class="control-label" for="inputEmail">Email</label>
+				<label class="control-label" for="email">Email</label>
 				<div class="controls">
-					<input type="text" name="inputEmail" id="inputEmail" placeholder="<?php echo $email?>">
+					<input type="text" name="email" id="email" placeholder="<?php echo $email?>">
 				</div>
 			</div>
+			
 			<div class="control-group">
-				<label class="control-label" for="inputPassword">Password</label>
+				<label class="control-label" for="password">Password</label>
 				<div class="controls">
-					<input type="password" name="inputPassword" id="inputPassword" placeholder="Enter New Password">
+					<input type="password" name="password" id="password" placeholder="Enter New Password">
 				</div>
 			</div>
+			
 			<div class="control-group">
-				<label class="control-label" for="inputVerify">Verify Password</label>
+				<label class="control-label" for="confirm">Verify Password</label>
 				<div class="controls">
-					<input type="password" name="inputVerify" id="inputVerify" placeholder="Verify Password">
+					<input type="password" name="confirm" id="confirm" placeholder="Verify Password">
 				</div>
 			</div>
+			
 			<div class="control-group">
 				<div class="controls">
-						<button class="btn btn-primary edit" >Submit </button>
+						<input class="btn btn-primary edit" value="Submit"> </button>
             <input type="reset" class="btn btn-primary">
-		        <button type="delete" class="btn btn-danger">Delete</button>
+		        <input class="btn btn-danger delete" value="Delete"></button>
 				</div>
 			</div>
+			
 		</form>
 		
 
@@ -74,67 +83,31 @@
     $(function () { // jQuery main()
     $(".edit").live("click", function() {  
           var username = $("#username").val();
-          var email = $("#inputEmail").val();
-          var password = $("#inputPassword").val();
-          var confirm = $("#inputVerify").val();
-          var f_name = $("#inputFirstName").val();
-          var l_name = $("#inputLastName").val();
+          var email = $("#email").val();
+          var password = $("#password").val();
+          var confirm = $("#confirm").val();
+          var f_name = $("#f_name").val();
+          var l_name = $("#l_name").val();
+          
           var message = "";
           function validform(){this.value=1;}
           var validateform = new validform();
-
-          if (username) {
-            validateUsername();
-          }
-          if (email) {
-            validateEmail();
-          }
-          if (password) {
-            validatePassword();
-            validateConfirm();
-          }
-          if (f_name) {
-            validateFName();
-          }
-          if (l_name) {
-            validateLName();
-          }
+          validateEmail();
+          validatePassword();
+          validateConfirm();
 
           if(validateform.value==1){
-            $("form").submit();
+          	$("form").submit();
           }
           else{
             alert(message);
-            message="";
+            signup.disabled="disabled";
           }
 
-          function validateUsername(){
-            var nameRegex = /^[a-zA-Z0-9\_]+$/;
-            if(typeof username=='undefined' || username.length==0){        
-               message+="Please enter your username.\n"; 
-               validateform.value=0;        
-            }
-            else if(username.length<3){
-               message+="Your username is too short. Must be at least 3 characters.\n";
-               validateform.value=0; 
-            }
-            else{
-              var validUsername = document.frm.username.value.match(nameRegex);
-              if(validUsername == null){
-                message+="Your username is not valid. Only letters, numbers and '_' are  acceptable.\n";
-                validateform.value=0;
-              }
-            }       
-            //return message;
-         }
         
          function validateEmail(){
             var Regex = /^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+/;
-            if(typeof email=='undefined'||email.length==0){
-               message+="Please enter your email.\n";
-               validateform.value=0;
-            }
-            else{
+            if(email.length != 0){
                var validemail = document.frm.email.value.match(Regex);
                if(validemail == null){
                   message+="Please enter a valid email address.\n";
@@ -165,22 +138,25 @@
               validateform.value=0;
             }
             //return message;
-         }
-         
-         function validateFName(){
-            if(typeof f_name=='undefined' || f_name.length==0){
-               message+="Please enter your first name.\n";
-               validateform.value=0;
-            }
-
-         function validateLName(){
-            if(typeof l_name=='undefined' || l_name.length==0){
-                message+="Please enter your last name.\n";
-                validateform.value=0;
-            }
-         }
+         } 
 			});
 		});
+		
+		$(function () { // jQuery main()
+    $(".delete").live("click", function() {  
+          var username = '<?php echo $username; ?>';
+          $.post("deleteuser.php", 
+            {"username": username},
+            function(data) {
+            	alert(data);
+              window.location.replace("index.php");
+            }
+          );   
+          
+			});
+		});
+		
+		
 		</script>
     
   </body>

@@ -18,11 +18,11 @@
   
   mysql_select_db($db_name) or die("Could not select:" . $db_name);
 
-  $query = "DELETE from Album where albumid =". $new_albumid;
+  $query = "DELETE from Album where albumid = '". $new_albumid ."'";
 
   $result = mysql_query($query) or die(mysql_error());
   
-  $query = "DELETE from AlbumAccess where albumid =". $new_albumid;
+  $query = "DELETE from AlbumAccess where albumid = '". $new_albumid ."'";
 
   $result = mysql_query($query) or die(mysql_error());
   
@@ -35,11 +35,14 @@
     {
       $query = "DELETE from Photo WHERE url = '". $row['url'] ."'";
       $result2 = mysql_query($query) or die(mysql_error());
-      unlink($row['url']);
+      
+      $query = "DELETE from Comment where url='". $row['url'] ."'";
+    
+		  $result = mysql_query($query) or die(mysql_error());
     }
   }
 
-  $query = "DELETE from Contain where albumid =". $new_albumid;
+  $query = "DELETE from Contain where albumid = '". $new_albumid ."'";
   $result = mysql_query($query) or die(mysql_error());
 
 
