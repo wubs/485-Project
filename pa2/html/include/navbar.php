@@ -100,7 +100,7 @@
         <!-- logged in -->
         <ul style="display:<?php echo $user_display; ?>" class="nav pull-right"> 
           <li>
-            <a href='<?php echo "edituser.php?username=$username"; ?>'>
+            <a href='<?php echo "edituser.php"; ?>'>
               <?php echo $username; if ($admin_display) { echo "(admin)"; }?></a>
           </li>
           <li><a href="logout.php">Logout</a></li>
