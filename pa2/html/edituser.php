@@ -148,8 +148,7 @@
           $.post("deleteuser.php", 
             {"username": username},
             function(data) {
-            	alert(data);
-              window.location.replace("index.php");
+              window.location.replace("logout.php");
             }
           );   
           
