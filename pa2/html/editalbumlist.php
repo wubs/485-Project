@@ -102,7 +102,7 @@
                 while ($user_row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
                   $cur_username = $user_row['username'];
                   if ($cur_username != $username) {
-                    echo "<tr><td></td><td>$cur_username</td> <td><a class='btn' id='del_share'>Withdarw</a> </td> <td></td><td></td></tr>";
+                    echo "<tr><td></td><td>$cur_username</td> <td><a class='btn del_share' usrname='$cur_username' albumid='$cur_albumid'>Withdraw</a></td><td></td><td></td></tr>";
                   }
                 }
                 //
@@ -145,13 +145,15 @@
           var username = $("#username").val();
           var title = $("#title").val();
           var access = $(".btn.active.add_album_group").val();
-
-          $.post("addalbum.php", 
-            {"op": 'add', "username": username, "title": title, "access": access},
-            function(data) {
-              location.reload();
-            }
-          );   
+					
+					if(title){
+          	$.post("addalbum.php", 
+            	{"op": 'add', "username": username, "title": title, "access": access},
+            	function(data) {
+              	location.reload();
+            	}
+          	);
+					}  
         });
 
         $(".click_edit").live("click", function() {     
@@ -200,6 +202,18 @@
             {"albumid": id, "to_username": to_username},
             function(data) {
               alert(data); 
+            }
+          );   
+        });
+
+				$(".del_share").live("click", function() {     
+          var username = $(this).attr("usrname");   
+          var id = $(this).attr("albumid");
+          
+          $.post("delshare.php", 
+            {"albumid": id, "username": username},
+            function(data) {
+              location.reload();
             }
           );   
         });
