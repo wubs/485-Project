@@ -17,29 +17,39 @@
   or die("Connect Error: " . mysql_error());
   
   mysql_select_db($db_name) or die("Could not select:" . $db_name);
-
-  $query = "DELETE from Album where albumid =". $new_albumid;
-
-  $result = mysql_query($query) or die(mysql_error());
   
-  $query = "DELETE from AlbumAccess where albumid =". $new_albumid;
+  $query = "DELETE from AlbumAccess where albumid = '". $new_albumid ."'";
 
   $result = mysql_query($query) or die(mysql_error());
   
   $query = "SELECT url, albumid, COUNT(*) FROM Contain GROUP BY url";   
 
-  $result = mysql_query($query) or die("Query failed: " . mysql_error());
+  $result_url = mysql_query($query) or die("Query failed: " . mysql_error());
 
-  while($row = mysql_fetch_array($result,MYSQL_ASSOC)){
+  while($row = mysql_fetch_array($result_url,MYSQL_ASSOC)){
     if($row['COUNT(*)'] == 1 && $row['albumid']==$new_albumid)
-    {
-      $query = "DELETE from Photo WHERE url = '". $row['url'] ."'";
-      $result2 = mysql_query($query) or die(mysql_error());
-      unlink($row['url']);
+    { 
+      $query = "DELETE from Comment where url='". $row['url'] ."'";
+    
+		  $result = mysql_query($query) or die(mysql_error());
     }
   }
-
-  $query = "DELETE from Contain where albumid =". $new_albumid;
+  
+  $query = "SELECT url, albumid, COUNT(*) FROM Contain GROUP BY url";   
+  $result_url = mysql_query($query) or die("Query failed: " . mysql_error());
+  
+  $query = "DELETE from Contain where albumid = '". $new_albumid ."'";
+  $result = mysql_query($query) or die(mysql_error());
+  
+	while($row = mysql_fetch_array($result_url,MYSQL_ASSOC)){
+    if($row['COUNT(*)'] == 1 && $row['albumid']==$new_albumid)
+    { 
+      $query = "DELETE from Photo WHERE url = '". $row['url'] ."'";
+			$result2 = mysql_query($query) or die(mysql_error());
+    }
+  }
+  
+  $query = "DELETE from Album where albumid = '". $new_albumid ."'";
   $result = mysql_query($query) or die(mysql_error());
 
 

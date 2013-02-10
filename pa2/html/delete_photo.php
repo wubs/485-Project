@@ -37,7 +37,6 @@
       {
         $query = "DELETE from Photo WHERE url='". $new_url."'";
         $result2 = mysql_query($query) or die(mysql_error());
-        unlink($row['url']);
       }
     $query = "UPDATE Album SET lastupdated=NOW() WHERE albumid=".$new_albumid;
     $result = mysql_query($query) or die(mysql_error());

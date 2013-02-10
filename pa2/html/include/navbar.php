@@ -33,7 +33,7 @@
     //
     // 1. Check timeout or Update lastactivity
 
-    if (time() - $_SESSION['lastactivity'] > 5 * 60) {
+    if (time() - $_SESSION['lastactivity'] > 5 * 60 && empty($_SESSION['msg'])) {
       // in active for 5 mins, login again
       session_destroy();
       header("Location: timeout.php");
@@ -97,7 +97,7 @@
         <!-- not logged in yet -->
         <ul style="display:<?php echo $login_display; ?>" class="nav pull-right"> 
           <form method="post" action="login.php" class="navbar-form pull-left">
-            <input class="input-small" type="text" name="username" class="span2" placeholder="Username">
+          <input class="input-small" type="text" name="username" class="span2" placeholder="Username" value="<?php echo $_SESSION['correct_username'] ?>">
             <input class="input-small" type="password" name="passwd" class="span2" placeholder="Password">
             <button class="btn btn-small btn-warning" type="submit">Login</button>
           </form>
