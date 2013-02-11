@@ -3,9 +3,9 @@
 INSERT INTO User
 (username, password, firstname, lastname, email)
 values
-('sportslover',MD5('sportslover'), 'Paul', 'Walker', 'sportslover@hotmail.com'),
-('traveler',MD5('traveler'), 'Rebecca', 'Travolta', 'rebt@explorer.org'),
-('spacejunkie',MD5('spacejunkie'), 'Bob', 'Spacey', 'bspace@spacejunkies.net');
+('sportslover',MD5('paulpass'), 'Paul', 'Walker', 'sportslover@hotmail.com'),
+('traveler',MD5('rebeccapass'), 'Rebecca', 'Travolta', 'rebt@explorer.org'),
+('spacejunkie',MD5('bobpass'), 'Bob', 'Spacey', 'bspace@spacejunkies.net');
 
 -- DELETE FROM Album;
 
