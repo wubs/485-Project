@@ -41,6 +41,8 @@
             while ($user = mysql_fetch_array($result, MYSQL_ASSOC)) {
                 echo "<li>".$user['username']."</li>";
               }
+            mysql_free_result($result);
+            mysql_close($conn);
           ?>
           <!---
           <form action="viewalbumlist.php", method="get"> 

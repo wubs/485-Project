@@ -110,7 +110,8 @@
             <input class="input-small" type="password" name="passwd" class="span2" placeholder="Password">
             <button class="btn btn-small btn-warning" type="submit">Login</button>
           </form>
-          <li><a href="signup.php">Or sign up</a></li>
+          <li><a href="signup.php">Sign up</a></li>
+          <li><a href="ask_email.php">Forget password?</a></li>
 
         </ul>
 

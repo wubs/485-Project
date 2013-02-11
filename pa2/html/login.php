@@ -63,4 +63,6 @@
     $_SESSION['msg_flag'] = 1;
     header("Location: index.php");
   }
+  mysql_free_result($result);
+  mysql_close($conn);
 ?>
