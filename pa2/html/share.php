@@ -20,10 +20,7 @@
     echo "Success";
   } else {
     // the user doesn't exist
-    echo "Error: user doesn't exist      ";
-    echo $row['COUNT(*)'];
-    echo $to_username;
-
+    echo "Error: user doesn't exist";
   }
 
   mysql_free_result($result);

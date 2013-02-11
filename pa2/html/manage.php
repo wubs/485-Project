@@ -41,6 +41,8 @@
         <input name="op" type="hidden" value="add">
         <a class='btn btn-success Add' > Add</a>
       </form-->
+      <br>
+      <h3>(A) Edit any album</h3>
 
       <table class="table table-large table-hover">
         <thead>
@@ -73,13 +75,33 @@
             }
             
             mysql_free_result($result);
-            mysql_close($conn);
           ?>
         </tbody>
-
       </table>
 
+    <h3>(B) Grant/Remove admin privilege </h3>
 
+    <table class="table table-large span5">
+      <tbody>
+      <?php
+        $query = "SELECT User.username as username, Admin.username as admin_name FROM User LEFT JOIN Admin on (User.username=Admin.username);";
+        $result = mysql_query($query) or die("Query failed: " . mysql_error());
+
+        while ($user = mysql_fetch_array($result, MYSQL_ASSOC)) {
+          if ($user['admin_name'] == $_SESSION['username']) {
+            continue;
+          }
+          echo "<tr><td>" . $user['username'] . "</td>";
+          if ($user['admin_name'] == Null) {
+            echo "<td><a class='btn grant' value='" . $user['username'] . "' >Grant</a></td></tr>";
+          } else {
+            echo "<td><a class='btn remove' value='".$user['username'] . "'>Remove</a></td></tr>";
+          }
+        }
+        mysql_close($conn);
+      ?>
+      </tbody>
+    </table>
 
     <!-- edit above -->
     </div> <!-- /container -->
@@ -153,6 +175,26 @@
         $(".click_share").live("click", function() {     
           var cur_id = $(this).attr("albumid");
           $("#sharing_albumid").val(cur_id);
+        });
+
+        $(".grant").live("click", function() {     
+          $.post("grant_remove_admin.php", 
+            {"op": "grant", "username": $(this).attr('value')},
+            function(data) {
+              alert(data);
+              location.reload();
+            }
+          );   
+        });
+
+        $(".remove").live("click", function() {     
+          $.post("grant_remove_admin.php", 
+            {"op": "remove", "username": $(this).attr('value')},
+            function(data) {
+              alert(data);
+              location.reload();
+            }
+          );   
         });
 
      }); // jQuery main() end 

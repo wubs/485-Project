@@ -4,9 +4,9 @@
   $sensitive_array = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php", "/delete_photo.php", "/modUser.php", "/viewmyalbum.php", "/email_photo.php");
 
   // If visitor was trying to access those page, after login, they will be directed there.
-  $redirect_allow = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php", "/viewmyalbum.php");
+  $redirect_allow = Array("/myalbumlist.php", "/grant_remove_admin.php", "/editalbumlist.php", "/viewmyalbum.php");
 
-  $admin_only = Array("/admin_albumlist.php", "/admin_edituser.php", "/admin_editalbumlist.php", "/admin_editalbum.php", "/admin_delphoto..php");
+  $admin_only = Array("/manage.php", "/admin_edituser.php", "/admin_editalbumlist.php", "/admin_editalbum.php", "/admin_delphoto..php");
 
   $cur_url = $_SERVER["REQUEST_URI"];
 
@@ -57,9 +57,8 @@
   } else { 
     // user is not admin
     if (in_array($cur_url, $admin_only)) {
-      session_destroy();
-      session_start();
-      header("Location: sensitive.php");
+      $_SESSION['msg'] = "You don't have privilege.";
+      header("Location: index.php");
     }
   }  
 
@@ -106,7 +105,7 @@
         <!-- not logged in yet -->
         <ul style="display:<?php echo $login_display; ?>" class="nav pull-right"> 
           <form method="post" action="login.php" class="navbar-form pull-left">
-          <input class="input-small" type="text" name="username" class="span2" placeholder="Username" value="<?php echo $_SESSION['correct_username'] ?>">
+          <input class="input-small" type="text" name="username" class="span2" placeholder="Username" value="<?php if(isset($_SESSION['correct_username'])) echo $_SESSION['correct_username'] ?>">
             <input class="input-small" type="password" name="passwd" class="span2" placeholder="Password">
             <button class="btn btn-small btn-warning" type="submit">Login</button>
           </form>

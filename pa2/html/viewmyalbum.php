@@ -363,6 +363,8 @@
           //alert(raw_data);
           if (raw_data == "index"){
             window.location="index.php";
+          } else {
+            window.location="viewmyalbum.php?albumid="+albumid;
           }
         });
       });

@@ -15,6 +15,8 @@
   $query = "SELECT firstname, lastname, COUNT(*) FROM User WHERE username='$username'";
   $result = mysql_query($query) or die(mysql_error());
   $row = mysql_fetch_array($result, MYSQL_ASSOC);
+  $_SESSION['firstname'] = $row['firstname'];
+  $_SESSION['lastname'] = $row['lastname'];
 
   if($row['COUNT(*)'] == 1) {
     // username exists 
@@ -22,6 +24,7 @@
     $query = "SELECT firstname, lastname, COUNT(*) FROM User WHERE username='$username' and password='$passwd20'";
     $result = mysql_query($query) or die(mysql_error());
     $row = mysql_fetch_array($result, MYSQL_ASSOC);
+
 
     if($row['COUNT(*)'] == 1) {
       // username exists and password correct 
@@ -36,8 +39,6 @@
       
       // write to session
       $_SESSION['username'] = $username;
-      $_SESSION['firstname'] = $row['firstname'];
-      $_SESSION['lastname'] = $row['lastname'];
       $_SESSION['lastactivity'] = time();
       //query here = select username from User, Admin WHERE 
       // if admin { $_SESSION['admin'] = 1 }
@@ -63,6 +64,5 @@
     $_SESSION['msg_flag'] = 1;
     header("Location: index.php");
   }
-  mysql_free_result($result);
   mysql_close($conn);
 ?>
