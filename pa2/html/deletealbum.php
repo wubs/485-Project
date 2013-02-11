@@ -1,15 +1,6 @@
-<?php include('lib.php'); ?>
-<?php include('include/head.php'); ?>
-  <body>
-    <?php include('include/navbar.php'); ?>
-    <div class="container">
-    <!-- start edit from here -->
-
-
-
-
 <?php 
   include('lib.php'); 
+  include('include/navbar.php');
   $new_op = $_POST['op'];
   $new_albumid = $_POST['albumid'];
 
@@ -18,7 +9,21 @@
   
   mysql_select_db($db_name) or die("Could not select:" . $db_name);
 
-  $query = "DELETE from Album where albumid =". $new_albumid;
+
+  if (empty($_SESSION['admin'])) {
+    // if current user is not admin
+    // check if the albumid to delete belongs to the current user, $username == $_SESSION['username']
+    $query = "SELECT COUNT(*) from Album where albumid=$new_albumid and username='$username'";
+    $result = mysql_query($query) or die(mysql_error());
+    $row = mysql_fetch_array($result,MYSQL_ASSOC);
+    if ($row['COUNT(*)'] < 1) {
+      // this user is not the own of album
+      $_SESSION['msg'] = "You don't have access!";
+      header('Location: index.php');
+    }
+  }
+
+  $query = "DELETE from Album where albumid=$new_albumid";
 
   $result = mysql_query($query) or die(mysql_error());
   
@@ -46,12 +51,3 @@
   mysql_free_result($result);
   mysql_close($conn);
 ?>
-
-
-<!-- edit above -->
-    </div> <!-- /container -->
-
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
-  </body>
-</html>

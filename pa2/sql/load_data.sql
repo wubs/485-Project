@@ -7,6 +7,10 @@ values
 ('traveler',MD5('traveler'), 'Rebecca', 'Travolta', 'rebt@explorer.org'),
 ('spacejunkie',MD5('spacejunkie'), 'Bob', 'Spacey', 'bspace@spacejunkies.net');
 
+
+INSERT INTO Admin
+(username) values ('spacejunkie');
+
 -- DELETE FROM Album;
 
 INSERT INTO Album

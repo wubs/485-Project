@@ -56,3 +56,9 @@ PRIMARY KEY (url, commentseqnum),
 FOREIGN KEY (url) references Photo(url)
 );
 
+
+CREATE TABLE IF NOT EXISTS
+Admin(
+username VARCHAR(20),
+FOREIGN KEY (username) references User(username) 
+);

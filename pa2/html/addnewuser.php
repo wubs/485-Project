@@ -30,9 +30,9 @@
       header("Location: viewalbumlist.php");
   }
   else{
-      $_SESSION['msg'] = "login error";
+      $_SESSION['msg'] = "User name already exists";
       $_SESSION['msg_flag'] = 1;
-      header("Location: index.php");
+      header("Location: signup.php");
   }
 
   mysql_free_result($result);
