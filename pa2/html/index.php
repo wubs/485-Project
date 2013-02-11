@@ -18,6 +18,7 @@
         </span>
         <h2> PA2 </h2>
         <p> This is <?php echo $config_title ?> <b>group36</b> </p>
+        <h3>(spacejunkie is admin) </h3>
       </div>
       <div class="offset2 row-fluid">
         <div class="span4">
@@ -41,6 +42,8 @@
             while ($user = mysql_fetch_array($result, MYSQL_ASSOC)) {
                 echo "<li>".$user['username']."</li>";
               }
+            mysql_free_result($result);
+            mysql_close($conn);
           ?>
           <!---
           <form action="viewalbumlist.php", method="get"> 
