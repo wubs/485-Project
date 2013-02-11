@@ -1,4 +1,5 @@
-<<<<<<< HEAD
+Note: MySql infor should be defined in lib.php, see lib.php.example
+
 EECS 486 PROJECT PART 2
 =======================
 
@@ -66,8 +67,5 @@ EECS 486 PROJECT PART 2
 		-Root user can assign new root users or dismiss other root users.
 	11. timeout.php
 		-If the session is idle for 5min, log out the user and jump to this page. 
-=======
 
-MySql infor should be defined in lib.php, see lib.php.example
 
->>>>>>> c0244e41dff5aa7a329cc0830faaa9b88aaff493
