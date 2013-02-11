@@ -20,6 +20,14 @@ CHECK (access in ('public','private'))
 );
 
 CREATE TABLE IF NOT EXISTS
+Photo(
+url VARCHAR(255) PRIMARY KEY,
+code LONGBLOB,
+format CHAR(3),
+date DATETIME
+);
+
+CREATE TABLE IF NOT EXISTS
 Contain(
 albumid INT,
 url VARCHAR(255),
@@ -28,14 +36,6 @@ sequencenum INT,
 PRIMARY KEY (albumid, url),
 FOREIGN KEY (albumid) references Album(albumid), 
 FOREIGN KEY (url) references Photo(url) 
-);
-
-CREATE TABLE IF NOT EXISTS
-Photo(
-url VARCHAR(255) PRIMARY KEY,
-code LONGBLOB,
-format CHAR(3),
-date DATETIME
 );
 
 CREATE TABLE IF NOT EXISTS
