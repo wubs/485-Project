@@ -62,6 +62,7 @@
 				</div>
 			</div>
       <p><b> * indicates required filed </b></p>
+      <p><b>Note: Please enter and verify your password to change your names and email.</b></p>
 			
 			<div class="control-group">
 				<div class="controls">
