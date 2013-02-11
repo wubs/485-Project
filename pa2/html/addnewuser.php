@@ -15,7 +15,7 @@
   								.$new_username;
   $from = "eecs485pa2@example.com";
   $to = $new_email;
-  $CC = "wubs@umich.edu, ruoran wang <ruoran@umich.edu>, Dailin Liu <dailin@umich.edu>"
+  $CC = "wubs@umich.edu, ruoran wang <ruoran@umich.edu>, Dailin Liu <dailin@umich.edu>";
 
   $conn = mysql_connect($db_host, $db_user, $db_passwd) or die("Connect Error: " . mysql_error());
   mysql_select_db($db_name) or die("Could not select:" . $db_name);
@@ -31,11 +31,9 @@
               ."Content-Type: multipart/mixed; boundary=\"$bound_text\"";
   
   $message .= "Content-Type: text/html; charset=\"iso-8859-1\"\r\n"
-      ."Content-Transfer-Encoding: 7bit\r\n\r\n"
-        .$contents."\r\n"
-          .$bound;
+      ."Content-Transfer-Encoding: 7bit\r\n\r\n";
 
-  $message .= $contents."\r\n".$bound
+  $message .= $bound."\r\n\r\n".$contents."\r\n\r\n".$bound
               .$bound_last;
   mail($to, $subject, $message, $headers);
   
