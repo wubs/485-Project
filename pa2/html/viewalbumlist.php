@@ -17,10 +17,12 @@
             echo $_SESSION['msg']; 
             unset($_SESSION['msg']);
           }
+          $fname = $_SESSION['firstname'];
+          $lname = $_SESSION['lastname'];
         ?>
       </span>
 
-      <h4> Hi <?php echo "$firstname $lastname"; ?>, here are all the accessible albums</h4>
+      <h4> Hi <?php echo "$fname $lname"; ?>, here are all the accessible albums</h4>
       <!--a href="editalbumlist.php" class="btn btn-primary"> Edit Album List </a-->
       <br>
       <br>

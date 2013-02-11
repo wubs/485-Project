@@ -49,18 +49,19 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="password">Password</label>
+				<label class="control-label" for="password">Password *</label>
 				<div class="controls">
 					<input type="password" name="password" id="password" placeholder="Enter New Password">
 				</div>
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="confirm">Verify Password</label>
+				<label class="control-label" for="confirm">Verify Password *</label>
 				<div class="controls">
 					<input type="password" name="confirm" id="confirm" placeholder="Verify Password">
 				</div>
 			</div>
+      <p><b> * indicates required filed </b></p>
 			
 			<div class="control-group">
 				<div class="controls">

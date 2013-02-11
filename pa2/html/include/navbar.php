@@ -3,16 +3,16 @@
 
   $sensitive_array = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php", "/delete_photo.php", "/modUser.php", "/viewmyalbum.php", "/email_photo.php");
 
-
   // If visitor was trying to access those page, after login, they will be directed there.
   $redirect_allow = Array("/myalbumlist.php", "/edituser.php", "/editalbumlist.php", "/viewmyalbum.php");
 
+  $admin_only = Array("/admin_albumlist.php", "/admin_edituser.php", "/admin_editalbumlist.php", "/admin_editalbum.php", "/admin_delphoto..php");
 
   $cur_url = $_SERVER["REQUEST_URI"];
 
   if (empty($_SESSION['username'])) {
     // user not logged in  ----- visitor
-    
+
     if (in_array($cur_url, $sensitive_array)) {
       session_destroy();
       session_start();
@@ -52,8 +52,17 @@
   // check admin
   $admin_display = false;
   if (!empty($_SESSION['admin'])) {
+    // user is admin
     $admin_display = true;
-  }   
+  } else { 
+    // user is not admin
+    if (in_array($cur_url, $admin_only)) {
+      session_destroy();
+      session_start();
+      header("Location: sensitive.php");
+    }
+  }  
+
   // check if user allow to enter here
 
   // redirect if necessary
@@ -109,10 +118,18 @@
         <ul style="display:<?php echo $user_display; ?>" class="nav pull-right"> 
           <li>
             <a href='<?php echo "edituser.php"; ?>'>
-              <?php echo $username; if ($admin_display) { echo "(admin)"; }?></a>
+              <?php echo $username; if ($admin_display) { echo " (admin)"; }?></a>
           </li>
           <li><a href="logout.php">Logout</a></li>
         </ul>
+
+        <!-- admin -->
+        <ul style="display:<?php if ($admin_display) {echo "inline";} else {echo "none";} ?>" class="nav pull-right"> 
+          <li>
+            <a href='<?php echo "manage.php"; ?>'> Manage Site </a>
+          </li>
+        </ul>
+
       </div><!--/.nav-collapse -->
     </div>
   </div>

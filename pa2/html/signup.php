@@ -8,6 +8,16 @@
     <div class="container">
     <!-- start edit from here -->
     <h1> Welcome, New Member! </h1>
+
+    <span style="display:<?php echo $display_msg?>"class="label label-warning">
+          <?php
+            if (isset($_SESSION['msg']))
+            {
+              echo $_SESSION['msg'];
+              unset($_SESSION['msg']);
+            }
+          ?>
+    </span>
     <div class="row-fluid">
     <div class="span8">
         <form name="frm" action="addnewuser.php" method="post">
