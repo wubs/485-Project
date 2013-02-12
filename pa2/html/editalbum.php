@@ -17,7 +17,7 @@
 	echo $query;
   $result = mysql_query($query) or die("Query failed: " . mysql_error());
 
-  mysql_free_result($result);
+  //mysql_free_result($result);
   mysql_close($conn);
   /*
   foreach ($all_albums as $album) {

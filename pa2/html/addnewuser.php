@@ -11,8 +11,8 @@
   
   $subject = "Welcom To Our EECS485 PA2 Website";
   $contents = "Dear ".$new_f_name." "
-  								.$new_l_name." you have successfully registered as "
-  								.$new_username;
+    .$new_l_name." you have successfully registered as "
+    .$new_username;
   $from = "eecs485pa2@example.com";
   $to = $new_email;
   $CC = "wubs@umich.edu, ruoran wang <ruoran@umich.edu>, Dailin Liu <dailin@umich.edu>";

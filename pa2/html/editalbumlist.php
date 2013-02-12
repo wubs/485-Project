@@ -110,7 +110,7 @@
             }
             
             mysql_free_result($result);
-            mysql_free_result($result2);
+            //mysql_free_result($result2);
             mysql_close($conn);
           ?>
         </tbody>
