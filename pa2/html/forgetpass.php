@@ -28,13 +28,13 @@
     $query = "UPDATE User SET password = MD5('$password') WHERE email = '$new_email'";
     $result = mysql_query($query) or die(mysql_error());
 
-    $contents = "Your new password is". $password."Please change your password after login"; 
+    $contents = "Your new password is ". $password." Please change your password after login"; 
     $from = "eecs485group36@example.com";
     $cc = "eecs485group36@example.com"; //change the email address if necessary
 
     $bound_text = "group36";
-    $bound =  "--".$bound_text."\r\n";
-    $bound_last = "--".$bound_text."--\r\n";
+    $bound =  "\r\n--".$bound_text."\r\n";
+    $bound_last = "\r\n--".$bound_text."--\r\n";
        
     $headers =  "From: ".$from."\r\n";
     $headers .= "MIME-Version: 1.0\r\n"
@@ -42,11 +42,9 @@
     $headers .= "Cc: ".$cc."\r\n"; //add cc here
     
     $message .= "Content-Type: text/html; charset=\"iso-8859-1\"\r\n"
-        ."Content-Transfer-Encoding: 7bit\r\n\r\n"
-          .$contents."\r\n"
-            .$bound;
+        ."Content-Transfer-Encoding: 7bit\r\n\r\n";
 
-    $message .= "\r\n" . $contents."\r\n".$bound;
+    $message .= "$bound \r\n" . $contents."\r\n".$bound;
     mail($new_email, $subject, $message, $headers);
     $_SESSION['msg'] = "Email sent";
     header("Location: ask_email.php");
