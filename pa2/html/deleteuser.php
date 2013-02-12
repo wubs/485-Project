@@ -50,8 +50,8 @@
   $result = mysql_query($query) or die(mysql_error());
 
   $query = "DELETE FROM Admin where username = '$username'";
-	
-	mysql_free_result($result);
-	mysql_close($conn);
+  $result = mysql_query($query) or die(mysql_error());
+  mysql_free_result($result);
+  mysql_close($conn);
 	
 ?>
