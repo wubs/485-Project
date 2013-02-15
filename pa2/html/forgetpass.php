@@ -1,6 +1,5 @@
 <?php 
   include('lib.php'); 
-  session_start();
   $new_email = $_POST['email'];
   //$new_url = $_POST['url'];
 

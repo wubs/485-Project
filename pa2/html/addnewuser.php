@@ -1,13 +1,11 @@
 <?php 
   include('lib.php'); 
-  session_start();
+
   $new_username = $_POST['username'];
   $new_email = $_POST['email'];
   $new_password = $_POST['password'];
   $new_f_name = $_POST['f_name'];
   $new_l_name = $_POST['l_name'];
-  
-  
   
   $subject = "Welcom To Our EECS485 PA2 Website";
   $contents = "Dear ".$new_f_name." "
@@ -61,7 +59,6 @@
       header("Location: signup.php");
   }
 
-  mysql_free_result($result);
   mysql_close($conn);
 ?>
 

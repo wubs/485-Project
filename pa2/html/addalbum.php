@@ -1,6 +1,6 @@
 <?php 
   include('lib.php'); 
-  session_start();
+
   $new_op = $_POST['op'];
   $new_title = $_POST['title'];
   $new_access = $_POST['access'];
@@ -19,11 +19,5 @@
   $query = "INSERT INTO AlbumAccess (albumid, username) values (LAST_INSERT_ID(), '$new_username')";
   $result = mysql_query($query) or die("Query failed: " . mysql_error());
 
-  //mysql_free_result($result);
   mysql_close($conn);
-  /*
-  foreach ($all_albums as $album) {
-    echo $album->$name . $album->$access
-  }
-  */
 ?>

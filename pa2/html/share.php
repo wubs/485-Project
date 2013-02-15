@@ -1,6 +1,5 @@
 <?php 
   include('lib.php'); 
-  session_start();
 
   $to_username = $_POST['to_username'];
   $albumid = $_POST['albumid'];

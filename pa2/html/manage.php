@@ -181,7 +181,6 @@
           $.post("grant_remove_admin.php", 
             {"op": "grant", "username": $(this).attr('value')},
             function(data) {
-              alert(data);
               location.reload();
             }
           );   
@@ -191,7 +190,6 @@
           $.post("grant_remove_admin.php", 
             {"op": "remove", "username": $(this).attr('value')},
             function(data) {
-              alert(data);
               location.reload();
             }
           );   

@@ -1,6 +1,5 @@
 <?php 
   include('lib.php'); 
-  session_start();
 
   $new_op = $_POST['op'];
   $new_username = $_POST['username'];

@@ -1,6 +1,6 @@
 <?php 
   include('lib.php'); 
-  session_start();
+
   $new_albumid = $_POST['albumid'];
   $new_url = $_POST['url'];
 
@@ -41,6 +41,5 @@
     $query = "UPDATE Album SET lastupdated=NOW() WHERE albumid=".$new_albumid;
     $result = mysql_query($query) or die(mysql_error());
   }
-  mysql_free_result($result);
   mysql_close($conn);
 ?>

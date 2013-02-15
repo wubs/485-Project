@@ -180,9 +180,6 @@
                 validateform.value=0;
             }
          }
-          
-          
-      
     });
 });
 </script>

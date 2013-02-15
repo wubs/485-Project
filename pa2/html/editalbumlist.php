@@ -201,7 +201,6 @@
           $.post("share.php", 
             {"albumid": id, "to_username": to_username},
             function(data) {
-              alert(data); 
               location.reload();
             }
           );   

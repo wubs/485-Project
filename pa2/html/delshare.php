@@ -1,6 +1,7 @@
 <?php 
-  include('lib.php'); 
-  session_start();
+  echo "<h1> hi </h1>";
+  include_once('lib.php'); 
+
   $new_username = $_POST['username'];
   $id = $_POST['albumid'];
   
@@ -12,11 +13,9 @@
   // TO-DO validate title
 
   $query = "DELETE FROM AlbumAccess where albumid = '$id' and username = '$new_username'";
-  echo $query;
 
   $result = mysql_query($query) or die("Query failed: " . mysql_error());
 
-  mysql_free_result($result);
   mysql_close($conn);
   /*
   foreach ($all_albums as $album) {

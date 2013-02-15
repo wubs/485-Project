@@ -1,6 +1,5 @@
 <?php
 	include('lib.php');
-	
 	$username = $_POST['username']; 
 	
 	$conn = mysql_connect($db_host, $db_user, $db_passwd)

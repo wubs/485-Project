@@ -60,34 +60,32 @@
 						//	$userlist = mysql_query($queryprivate) or die("Query failed: " . mysql_error());
             //}
 
-            
-					while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+            while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
               $url = $url_prefix . $line['albumid'];
-              echo "<tr> <td>";
-                if ($line['access']=='private' && $username == "visitor") {
-                  echo "</td></tr>";
+              if ($line['access']=='private' && empty($_SESSION['username'])) {
                   continue; 
+              }
+              echo "<tr> <td>";
+              if ($line['access']=='private' && $username!= $line['username'] ){
+                $query2 = "SELECT username FROM AlbumAccess where albumid='$line[albumid]'";
+                $result2 = mysql_query($query2) or die("Query failed: " . mysql_error());
+                while ($lineuser = mysql_fetch_array($result2, MYSQL_ASSOC)){
+                  $found=0;
+                  if($username==$lineuser['username']){
+                    echo "<a href=" . $url . ">" . $line['title'] . "</a></td>";
+                    $found=1;
+                  }               
                 }
-                if($line['access']=='private' && $username!= $line['username'] ){
-                  $query2 = "SELECT username FROM AlbumAccess where albumid='$line[albumid]'";
-                  $result2 = mysql_query($query2) or die("Query failed: " . mysql_error());
-                  while ($lineuser = mysql_fetch_array($result2, MYSQL_ASSOC)){
-                    $found=0;
-                    if($username==$lineuser['username']){
-                        echo "<a href=" . $url . ">" . $line['title'] . "</a></td>";
-                        $found=1;
-                    }               
-                  }
-                  if($found==0){
-									  echo $line['title'] . "</td>";
-                  }
-								}else{
-									echo "<a href=" . $url . ">" . $line['title'] . "</a></td>";						
-								}
-                 echo "<td>" . $line['username'] . "</td>"
-                 . "<td>" . $line['access'] . "</td>"
-                 . "<td>" . $line['created'] . "</td>"
-                 . "<td>" . $line['lastupdated'] . "</td> </tr>";
+                if($found==0){
+	          echo $line['title'] . "</td>";
+                }
+              } else {
+                echo "<a href=" . $url . ">" . $line['title'] . "</a></td>";						
+              }
+              echo "<td>" . $line['username'] . "</td>"
+               . "<td>" . $line['access'] . "</td>"
+               . "<td>" . $line['created'] . "</td>"
+               . "<td>" . $line['lastupdated'] . "</td> </tr>";
             }
             
             mysql_free_result($result);

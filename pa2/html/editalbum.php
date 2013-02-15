@@ -1,5 +1,6 @@
 <?php 
   include('lib.php'); 
+
   $new_id = $_GET['albumid'];
   $new_title = $_GET['title'];
   $new_access = $_GET['access'];
