@@ -1,4 +1,4 @@
 *.log
 *.*.swp
-lib.php
+db_config.php
 *~
