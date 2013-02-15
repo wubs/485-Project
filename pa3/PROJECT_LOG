@@ -1,0 +1,57 @@
+*Default home page [public]
+  1. Contains welcoming message(DONE)
+  2. Invitation for new users to join as members
+  3. Linked to a 'New User Page' and a 'Login Page'
+  4. Some way to all the public albums of all users(DONE)
+  5. 3 situations when logging in
+     a. Username invalid: no such user exists, encourage the user to become a new member
+     b. Username is valid but password is not: re-enter the password. keep the username in the form
+     c. Username and password are valid: take to logged in page
+
+*New user page [public]
+  1. Form for users to fill in their: 
+    username, (unique, at least 3 char, letters/digits/underscores)
+    firstname, 
+    lastname, 
+    e-mail address, 
+    password (5-15 char, two fields for verification)
+
+*Logged-in home page[sensitive]
+  1. Display message "Logged in as <Firstname> <Lastname>".
+  2. Naviagtional interface with links to Home(this page), Edit Account, My Albums and Logout.
+  3. Main body: has a list of all the accessible albums (public + authorized private)categoried by their owners. 
+
+*Edit Account page[sensitive]
+  1. Change firstname, lastname, password e-mail address(both for client and server).
+  2. Link to delete the account 
+      remove all associated pictures, albums, access to other user's albums, recycle username
+
+*My Albums page[sensitive] editalbumlst.php
+  1. View existing albums, delete, or edit (DONE)
+  2. pop-up when deleting: comfirm that the user indeed wants to delete an album.
+
+*Edit Album page[sensitive]
+  1. Able to change the album name and permissions
+  2. User can edit a list of other users whom he/she would like to give access to(if private).
+  3. List the pictures in the album for deleting, adding or viewing.  
+
+*View Album page[senstive/public]
+  1. Display the album (DONE)
+  2. Album title at the top, along with the album's owner
+  3. Display with DATE and caption
+  4. 
+
+*View picture page[sensitive/public]
+  No new features required. 
+
+*Logout page[sensitive]
+  1. expire the session and redirect to the default homepage. 
+
+*Extra Credit
+  1. When form is submitted in the new user page, send an e-mail confirming the membership. 
+      a. CC to yourself
+      b. redirect the user to logged-in page
+  2. Show real thumbnails with the captions instead of just a list in the Edit Album page. (?)
+  3. Ask the user if has forgotten the password. Create the new password and email it to the user.
+  4. An additional class of "root-user"(can edit anyone's album).
+      a. an administrative interface for giving/removing the root-user privilege. 
