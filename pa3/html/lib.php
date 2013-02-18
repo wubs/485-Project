@@ -3,7 +3,7 @@
   session_start();
 
   // general attributes
-  $config_title = "EECS485 PA 2";
+  $config_title = "EECS485 PA 3";
   $config_team_members = array("Baishun Wu", "Dailin Liu", "Ruoran Wang");
   
   $sensitive_array = Array("myalbumlist.php", "viewalbum.php", "edituser.php", "addalbum.php","editalbumlist.php", "delete_photo.php", "modUser.php", "viewmyalbum.php", "email_photo.php", "editalbum.php",  "deleteuser.php", "delshare.php", "share.php");

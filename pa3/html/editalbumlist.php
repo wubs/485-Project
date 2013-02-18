@@ -1,9 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
- <style>
-  .drag {
-    position: relative;
-  }
+<style>
+   .semi {
+      width: 100px;
+      position: relative;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      display: none;
+      border:1px solid black;
+    }
+
+    .drag {
+      position: relative;
+      top: 0;
+      left: 0;
+      display: inline;
+    }
+
+    .contains {
+      position: relative;
+      height: 50px;
+    }
 </style>
 <?php include('lib.php'); ?>
 <?php include('include/head.php'); ?>
@@ -77,7 +95,7 @@
           <tbody id="table_body" >
             <?php 
               $conn = mysql_connect($db_host, $db_user, $db_passwd)
-              or die("Connect Error: " . mysql_error());
+                or die("Connect Error: " . mysql_error());
               
               mysql_select_db($db_name) or die("Could not select:" . $db_name);
               
@@ -85,38 +103,28 @@
               $result = mysql_query($query) or die("Query failed: " . mysql_error());
               
               while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
-                  // always
-                  echo "<tr> <td  class='drag' style='cursor: -moz-grab; cursor: -webkit-grab;'>" . $line['title'] . "</td>"
-                    . "<td>" . $line['access'] . "</td>";
-                  //if($line['access']=='private'){
-                  //      echo "<td><a href='#shareModal' class='btn click_share' data-toggle='modal' albumid=" . $line['albumid'] ." >Share</a> </td>";
-                  //}
-                  //else{
-                  //  echo "<td></td>";
-                  //}
+                // always
+                echo "<tr> <td class='contains' ><div class='drag'>" . $line['title'] . "</div> <div class='semi' style='display: none;'> Give access to </div> </td>"
+                  . "<td>" . $line['access'] . "</td>";
 
+                echo "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" 
+                  . $line['albumid'] . " album_title='" . $line['title'] . "' album_access='" . $line['access'] . "'>Edit</a>&nbsp&nbsp"
+                  . "<a class='btn btn-danger Del' albumid='". $line['albumid'] . "'>Del</a></td></tr>";
 
-                  echo "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" 
-                    . $line['albumid'] . " album_title='" . $line['title'] . "' album_access='" . $line['access'] . "'>Edit</a>&nbsp&nbsp"
-                    . "<a class='btn btn-danger Del' albumid='". $line['albumid'] . "'>Del</a></td></tr>";
+                //
+                $cur_albumid = $line['albumid'];
+                $query2 = "SELECT username FROM AlbumAccess where albumid=$cur_albumid";
+                $result2 = mysql_query($query2) or die("Query failed: " . mysql_error());
 
-                  //
-                  $cur_albumid = $line['albumid'];
-                  $query2 = "SELECT username FROM AlbumAccess where albumid=$cur_albumid";
-                  $result2 = mysql_query($query2) or die("Query failed: " . mysql_error());
-
-                  while ($user_row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
-                    $cur_username = $user_row['username'];
-                    if ($cur_username != $username) {
-                      echo "<tr><td></td><td>$cur_username</td> <td><a class='btn del_share' usrname='$cur_username' albumid='$cur_albumid'>Withdraw</a></td><td></td><td></td></tr>";
-                    }
+                while ($user_row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
+                  $cur_username = $user_row['username'];
+                  if ($cur_username != $username) {
+                    echo "<tr><td></td><td>$cur_username</td> <td><a class='btn del_share' usrname='$cur_username' albumid='$cur_albumid'>Withdraw</a></td><td></td><td></td></tr>";
                   }
-                  //
-
+                }
               }
               
               mysql_free_result($result);
-              //mysql_free_result($result2);
               mysql_close($conn);
             ?>
           </tbody>
@@ -144,81 +152,8 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
     
-    <script type="text/javascript">
-      // Our pure javascript code for PA3 starts here, jQuery is not used for PA3
-  //
-      document.onmousedown = OnMouseDown;
-      document.onmouseup = OnMouseUp;
-
-      function ExtractNumber(value)
-      {
-        var n = parseInt(value);
-
-        return n == null || isNaN(n) ? 0 : n;
-      }
-
-      function $(id)
-      {
-        return document.getElementById(id);
-      }
-
-      function OnMouseDown(e)
-      {
-        e = e || window.event;
-
-        var target = e.target;
-
-        if ((e.button == 1 && window.event != null || e.button == 0) && target.className == 'drag')
-        {
-          _startX = e.clientX;
-          _startY = e.clientY;
-
-          _offsetX = ExtractNumber(target.style.left);
-          _offsetY = ExtractNumber(target.style.top);
-
-          _oldZIndex = target.style.zIndex;
-          target.style.zIndex = 10000;
-
-          _dragElement = target;
-
-          document.onmousemove = OnMouseMove;
-
-          document.body.focus();
-
-          document.onselectstart = function () { return false; };
-          target.ondragstart = function() { return false; };
-
-          return false;
-        }
-      }
-
-      function OnMouseMove(e)
-      {
-        e = e || window.event;
-
-        _dragElement.style.left = (_offsetX + e.clientX - _startX) + 'px';
-        _dragElement.style.top = (_offsetY + e.clientY - _startY) + 'px';
-
-          _dragElement.style.top + ')';   
-      }
-
-      function OnMouseUp(e)
-      {
-        if (_dragElement != null)
-        {
-          _dragElement.style.zIndex = _oldZIndex;
-
-          document.onmousemove = null;
-          document.onselectstart = null;
-          _dragElement.ondragstart = null;
-
-          // this is how we know we're not dragging      
-          _dragElement = null;
-
-        }
-      }
-
-    </script>
+    <!--  Our pure javascript code for PA3 starts here, jQuery is not used for PA3 -->
+    <script src="static/js/pa3_drag.js" type="text/javascript"></script>
 
     <script type="text/javascript">
       $(function () { // jQuery main()
