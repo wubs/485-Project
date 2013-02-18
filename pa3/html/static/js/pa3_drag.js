@@ -5,12 +5,12 @@ document.onmouseup = mouse_up;
 
 document.onmouseover = function(e) {
   if (e.target.className == 'dest') {
-    over_dest = e.target;
+    dest = e.target;
     //console.log('over');
   }
 };
 
-over_dest = null;
+dest = null;
 
 register_dests();
 
@@ -18,7 +18,7 @@ register_dests();
 
 document.onmouseout = function(e) {
   if (e.target.className == 'dest') {
-    over_dest = null;
+    dest = null;
     //console.log('out');
   }
 };
@@ -36,7 +36,7 @@ function position_to_int(pos) {
 }
 
 //
-// fly is the element that is being dragged.
+// drag is the element that is being dragged.
 //
 
 function register_dests() {
@@ -44,8 +44,8 @@ function register_dests() {
 
   for (var i = 0; i < dests.length; i++) {
     var el = dests[i];
-    //el.onmouseover = function(e) {over_dest = e.target; console.log('over');};
-    //el.onmouseout = function(e) {over_dest = null; console.log('out');};
+    //el.onmouseover = function(e) {dest = e.target; console.log('over');};
+    //el.onmouseout = function(e) {dest = null; console.log('out');};
     el.style.zIndex = 500;
   }
 }
@@ -56,38 +56,37 @@ function mouse_down(e) {
   down_x = e.clientX;
   down_y = e.clientY;
 
-  fly = e.target;
+  drag_title = e.target;
 
-  if (fly.className != "drag") {
-    fly = null;
+  if (drag_title.className != "drag_title") {
+    // we are testing against drag_title because drag is hidden
+    drag_title = null;
     return true;
   }
 
-  offset_width = fly.offsetWidth;
-  semi = fly.nextSibling.nextSibling;
+  offset_width = drag_title.offsetWidth;
 
-  offset_x = position_to_int(fly.style.left) - offset_width;
-  offset_y = position_to_int(fly.style.top);
+  drag = drag_title.nextSibling.nextSibling;
 
-  semi.style.opacity = "0.8";
-  semi.style.left = offset_x;
-  semi.style.top = offset_y;
+  offset_x = position_to_int(drag_title.style.left) - offset_width;
+  offset_y = position_to_int(drag_title.style.top);
 
-  fly.style.opacity = "0.2";
+  drag.style.opacity = "0.8";
+  drag.style.left = offset_x;
+  drag.style.top = offset_y;
 
-  old_zIndex = fly.style.zIndex;
+  drag_title.style.opacity = "0.2";
 
-  old_fly = fly;
-  fly = semi;
+  old_zIndex = drag.style.zIndex;
 
-  fly.style.pointerEvents = "none";
-  // since fly element is always below the cursor
-  // we have to disable pointerEvents for fly
+  drag.style.pointerEvents = "none";
+  // since drag element is always below the cursor
+  // we have to disable pointerEvents for drag
   // otherwise the event will not happen on the destination
-  fly.style.zIndex = 1;
+  drag.style.zIndex = 1;
 
   
-  setTimeout(function() {semi.style.display = "inline";}, 100);
+  setTimeout(function() {drag.style.display = "inline";}, 100);
 
   document.onmousemove = mouse_move;
   document.body.focus();
@@ -96,25 +95,26 @@ function mouse_down(e) {
 
 function mouse_move(e) {
   e = e || window.event;
-  fly.style.left = (offset_x + e.clientX - down_x) + 'px';
-  fly.style.top = (offset_y + e.clientY - down_y) + 'px';
+  drag.style.left = (offset_x + e.clientX - down_x) + 'px';
+  drag.style.top = (offset_y + e.clientY - down_y) + 'px';
 }
 
 function mouse_up(e) {
   e = e || window.event;
-  if (fly != null) {
-    if (over_dest) {
+  if (drag != null) {
+    if (dest) {  // test if a dest is under mouse
       // user dropped the element at
       // right location
-      console.log(e.target);
-      console.log(over_dest);
+      console.log(dest);
 
 
       // trigger ajax to grand user access to album
       //
-      // username = over_dest.value()
-      // albumid = fly.value()
-
+      // username = dest.value()
+      // albumid = drag.value()
+      // $.post('add.php', {albumid = albu, }, fucntion() {
+      // 
+      // })
     } 
 
     // created a closure
@@ -140,20 +140,20 @@ function restore(x, y) {
     if (count < this.period) {
       this.cur_x -= this.unit_x; 
       this.cur_y -= this.unit_y; 
-      fly.style.left = this.cur_x + 'px';
-      fly.style.top = this.cur_y + 'px';
+      drag.style.left = this.cur_x + 'px';
+      drag.style.top = this.cur_y + 'px';
       this.count++;
     } else {
-      // done, restore fly attributes
-      fly.style.zIndex = old_zIndex;
-      fly.style.pointerEvents = null;
-      fly.style.left = offset_x + 'px';
-      fly.style.top = offset_y + 'px';
+      // done, restore drag attributes
+      drag.style.zIndex = old_zIndex;
+      drag.style.pointerEvents = null;
+      drag.style.left = offset_x + 'px';
+      drag.style.top = offset_y + 'px';
       document.onmousemove = null;
-      semi.style.display = "none";
-      semi.style.opacity = "0.0";
-      old_fly.style.opacity = "1";
-      fly = null;
+      drag.style.display = "none";
+      drag.style.opacity = "0.0";
+      drag_title.style.opacity = "1";
+      drag = null;
       // stop the interval loop
       clearInterval(int_step);
     }

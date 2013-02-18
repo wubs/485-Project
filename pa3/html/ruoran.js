@@ -117,7 +117,7 @@ function mouse_up(e) {
 
     // this will move the block back to origin pos
     // setInterval will stop by step() if it is done
-    int_step = setInterval(step, 0.5);
+    int_step = setInterval(step, 1);
   }
 }
 

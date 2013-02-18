@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <style>
-   .semi {
+   .drag {
       width: 100px;
       position: relative;
       top: 0;
@@ -11,7 +11,7 @@
       border:1px solid black;
     }
 
-    .drag {
+    .drag_title {
       position: relative;
       top: 0;
       left: 0;
@@ -104,7 +104,7 @@
               
               while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
                 // always
-                echo "<tr> <td class='contains' ><div class='drag'>" . $line['title'] . "</div> <div class='semi' style='display: none;'> Give access to </div> </td>"
+                echo "<tr> <td class='contains' ><div class='drag_title'>" . $line['title'] . "</div> <div class='drag' style='display: none;'> Give access to </div> </td>"
                   . "<td>" . $line['access'] . "</td>";
 
                 echo "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" 
