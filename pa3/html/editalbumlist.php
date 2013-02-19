@@ -138,8 +138,22 @@
       </div>
 
       <div class="span4">
-        <div>Trash</div>
-        <div>Users</div>
+        <div><h5>Trash</h5></div>
+        <div><h5>Users</h5></div>
+        <?php
+          $conn = mysql_connect($db_host, $db_user, $db_passwd)
+                or die("Connect Error: " . mysql_error());
+              
+          mysql_select_db($db_name) or die("Could not select:" . $db_name);
+              
+          $query = "SELECT username FROM User";
+          $result = mysql_query($query) or die("Query failed: " . mysql_error()); 
+            
+          while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+            echo '<div class="dest">'. $line['username'].' </div>';
+          }       
+        ?>
+        
       </div>
 
       </div> <!-- end of row -->
