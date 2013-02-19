@@ -7,100 +7,37 @@
     height:300px;
     background-color:#b0e0e6;
   }
-  .photoModal {
-    left:5%; 
-    width:90%; 
-    height:600px;
-    margin-left:0px; 
+  #single {
+    width: 940; 
+  /*
+    height: 400px; 
+*/
   }
-
-  .myWell {
-    padding: 20px;
-    height: auto;
-    width: 50%;
-    margin: 0px auto;
-    margin-top: 10px;
-    margin-bottom: 40px;
-    background-color: #f5f5f5;
-    border: 1px solid #e3e3e3;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
-    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
-  }
-  .commentWell {
-    padding: 20px;
-    height: auto;
-    margin-top: 10px;
-    margin-left: 0px;
-    background-color: #f5f5f5;
-    border: 4px solid #e3e3e3;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
-    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
-  }
-  .newcommentWell {
-    padding: 20px;
-    height: auto;
-    margin-top: 10px;
-    margin-left: 0px;
-    background-color: #f5f5f5;
-    border: 4px solid #e3e3e3;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
-    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
-  }
-  .round_border {
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
-  }
-  .btn-file {
-    position:relative;
-    overflow:hidden;
-  }
-  .btn-file > input {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0;
-    font-size: 23px;
-    cursor: pointer;
-    opacity: 0;
-    filter: alpha(opacity=0);
-    transform: translate(-300px, 0) scale(4);
-    direction: ltr;
-  }
-  input[type="file"] {
-    height: 30px;
-    line-height: 30px;
-    width: auto;
-  }
-  .fileupload-preview {
-    display: inline-block;
-    margin-bottom: 5px;
-    overflow: hidden;
-    text-align: center;
+  .round_border {  // this is for the td
+    position: relative;
+    left: -600px;
     vertical-align: middle;
+    width: 600px;
+    height: 400px; 
+   /* border: 2px solid black; */
   }
-  .fileupload .thumbnail > img {
-    display: inline-block;
-    max-height: 100%;
-    vertical-align: middle;
+  .new_image {
+    max-height: 600px;
+    max-width: 400px; 
+    margin-left:auto;
+    margin-right:auto;
   }
-  .opt {
-    width: 25%;  
-    padding: 0px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+  .new_viewer {
+    background-color: black;
+  }
+  #blocker-left, #blocker-right {
+    zIndex: 100;
+    position: relative;
+    height: 400px;
+  }
+  #blocker-right {
+  }
+  #blocker-left {
   }
   </style>
   <body>
@@ -151,14 +88,14 @@
               if ($counter % $num == 0) {
                 echo "<tr>"
                   . "<td height='400px' align='center'>" 
-                  . "<img class='img-rounded center click_photo' value=" 
+                  . "<img class='img-rounded center click_photo' onclick='to_single()' value=" 
                   . ($counter+1) . " src=" . $base64 . ">"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
               } else {
                 echo "<td height='400px' align='center'>"
-                  . "<img class='img-rounded center click_photo' value="
+                  . "<img class='img-rounded center click_photo' onclick='to_single()' value="
                   . ($counter+1) . " src=" . $base64 . ">"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
@@ -173,80 +110,85 @@
       </div> <!-- end of div list -->
 
       <div id="single" style="display:none;z-index:10;">
-        <!-- Start of Carousel -->
-        <div id="myCarousel" class="carousel slide round_border" style="height:630px;;margin-bottom:0px">
-          <!-- Carousel items -->
-          <div class="carousel-inner" style="height: 100%; width:100%;">
+        <div id="to_list" onclick='to_list()'> Close </div>
+        <table style="overflow: hidden" id="new_viewer">
+        <tr style="width: auto; overflow: hidden">
           <?php
+            $count = 0;
             $flag = 0;
             foreach ($photos as $photo) {
-              //if ($flag == 0) {
-              //  echo "<div class='item active round_border'>"
-              //     . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-              //     . "src=" . $photo['url'] . "><div class='carousel-caption'><p>" 
-              //     . $photo['caption'] . "</p></div></div>";
-              //  $flag = 1;
-              //} else {
-              //  echo "<div class='item round_border'>"
-              //     . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-              //     . "src=" . $photo['url'] . "><div class='carousel-caption'><p>" 
-              //     . $photo['caption'] . "</p></div></div>";
-              //}
-							$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
+              if ($count == 3) break;
+			  			$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"';
               if ($flag == 0) {
-								
-                echo "<div class='item active round_border'>"
-                   . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
+                echo "<td class='item active round_border'>"
+                   . "<img class='new_image' " 
+                   . "src=" . $base64 . " url=" . $photo['url'] . "></td>";
                 $flag = 1;
               } else {
-                echo "<div class='item round_border'>"
-                   . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
+                echo "<td class='item round_border'>"
+                   . "<img class='new_image' " 
+                   . "src=" . $base64 . " url=" . $photo['url'] . "></td>";
               }
+              $count++;
             }
             mysql_free_result($result);
             mysql_close($conn);
           ?>
-          </div>
-          <!-- Carousel nav -->
-          <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-          <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+        </tr> <!-- end of div single -->
+        <!--
+        <div id="blocker-left">
         </div>
-        <!-- End of Carousel -->
 
+        <div id="blocker-right">
+        </div>
+        -->
+      </table>
 
-        <div  class="myWell" > <!-- Buttons and comments -->
+    </div> <!-- end of new viewer -->
+    <script type="text/javascript">
+      var left = document.getElementById('blocker-left'); 
+      var right = document.getElementById('blocker-right'); 
+      var viewer = document.getElementById('new_viewer'); 
 
-          <div class="row-fluid btn-group">
-              <a href="#" role="button" class="btn click_back opt" >Back</a>
+      function to_single() {
+        console.log("to_single");
+        var list = document.getElementById('list'); 
+        var single = document.getElementById('single');
+        single.style.display = "inline";
+        list.style.display = "none";
 
-              <a id="click_email" value=false class="btn opt" rel="popover" data-html=true 
-                data-trigger="click" data-placement="top"
-                data-content="<input id='email_to' type='email' style='width:194px'><a albumid='<?php echo $albumid ?>' id='email_photo' class='btn'>Send</a>" >
-                Email
-              </a>
+        var tds = document.getElementsByClassName('round_border');
+        var td_width = tds[tds.length - 1].offsetWidth;
+        var td_height = tds[tds.length - 1].offsetHeight;
+        console.log(2*td_width);
+        right.style.left = 2 * td_width + "px";
 
-              <a id="click_edit" value=false class="btn opt" rel="popover" data-html=true 
-                data-trigger="click" data-placement="top" >
-                Edit
-              </a>
-              <a role="button" class="btn btn-info click_comments click_collapse opt" >Comments</a>
-          </div>
+        //console.log(left.offsetHeight);
+        //console.log(right.offsetHeight);
+        //console.log(viewer.offsetHeight);
 
-          <!-- Start of Comments -->
-          <div id="comments" class="collapse">
-            <p style="color:#f5f5f5"> placeholder </p>
-            <textarea id="new_comment" rows ="3" placeholder="New comment" style="width:70%;display:inline-block" ></textarea>
-            <a id="click_newcomment" role="button" class="btn btn-info" style="display:inline-block;margin-bottom:15px;margin-left:30px;padding:15px 20px 15px 20px;" >Submit</a>
-          </div>
-          <!-- End of Comments-->
+        right.style.top = (- left.offsetHeight - viewer.offsetHeight) + "px";
+        //console.log(right.style.top);
+        left.style.top = (- viewer.offsetHeight) + "px";
 
-        </div> <!-- End of Buttons and comments -->
+        right.style.width = td_width + "px";
+        left.style.width = td_width + "px";
 
-        <!-- End of Comments-->
+        right.style.height = td_height + "px";
+        left.style.height = td_height + "px";
 
-      </div> <!-- end of div single -->
+        right.style.backgroundColor = "black";
+        left.style.backgroundColor = "black";
+      }
+
+      function to_list() {
+        console.log("to_list");
+        var list = document.getElementById('list'); 
+        var single = document.getElementById('single');
+        single.style.display = "none";
+        list.style.display = "inline";
+      }
+    </script>
 
     <!-- edit above -->
     </div> <!-- /container -->
@@ -259,37 +201,25 @@
         interval: false 
       });
 
-      $(".click_photo").live("click", function() { 
-        $("#myCarousel").carousel(parseInt($(this).attr('value')) - 1); 
-        setTimeout(function() {$("#list").css("display", "none");}, 350);
-        setTimeout(function() {$("#single").css("display","inline");}, 550);
-        fetch_comments();
-        setTimeout(function () {
-          var s = $(".item.active > img").attr("url")
-          var img_name = s.substring(s.lastIndexOf('/')+1);
-          $(".breadcrumb").append("<li id='active_breadcrumb' class='active'>"+img_name+"</li>");
-        }, 1000);
-      });
+      //$(".click_back").live("click", function() { 
+      //  setTimeout(function() {$("#single").css("display","none");}, 10);
+      //  setTimeout(function() {$("#list").css("display", "inline");}, 50);
+      //  $("#active_breadcrumb").remove();
+      //});
 
-      $(".click_back").live("click", function() { 
-        setTimeout(function() {$("#single").css("display","none");}, 10);
-        setTimeout(function() {$("#list").css("display", "inline");}, 50);
-        $("#active_breadcrumb").remove();
-      });
+      //$(".click_collapse").live("click", function() { 
+      //  $("#comments").collapse('toggle');
+      //});
 
-      $(".click_collapse").live("click", function() { 
-        $("#comments").collapse('toggle');
-      });
-
-      $(".carousel-control").live("click", function() {
-        fetch_comments();
-        $("#active_breadcrumb").remove();
-        setTimeout(function () {
-          var s = $(".item.active > img").attr("url")
-          var img_name = s.substring(s.lastIndexOf('/')+1);
-          $(".breadcrumb").append("<li id='active_breadcrumb' class='active'>"+img_name+"</li>");
-        }, 700);
-      });
+      //$(".carousel-control").live("click", function() {
+      //  fetch_comments();
+      //  $("#active_breadcrumb").remove();
+      //  setTimeout(function () {
+      //    var s = $(".item.active > img").attr("url")
+      //    var img_name = s.substring(s.lastIndexOf('/')+1);
+      //    $(".breadcrumb").append("<li id='active_breadcrumb' class='active'>"+img_name+"</li>");
+      //  }, 700);
+      //});
 
       $("#click_newcomment").live("click", function() { 
         // data.datetime data.comments data.username

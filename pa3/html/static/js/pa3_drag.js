@@ -23,7 +23,6 @@ document.onmouseout = function(e) {
   }
 };
 
-
 // helper function
 function position_to_int(pos) {
   // use this to strip px out
