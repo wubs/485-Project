@@ -7,33 +7,36 @@
     height:300px;
     background-color:#b0e0e6;
   }
-  #single {
-    width: 940; 
-  /*
-    height: 400px; 
-*/
+  #single_block {
+    
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 500px; 
   }
+
+  #new_viewer {
+    display: inline-block;
+    height: 500px; 
+  }
+
   .round_border {  // this is for the td
-    position: relative;
-    left: -600px;
+    display: inline-block;
+    height: 500px;
+    line-height: 500px;
+    text-align: center;
     vertical-align: middle;
-    width: 600px;
-    height: 400px; 
-   /* border: 2px solid black; */
   }
   .new_image {
-    max-height: 600px;
-    max-width: 400px; 
+    display: inline-block;
+    max-height: 100%;
+    max-width: 100%; 
     margin-left:auto;
     margin-right:auto;
-  }
-  .new_viewer {
-    background-color: black;
   }
   #blocker-left, #blocker-right {
     zIndex: 100;
     position: relative;
-    height: 400px;
+    height: 500px;
   }
   #blocker-right {
   }
@@ -53,7 +56,7 @@
       $album_title = $temp['title']; 
       $album_owner = $temp['username']; 
     ?>
-    <ul class="breadcrumb">
+    <ul id="breadcrumb" class="breadcrumb">
       <li><a href="viewalbumlist.php">Album List</a><span class="divider">/</span></li>
       <li class="active">
         <a class="click_back" ref="#">Album: <?php echo "'$album_title', Owner: '$album_owner'"; ?></a><span class="divider">/</span>
@@ -111,74 +114,95 @@
 
       <div id="single" style="display:none;z-index:10;">
         <div id="to_list" onclick='to_list()'> Close </div>
-        <table style="overflow: hidden" id="new_viewer">
-        <tr style="width: auto; overflow: hidden">
-          <?php
-            $count = 0;
-            $flag = 0;
-            foreach ($photos as $photo) {
-              if ($count == 3) break;
-			  			$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"';
-              if ($flag == 0) {
-                echo "<td class='item active round_border'>"
-                   . "<img class='new_image' " 
-                   . "src=" . $base64 . " url=" . $photo['url'] . "></td>";
-                $flag = 1;
-              } else {
-                echo "<td class='item round_border'>"
-                   . "<img class='new_image' " 
-                   . "src=" . $base64 . " url=" . $photo['url'] . "></td>";
+        <div id="single_block">
+          <div  id="new_viewer">
+            <?php
+              $count = 0;
+              $flag = 0;
+              foreach ($photos as $photo) {
+                if ($count == 3) break;
+			      		$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"';
+                if ($flag == 0) {
+                  // inline-block of round_border is required !!!!!!
+                  echo "<div class='round_border' style='display: inline-block;'>"
+                     . "<img class='new_image' " 
+                     . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
+                  $flag = 1;
+                } else {
+                  echo "<div class='round_border' style='display: inline-block;'>"
+                     . "<img class='new_image' " 
+                     . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
+                }
+                $count++;
               }
-              $count++;
-            }
-            mysql_free_result($result);
-            mysql_close($conn);
-          ?>
-        </tr> <!-- end of div single -->
-        <!--
-        <div id="blocker-left">
+              mysql_free_result($result);
+              mysql_close($conn);
+            ?>
+            
+           
+          </div>
         </div>
+            <div id="blocker-left">
+              left
+            </div>
 
-        <div id="blocker-right">
-        </div>
-        -->
-      </table>
-
-    </div> <!-- end of new viewer -->
+            <div id="blocker-right">
+              right
+            </div>
+      
+      </div> <!-- end of single -->
     <script type="text/javascript">
-      var left = document.getElementById('blocker-left'); 
-      var right = document.getElementById('blocker-right'); 
-      var viewer = document.getElementById('new_viewer'); 
 
       function to_single() {
-        console.log("to_single");
-        var list = document.getElementById('list'); 
-        var single = document.getElementById('single');
+        left = document.getElementById('blocker-left'); 
+        right = document.getElementById('blocker-right'); 
+        list = document.getElementById('list'); 
+        single_block = document.getElementById('single_block');
+        single = document.getElementById('single');
+        single_width = document.getElementById('breadcrumb').offsetWidth;
+        single.style.width = single_width + "px"; 
+
+
+        new_viewer = document.getElementById('new_viewer');
         single.style.display = "inline";
         list.style.display = "none";
 
-        var tds = document.getElementsByClassName('round_border');
-        var td_width = tds[tds.length - 1].offsetWidth;
-        var td_height = tds[tds.length - 1].offsetHeight;
-        console.log(2*td_width);
-        right.style.left = 2 * td_width + "px";
+        spans = document.getElementsByClassName('round_border'); 
 
-        //console.log(left.offsetHeight);
-        //console.log(right.offsetHeight);
-        //console.log(viewer.offsetHeight);
+        td_width = single_block.offsetWidth * 2.0 / 3.0;
 
-        right.style.top = (- left.offsetHeight - viewer.offsetHeight) + "px";
-        //console.log(right.style.top);
-        left.style.top = (- viewer.offsetHeight) + "px";
+        new_viewer.style.left = (- 0.5 * single_block.offsetWidth) + "px";
+        new_viewer.style.width = (3 * td_width) + "px";
+        new_viewer.style.position = "relative";
 
-        right.style.width = td_width + "px";
-        left.style.width = td_width + "px";
+        block_width = td_width - 0.5 * single_block.offsetWidth;
 
-        right.style.height = td_height + "px";
-        left.style.height = td_height + "px";
+        left.style.width = block_width + "px";
+        right.style.width = block_width + "px";
 
-        right.style.backgroundColor = "black";
+        left.style.position = "relative";
+        left.style.top = -500 + "px";
+        left.style.height = 500 + "px";
         left.style.backgroundColor = "black";
+
+        right.style.position = "relative";
+        right.style.top = -1000 + "px";
+        right.style.left = single_width - block_width + "px";
+        right.style.backgroundColor = "black";
+        
+        for (var i = 0; i < spans.length; i++ ) {
+          spans[i].style.width = td_width + "px";
+          spans[i].style.height = 500 + "px";
+          spans[i].style.position = "relative";
+          var img = spans[i].childNodes[0];
+          img.style.maxWidth = "100%";
+          img.style.maxHeight = "100%";
+          img.style.marginLeft = "auto";
+          img.style.marginRight = "auto";
+        }
+
+        // focus
+        document.body.style.backgroundColor = "black";
       }
 
       function to_list() {
@@ -187,11 +211,13 @@
         var single = document.getElementById('single');
         single.style.display = "none";
         list.style.display = "inline";
+        document.body.style.backgroundColor = "white";
       }
     </script>
 
     <!-- edit above -->
     </div> <!-- /container -->
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
 
