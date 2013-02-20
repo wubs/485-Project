@@ -158,19 +158,27 @@
 
       // global left position
       left_pos = null;
+      new_viewer = null;
 
       pre_left_pos = null;
 
+      starting_pos = null;
+      starting_left = null;
+
       function swip_start(e) {
         var e = e || window.event;
+        if (new_viewer == null) {
+          return true;
+        }
         if (e.target.id != "to_list") {
           pre_left_pos = e.clientX;
-          console.log(e.clientX);
-          console.log(e.clientY);
+          starting_pos = e.clientX;
+          //console.log("starting Swip x: " + starting_pos);
+          starting_left = position_to_int(new_viewer.style.left);
           document.onmousemove = mouse_move;
           return false;
         }
-        return true;
+        return false;
       }
 
       function mouse_move(e) {
@@ -179,10 +187,47 @@
         pre_left_pos = e.clientX;
       }
 
+      function move_to_next_left(starting_left, distance_swipped, direction) {
+        if (direction > 0) {
+          // move right
+          console.log("moving right");
+          new_viewer.style.left = starting_left - td_width + "px";
+        } else {
+          // move left
+          console.log("moving left");
+          new_viewer.style.left = starting_left + td_width + "px";
+        }
+      }
+
       function swip_end(e) {
         var e = e || window.event;
+
+        if (new_viewer == null) {
+          return true;
+        }
+
+        //console.log("end x : " + e.clientX);
+        var direction = starting_pos - e.clientX;
+        //console.log("dir : " + direction);
+        var distance_swipped = Math.abs(direction);
+        //去玩游戏吧
+
+        console.log(distance_swipped);
+        // after swip down, finish the rest distance,
+        // that means distance_swipped + more to move = td_width
+        // or restore original left
+
         document.onmousemove = null;
         pre_left_pos = null;
+        starting_pos = null;
+        starting_left = null;
+
+        if (distance_swipped >= td_width / 4.0) {
+          // finish rest of the move
+          move_to_next_left(starting_left, distance_swipped,  direction);
+        } else {
+          // move back to original left
+        }
       }
 
       function to_single() {
@@ -240,6 +285,7 @@
       }
 
       function to_list() {
+        new_viewer = null;
         console.log("to_list");
         var list = document.getElementById('list'); 
         var single = document.getElementById('single');
