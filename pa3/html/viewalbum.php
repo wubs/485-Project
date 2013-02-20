@@ -115,7 +115,7 @@
       <div id="single" style="display:none;z-index:10;">
         <div id="to_list" onclick='to_list()'> Close </div>
         <div id="single_block">
-          <div  id="new_viewer">
+          <div id="new_viewer">
             <?php
               $count = 0;
               $flag = 0;
@@ -152,6 +152,38 @@
       
       </div> <!-- end of single -->
     <script type="text/javascript">
+      document.onmousedown = swip_start; 
+      document.onmouseup = swip_end; 
+
+
+      // global left position
+      left_pos = null;
+
+      pre_left_pos = null;
+
+      function swip_start(e) {
+        var e = e || window.event;
+        if (e.target.id != "to_list") {
+          pre_left_pos = e.clientX;
+          console.log(e.clientX);
+          console.log(e.clientY);
+          document.onmousemove = mouse_move;
+          return false;
+        }
+        return true;
+      }
+
+      function mouse_move(e) {
+        var e = e || window.event;
+        move_viewer(e.clientX - pre_left_pos);
+        pre_left_pos = e.clientX;
+      }
+
+      function swip_end(e) {
+        var e = e || window.event;
+        document.onmousemove = null;
+        pre_left_pos = null;
+      }
 
       function to_single() {
         left = document.getElementById('blocker-left'); 
@@ -171,7 +203,9 @@
 
         td_width = single_block.offsetWidth * 2.0 / 3.0;
 
-        new_viewer.style.left = (- 0.5 * single_block.offsetWidth) + "px";
+        // most important left shift
+        left_pos = (- 0.5 * single_block.offsetWidth) + "px";
+        new_viewer.style.left = left_pos;
         new_viewer.style.width = (3 * td_width) + "px";
         new_viewer.style.position = "relative";
 
@@ -212,6 +246,26 @@
         single.style.display = "none";
         list.style.display = "inline";
         document.body.style.backgroundColor = "white";
+      }
+
+      function move_viewer(distance) {
+        // if distance is positive -> right
+        // if distance is negative -> left
+        new_viewer = document.getElementById('new_viewer');
+        new_viewer.style.left = position_to_int(new_viewer.style.left) + distance + "px";
+      }
+
+      function set_viewer(left) {
+        // set it directly
+      }
+
+      function position_to_int(pos) {
+        var i = parseInt(pos.replace('px', ''));
+        if (i) {
+          return i;
+        } else {
+          return 0;
+        }
       }
     </script>
 
