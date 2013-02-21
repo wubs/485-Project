@@ -152,8 +152,8 @@
       
       </div> <!-- end of single -->
     <script type="text/javascript">
-      document.onmousedown = swip_start; 
-      document.onmouseup = swip_end; 
+      document.onmousedown = swipe_start; 
+      document.onmouseup = swipe_end; 
 
 
       // global left position
@@ -165,7 +165,7 @@
       starting_pos = null;
       starting_left = null;
 
-      function swip_start(e) {
+      function swipe_start(e) {
         var e = e || window.event;
         if (new_viewer == null) {
           return true;
@@ -187,19 +187,22 @@
         pre_left_pos = e.clientX;
       }
 
-      function move_to_next_left(starting_left, distance_swipped, direction) {
+      function move_to_next_left(starting_left, distance_swiped, direction) {
         if (direction > 0) {
           // move right
           console.log("moving right");
-          new_viewer.style.left = starting_left - td_width + "px";
+          var step = move_slowly(starting_left - td_width);
+          int_handle = setInterval(step, 10);
+          
         } else {
           // move left
           console.log("moving left");
-          new_viewer.style.left = starting_left + td_width + "px";
+          var step = move_slowly(starting_left + td_width);
+          int_handle = setInterval(step, 10);
         }
       }
 
-      function swip_end(e) {
+      function swipe_end(e) {
         var e = e || window.event;
 
         if (new_viewer == null) {
@@ -209,25 +212,23 @@
         //console.log("end x : " + e.clientX);
         var direction = starting_pos - e.clientX;
         //console.log("dir : " + direction);
-        var distance_swipped = Math.abs(direction);
-        //去玩游戏吧
+        var distance_swiped = Math.abs(direction);
 
-        console.log(distance_swipped);
-        // after swip down, finish the rest distance,
-        // that means distance_swipped + more to move = td_width
+        console.log(distance_swiped);
+        // after swipe down, finish the left distance,
+        // that means distance_swiped + more to move = td_width
         // or restore original left
 
-        document.onmousemove = null;
-        pre_left_pos = null;
-        starting_pos = null;
-        starting_left = null;
-
-        if (distance_swipped >= td_width / 4.0) {
+        if (distance_swiped >= td_width / 4.0) {
           // finish rest of the move
-          move_to_next_left(starting_left, distance_swipped,  direction);
+          move_to_next_left(starting_left, distance_swiped,  direction);
         } else {
           // move back to original left
+          console.log("back to original left");
+          var step = move_slowly(starting_left);
+          int_handle = setInterval(step, 10);
         }
+
       }
 
       function to_single() {
@@ -238,7 +239,6 @@
         single = document.getElementById('single');
         single_width = document.getElementById('breadcrumb').offsetWidth;
         single.style.width = single_width + "px"; 
-
 
         new_viewer = document.getElementById('new_viewer');
         single.style.display = "inline";
@@ -301,8 +301,41 @@
         new_viewer.style.left = position_to_int(new_viewer.style.left) + distance + "px";
       }
 
-      function set_viewer(left) {
-        // set it directly
+      function move_slowly(abs_left_pos) {
+
+        this.period = 30.0;
+        this.abs_left_pos = abs_left_pos;
+        this.cur_left_pos = position_to_int(new_viewer.style.left);
+        this.step = Math.abs(this.abs_left_pos - this.cur_left_pos) / 10.0;
+
+
+        var move_a_step = function() {
+          // get cur pos
+          this.cur_left_pos = position_to_int(new_viewer.style.left);
+
+          if (Math.abs(cur_left_pos- abs_left_pos) > 10) {
+            if (cur_left_pos > abs_left_pos) {
+              console.log("move slow right");
+              new_viewer.style.left = (cur_left_pos - this.step) + "px";
+            } else {
+              console.log("move slow left");
+              new_viewer.style.left = (cur_left_pos + this.step) + "px";
+            }
+          } else {
+            // int_handle is a global variable
+            new_viewer.style.left = this.abs_left_pos + "px";
+            clearInterval(int_handle);
+
+            // clear global variables here;
+            int_handle = null;
+            document.onmousemove = null;
+            pre_left_pos = null;
+            starting_pos = null;
+            starting_left = null;
+          }
+        }
+
+        return move_a_step;
       }
 
       function position_to_int(pos) {
