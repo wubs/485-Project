@@ -8,6 +8,9 @@
     background-color:#b0e0e6;
   }
 
+  #single {
+    height: 700px; 
+  }
   #single_block {
     position: relative;
     overflow-x: hidden;
@@ -26,16 +29,20 @@
     line-height: 500px;
     text-align: center;
     vertical-align: middle;
+    margin-right:auto;
+    z-index: 200;
   }
   .new_image {    /* inside round_border */
     display: inline-block;
     max-height: 100%;
-    max-width: 100%; 
+    max-width: 90%; 
     margin-left:auto;
     margin-right:auto;
+    padding-left: 5%;
+    padding-right: 5%;
   }
   #blocker-left, #blocker-right {
-    zIndex: 100;
+    z-index: 100;
     position: relative;
     height: 500px;
   }
@@ -116,7 +123,7 @@
 
       <div id="single" style="display:none;z-index:10;">
 
-        <div id="to_list" onclick='to_list()'> <h1>Close<h1> </div>
+        <div id="to_list" onclick='to_list()'> <h3>Close<h3> </div>
 
         <div id="single_block">
           <div id="new_viewer">
@@ -264,10 +271,14 @@
         single.style.width = single_width + "px"; 
         single.style.display = "inline";
         single.style.position = "absolute";
-        single.style.top = window.pageYOffset + 40 + "px";
+        single.style.top = window.pageYOffset + 90 + "px";
 
         // this is the viewer, overflow hidden 
         single_block = document.getElementById('single_block');
+        var single_block_w = single_width;
+        single_block.style.position = "relative";
+        single_block.style.width = single_block_w * 0.7 + "px";
+        single_block.style.left = single_block_w * 0.15 + "px";
 
         // this is the scrollable part 
         new_viewer = document.getElementById('new_viewer');
@@ -278,36 +289,20 @@
 
         spans = document.getElementsByClassName('round_border'); 
 
-        td_width = single_block.offsetWidth * 2.0 / 3.0;
+        td_width = single_block_w * 2.0 / 3.0;
 
         // most important left shift
         // when id = 0 show first pic
-        left_pos = (- 0.5 * single_block.offsetWidth - (cur_pic_id - 1) * td_width) + "px";
+        left_pos = (- 0.65 * single_block_w - (cur_pic_id - 1) * td_width) + "px";
         new_viewer.style.left = left_pos;
+        //new_viewer.style.backgroundColor = "black";
+        single_block.style.backgroundColor = "black";
 
         // five is 3 pic plus two edges
         // pic_count 
         var pic_count = last_pic_id + 1;
         new_viewer.style.width = (pic_count * (td_width + 5) ) + "px";
         new_viewer.style.position = "relative";
-
-
-        // start of setting blockers 
-        //block_width = td_width - 0.5 * single_block.offsetWidth;
-
-        //left.style.width = block_width + "px";
-        //right.style.width = block_width + "px";
-
-        //left.style.position = "relative";
-        //left.style.top = -500 + "px";
-        //left.style.height = 500 + "px";
-        //left.style.backgroundColor = "black";
-
-        //right.style.position = "relative";
-        //right.style.top = -1000 + "px";
-        //right.style.left = single_width - block_width + "px";
-        //right.style.backgroundColor = "black";
-        // end of setting blockers 
         
         for (var i = 0; i < spans.length; i++ ) {
           spans[i].style.width = td_width + "px";
@@ -325,7 +320,9 @@
         var single = document.getElementById('single');
         single.style.display = "none";
         list.style.display = "inline";
+        list.style.opacity = "1";
 
+        left_pos = null;
         cur_pic_id = null;
         new_viewer = null;
         document.body.style.backgroundColor = "white";
