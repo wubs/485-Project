@@ -9,6 +9,7 @@
   }
 
   #single_block {
+    position: relative;
     overflow-x: hidden;
     overflow-y: hidden;
     height: 500px; 
@@ -236,6 +237,7 @@
             // finish rest of the move
             move_to_next_left(starting_left, distance_swiped,  direction);
           } else {
+            restore_left_pos();
           }
         }
 
@@ -262,17 +264,17 @@
         single.style.width = single_width + "px"; 
         single.style.display = "inline";
         single.style.position = "absolute";
-        single.style.top = window.getYOffset;
+        single.style.top = window.pageYOffset + 40 + "px";
 
         // this is the viewer, overflow hidden 
         single_block = document.getElementById('single_block');
-
 
         // this is the scrollable part 
         new_viewer = document.getElementById('new_viewer');
 
         list = document.getElementById('list'); 
-        list.style.display = "none";
+        //list.style.display = "none";
+        list.style.opacity = "0.4";
 
         spans = document.getElementsByClassName('round_border'); 
 
@@ -291,20 +293,20 @@
 
 
         // start of setting blockers 
-        block_width = td_width - 0.5 * single_block.offsetWidth;
+        //block_width = td_width - 0.5 * single_block.offsetWidth;
 
-        left.style.width = block_width + "px";
-        right.style.width = block_width + "px";
+        //left.style.width = block_width + "px";
+        //right.style.width = block_width + "px";
 
-        left.style.position = "relative";
-        left.style.top = -500 + "px";
-        left.style.height = 500 + "px";
-        left.style.backgroundColor = "black";
+        //left.style.position = "relative";
+        //left.style.top = -500 + "px";
+        //left.style.height = 500 + "px";
+        //left.style.backgroundColor = "black";
 
-        right.style.position = "relative";
-        right.style.top = -1000 + "px";
-        right.style.left = single_width - block_width + "px";
-        right.style.backgroundColor = "black";
+        //right.style.position = "relative";
+        //right.style.top = -1000 + "px";
+        //right.style.left = single_width - block_width + "px";
+        //right.style.backgroundColor = "black";
         // end of setting blockers 
         
         for (var i = 0; i < spans.length; i++ ) {
@@ -314,7 +316,7 @@
         }
 
         // focus
-        document.body.style.backgroundColor = "black";
+        //document.body.style.backgroundColor = "black";
       }
 
       function to_list() {
