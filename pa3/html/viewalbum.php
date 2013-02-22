@@ -7,8 +7,8 @@
     height:300px;
     background-color:#b0e0e6;
   }
+
   #single_block {
-    
     overflow-x: hidden;
     overflow-y: hidden;
     height: 500px; 
@@ -19,14 +19,14 @@
     height: 500px; 
   }
 
-  .round_border {  // this is for the td
+  .round_border {  /* this is for the td */
     display: inline-block;
     height: 500px;
     line-height: 500px;
     text-align: center;
     vertical-align: middle;
   }
-  .new_image {
+  .new_image {    /* inside round_border */
     display: inline-block;
     max-height: 100%;
     max-width: 100%; 
@@ -75,14 +75,12 @@
 -->
         <table width="100%" height="100%" algin="center" valign="center">
           <?php 
-            //$query = 'SELECT * FROM Contain WHERE albumid=' 
-            //  . $albumid . ' ORDER BY sequencenum';
-            //Change the query to include the column Photo.code;
 						$query = 'SELECT Contain.albumid, Contain.caption, Contain.url, Contain.sequencenum, Photo.code, Photo.format, Photo.date FROM Contain, Photo WHERE Contain.albumid='
 							.$albumid
 							.' and Contain.url=Photo.url ORDER BY Contain.sequencenum';
             $result = mysql_query($query) or die("Query failed: " . mysql_error());
-            $counter = 0;
+            $counter = 0; // control two img per row
+            $count = 0; // countrol pic_id
             $num = 2; // how many pics per row
             $photos = array();
             while ($photo = mysql_fetch_array($result, MYSQL_ASSOC) ) {
@@ -91,21 +89,24 @@
               if ($counter % $num == 0) {
                 echo "<tr>"
                   . "<td height='400px' align='center'>" 
-                  . "<img class='img-rounded center click_photo' onclick='to_single()' value=" 
+                  . "<img class='img-rounded center click_photo' onclick='to_single(this)' "
+                  . "pic_id='" . $count . "'value=" 
                   . ($counter+1) . " src=" . $base64 . ">"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
               } else {
                 echo "<td height='400px' align='center'>"
-                  . "<img class='img-rounded center click_photo' onclick='to_single()' value="
+                  . "<img class='img-rounded center click_photo' onclick='to_single(this)' "
+                  . "pic_id='" . $count . "'value=" 
                   . ($counter+1) . " src=" . $base64 . ">"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>"
                   . "</tr>";
               }
-              $counter = $counter + 1;
+              $counter++;
+              $count++;
             }
           ?>
         </table>
@@ -113,48 +114,36 @@
       </div> <!-- end of div list -->
 
       <div id="single" style="display:none;z-index:10;">
-        <div id="to_list" onclick='to_list()'> Close </div>
+
+        <div id="to_list" onclick='to_list()'> <h1>Close<h1> </div>
+
         <div id="single_block">
           <div id="new_viewer">
             <?php
               $count = 0;
               $flag = 0;
               foreach ($photos as $photo) {
-                if ($count == 3) break;
-			      		$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"';
-                if ($flag == 0) {
-                  // inline-block of round_border is required !!!!!!
-                  echo "<div class='round_border' style='display: inline-block;'>"
-                     . "<img class='new_image' " 
-                     . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
-                  $flag = 1;
-                } else {
-                  echo "<div class='round_border' style='display: inline-block;'>"
-                     . "<img class='new_image' " 
-                     . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
-                }
+                $base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"';
+                // inline-block of round_border is required !!!!!!
+                echo "<div class='round_border'>"
+                  . "<img class='new_image' pic_id='" . $count ."'" 
+                  . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
                 $count++;
               }
               mysql_free_result($result);
               mysql_close($conn);
             ?>
-            
-           
           </div>
         </div>
-            <div id="blocker-left">
-              left
-            </div>
+        <div id="blocker-left">
+        </div>
 
-            <div id="blocker-right">
-              right
-            </div>
+        <div id="blocker-right">
+        </div>
+        <input type='hidden' id="last_pic_id" value="<?php echo $count-1; ?>">
       
       </div> <!-- end of single -->
     <script type="text/javascript">
-      document.onmousedown = swipe_start; 
-      document.onmouseup = swipe_end; 
-
 
       // global left position
       left_pos = null;
@@ -164,6 +153,10 @@
 
       starting_pos = null;
       starting_left = null;
+
+      cur_pic_id = null;
+      
+      last_pic_id = document.getElementById('last_pic_id').getAttribute('value');
 
       function swipe_start(e) {
         var e = e || window.event;
@@ -183,22 +176,40 @@
 
       function mouse_move(e) {
         var e = e || window.event;
+        if (new_viewer == null) {
+          return true;
+        }
         move_viewer(e.clientX - pre_left_pos);
         pre_left_pos = e.clientX;
       }
 
+      function restore_left_pos() {
+        // move back to original left
+        console.log("back to original left");
+        var step = move_slowly(starting_left);
+        int_handle = setInterval(step, 10);
+      }
       function move_to_next_left(starting_left, distance_swiped, direction) {
         if (direction > 0) {
-          // move right
-          console.log("moving right");
-          var step = move_slowly(starting_left - td_width);
-          int_handle = setInterval(step, 10);
-          
+          if ( cur_pic_id >= last_pic_id ) {
+            restore_left_pos();
+          } else {
+            // move right
+            console.log("moving right");
+            var step = move_slowly(starting_left - td_width);
+            int_handle = setInterval(step, 10);
+            cur_pic_id++;
+          }
         } else {
           // move left
-          console.log("moving left");
-          var step = move_slowly(starting_left + td_width);
-          int_handle = setInterval(step, 10);
+          if ( cur_pic_id == 0 ) {
+            restore_left_pos();
+          } else {
+            console.log("moving left");
+            var step = move_slowly(starting_left + td_width);
+            int_handle = setInterval(step, 10);
+            cur_pic_id--;
+          }
         }
       }
 
@@ -207,41 +218,60 @@
 
         if (new_viewer == null) {
           return true;
-        }
-
-        //console.log("end x : " + e.clientX);
-        var direction = starting_pos - e.clientX;
-        //console.log("dir : " + direction);
-        var distance_swiped = Math.abs(direction);
-
-        console.log(distance_swiped);
-        // after swipe down, finish the left distance,
-        // that means distance_swiped + more to move = td_width
-        // or restore original left
-
-        if (distance_swiped >= td_width / 4.0) {
-          // finish rest of the move
-          move_to_next_left(starting_left, distance_swiped,  direction);
         } else {
-          // move back to original left
-          console.log("back to original left");
-          var step = move_slowly(starting_left);
-          int_handle = setInterval(step, 10);
+
+          //console.log("end x : " + e.clientX);
+          var direction = starting_pos - e.clientX;
+          //console.log("dir : " + direction);
+          var distance_swiped = Math.abs(direction);
+
+          console.log(distance_swiped);
+          // after swipe down, finish the left distance,
+          // that means distance_swiped + more to move = td_width
+          // or restore original left
+
+          document.onmousemove = null;
+          document.onmousedown = null;
+          if (distance_swiped >= td_width / 4.0 ) {
+            // finish rest of the move
+            move_to_next_left(starting_left, distance_swiped,  direction);
+          } else {
+          }
         }
 
       }
 
-      function to_single() {
-        left = document.getElementById('blocker-left'); 
-        right = document.getElementById('blocker-right'); 
-        list = document.getElementById('list'); 
-        single_block = document.getElementById('single_block');
+      function to_single(target) {
+        // start the event handlers
+        document.onmousedown = swipe_start; 
+        document.onmouseup = swipe_end; 
+
+        // pick up the pic id to show
+        //
+        // Global
+        cur_pic_id = target.getAttribute('pic_id');
+        console.log("cur pic: " + cur_pic_id);
+
+        var left = document.getElementById('blocker-left'); 
+        var right = document.getElementById('blocker-right'); 
+
+        // this should be the frame to view a single picture
         single = document.getElementById('single');
+        // get screen width
         single_width = document.getElementById('breadcrumb').offsetWidth;
         single.style.width = single_width + "px"; 
-
-        new_viewer = document.getElementById('new_viewer');
         single.style.display = "inline";
+        single.style.position = "absolute";
+        single.style.top = window.getYOffset;
+
+        // this is the viewer, overflow hidden 
+        single_block = document.getElementById('single_block');
+
+
+        // this is the scrollable part 
+        new_viewer = document.getElementById('new_viewer');
+
+        list = document.getElementById('list'); 
         list.style.display = "none";
 
         spans = document.getElementsByClassName('round_border'); 
@@ -249,11 +279,18 @@
         td_width = single_block.offsetWidth * 2.0 / 3.0;
 
         // most important left shift
-        left_pos = (- 0.5 * single_block.offsetWidth) + "px";
+        // when id = 0 show first pic
+        left_pos = (- 0.5 * single_block.offsetWidth - (cur_pic_id - 1) * td_width) + "px";
         new_viewer.style.left = left_pos;
-        new_viewer.style.width = (3 * td_width) + "px";
+
+        // five is 3 pic plus two edges
+        // pic_count 
+        var pic_count = last_pic_id + 1;
+        new_viewer.style.width = (pic_count * (td_width + 5) ) + "px";
         new_viewer.style.position = "relative";
 
+
+        // start of setting blockers 
         block_width = td_width - 0.5 * single_block.offsetWidth;
 
         left.style.width = block_width + "px";
@@ -268,16 +305,12 @@
         right.style.top = -1000 + "px";
         right.style.left = single_width - block_width + "px";
         right.style.backgroundColor = "black";
+        // end of setting blockers 
         
         for (var i = 0; i < spans.length; i++ ) {
           spans[i].style.width = td_width + "px";
           spans[i].style.height = 500 + "px";
           spans[i].style.position = "relative";
-          var img = spans[i].childNodes[0];
-          img.style.maxWidth = "100%";
-          img.style.maxHeight = "100%";
-          img.style.marginLeft = "auto";
-          img.style.marginRight = "auto";
         }
 
         // focus
@@ -285,13 +318,17 @@
       }
 
       function to_list() {
-        new_viewer = null;
-        console.log("to_list");
+        clearInterval(int_handle);
         var list = document.getElementById('list'); 
         var single = document.getElementById('single');
         single.style.display = "none";
         list.style.display = "inline";
+
+        cur_pic_id = null;
+        new_viewer = null;
         document.body.style.backgroundColor = "white";
+        document.onmousedown = null;
+        document.onmouseup = null; 
       }
 
       function move_viewer(distance) {
@@ -303,7 +340,7 @@
 
       function move_slowly(abs_left_pos) {
 
-        this.period = 30.0;
+        this.period = 50.0;
         this.abs_left_pos = abs_left_pos;
         this.cur_left_pos = position_to_int(new_viewer.style.left);
         this.step = Math.abs(this.abs_left_pos - this.cur_left_pos) / 10.0;
@@ -315,10 +352,10 @@
 
           if (Math.abs(cur_left_pos- abs_left_pos) > 10) {
             if (cur_left_pos > abs_left_pos) {
-              console.log("move slow right");
+              //console.log("move slow right");
               new_viewer.style.left = (cur_left_pos - this.step) + "px";
             } else {
-              console.log("move slow left");
+              //console.log("move slow left");
               new_viewer.style.left = (cur_left_pos + this.step) + "px";
             }
           } else {
@@ -328,10 +365,10 @@
 
             // clear global variables here;
             int_handle = null;
-            document.onmousemove = null;
             pre_left_pos = null;
             starting_pos = null;
             starting_left = null;
+            document.onmousedown = swipe_start;
           }
         }
 
@@ -359,26 +396,6 @@
       $("#myCarousel").carousel({
         interval: false 
       });
-
-      //$(".click_back").live("click", function() { 
-      //  setTimeout(function() {$("#single").css("display","none");}, 10);
-      //  setTimeout(function() {$("#list").css("display", "inline");}, 50);
-      //  $("#active_breadcrumb").remove();
-      //});
-
-      //$(".click_collapse").live("click", function() { 
-      //  $("#comments").collapse('toggle');
-      //});
-
-      //$(".carousel-control").live("click", function() {
-      //  fetch_comments();
-      //  $("#active_breadcrumb").remove();
-      //  setTimeout(function () {
-      //    var s = $(".item.active > img").attr("url")
-      //    var img_name = s.substring(s.lastIndexOf('/')+1);
-      //    $(".breadcrumb").append("<li id='active_breadcrumb' class='active'>"+img_name+"</li>");
-      //  }, 700);
-      //});
 
       $("#click_newcomment").live("click", function() { 
         // data.datetime data.comments data.username
