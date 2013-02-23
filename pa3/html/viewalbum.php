@@ -34,12 +34,11 @@
   }
   .new_image {    /* inside round_border */
     display: inline-block;
-    max-height: 100%;
+    max-height: 90%;
     max-width: 90%; 
     margin-left:auto;
     margin-right:auto;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding: 5%;
   }
   #blocker-left, #blocker-right {
     z-index: 100;
