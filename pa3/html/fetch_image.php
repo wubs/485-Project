@@ -12,9 +12,10 @@
   $result = mysql_query($query) or die(mysql_error());
 
   $photo = mysql_fetch_array($result, MYSQL_ASSOC);
-
+  
   // $base64
   // front-end src=$base64 
+  $base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; 
 
 
   echo json_encode($base64);
