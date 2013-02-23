@@ -110,11 +110,14 @@ function mouse_move(e) {
   drag.style.top = (offset_y + e.clientY - down_y) + 'px';
 }
 
+
 function mouse_up(e) {
   e = e || window.event;
   if (drag != null) {
-    if (dest && dest.hasAttribute('trash') && drag.hasAttribute('username') ) {  // test if a dest is under mouse
-      console.log(dest);
+    if (dest && dest.hasAttribute('trash') && drag.getAttribute('username') !=null && drag.getAttribute('albumid') !=null ) {  // test if a dest is under mouse
+      var username = drag.getAttribute('username');
+      var albumid = drag.getAttribute('albumid');
+      console.log("remove " + username + " from " + albumid);
       
       // withdraw access
 
@@ -129,11 +132,25 @@ function mouse_up(e) {
       drag_title.style.opacity = "1";
       drag = null;
       // stop the interval loop
-    } else if (dest && dest.hasAttribute('username') && drag.hasAttribute('albumid') ) {
-      console.log("grant " + dest);
+    } else if (dest && !drag.hasAttribute('username') && dest.getAttribute('username') != null && drag.getAttribute('albumid') ) {
+      console.log(drag.getAttribute('albumid'));
+      var username = dest.getAttribute('username');
+      var albumid = drag.getAttribute('albumid');
+      console.log("grant " + username + " to " + albumid);
         
       
-      // grant access
+      // grant access,   share
+      other_users_block = document.getElementById('other_users') 
+      other_users_block.innerHTML = "<h1> refreshed </h1>";
+
+      shared_users_block = document.getElementById(albumid); 
+
+      var txt = "<tr><td><div style='position:relative;left:30px;'>Shared with:</div></td><td></td><td></td><td></td><td></td></tr>";
+      for (var i=0 ;i < 3 ;i++) {
+        txt += "<tr><td><div style='position:relative;left:50px;' class='drag_title'>" + i +  "</div><div class='drag' style='display: none;' username='" + i + "' albumid='" + i + "' > Wanna move to trash? </div></td><td></td><td></td><td></td><td></td></tr>";
+      }
+
+      shared_users_block.innerHTML = txt;
 
       // done, restore drag attributes
       drag.style.zIndex = old_zIndex;

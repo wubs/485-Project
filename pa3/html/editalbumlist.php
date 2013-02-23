@@ -117,6 +117,7 @@
                 $query2 = "SELECT username FROM AlbumAccess where albumid=$cur_albumid and username!='$username'";
                 $result2 = mysql_query($query2) or die("Query failed: " . mysql_error());
 
+                echo "<div id='$cur_albumid'>";
                 $print_shared_with = true;
                 while ($user_row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
                   $cur_username = $user_row['username'];
@@ -126,8 +127,9 @@
                     $print_shared_with = false;
                   }
 
-                  echo "<tr><td><div style='position:relative;left:50px;' class='drag_title'>$cur_username</div><div class='drag' style='display: none;' username='$cur_username'> Wanna move to trash? </div></td><td></td><td></td><td></td><td></td></tr>";
+                  echo "<tr><td><div style='position:relative;left:50px;' class='drag_title'>$cur_username</div><div class='drag' style='display: none;' username='$cur_username' albumid='$cur_albumid' > Wanna move to trash? </div></td><td></td><td></td><td></td><td></td></tr>";
                 }
+                echo "</div>";
                 
               }
               
@@ -141,9 +143,10 @@
 
 
 
-      <div class="span4">
+      <div class="span4" >
         <div><h3 class="dest" trash="true" >Trash</h3></div>
         <div><h5>Other Users</h5></div>
+        <div id="other_users">
         <?php
           $conn = mysql_connect($db_host, $db_user, $db_passwd)
                 or die("Connect Error: " . mysql_error());
@@ -158,6 +161,7 @@
             echo "<div class='dest' username='$cur_username'>$cur_username</div>";
           }       
         ?>
+        </div>
         
       </div>
 

@@ -1,5 +1,4 @@
 <?php 
-  echo "<h1> hi </h1>";
   include_once('lib.php'); 
 
   $new_username = $_POST['username'];
@@ -17,9 +16,4 @@
   $result = mysql_query($query) or die("Query failed: " . mysql_error());
 
   mysql_close($conn);
-  /*
-  foreach ($all_albums as $album) {
-    echo $album->$name . $album->$access
-  }
-  */
 ?>
