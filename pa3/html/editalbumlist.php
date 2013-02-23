@@ -119,7 +119,7 @@
                 while ($user_row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
                   $cur_username = $user_row['username'];
                   if ($cur_username != $username) {
-                    echo "<tr><td></td><td>$cur_username</td> <td><a class='btn del_share' usrname='$cur_username' albumid='$cur_albumid'>Withdraw</a></td><td></td><td></td></tr>";
+                    echo "<tr><td></td><td><div class='drag_title'>$cur_username</div><div class='drag' style='display: none;'> Wanna move to trash? </div></td><td></td><td></td><td></td></tr>";
                   }
                 }
               }
@@ -139,14 +139,14 @@
 
       <div class="span4">
         <div><h5>Trash</h5></div>
-        <div><h5>Users</h5></div>
+        <div><h5>Other Users</h5></div>
         <?php
           $conn = mysql_connect($db_host, $db_user, $db_passwd)
                 or die("Connect Error: " . mysql_error());
               
           mysql_select_db($db_name) or die("Could not select:" . $db_name);
               
-          $query = "SELECT username FROM User";
+          $query = "SELECT username FROM User WHERE username != '$username'";
           $result = mysql_query($query) or die("Query failed: " . mysql_error()); 
             
           while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
