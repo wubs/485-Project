@@ -104,7 +104,8 @@
               
               while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
                 // always
-                echo "<tr> <td class='contains' ><div class='drag_title'>" . $line['title'] . "</div> <div class='drag' style='display: none;'> Give access to </div> </td>"
+                $cur_albumid = $line['albumid'];
+                echo "<tr> <td class='contains' ><div class='drag_title' style='font-weight:bold' >" . $line['title'] . "</div> <div class='drag' style='display: none;' albumid='$cur_albumid'> Give access to </div> </td>"
                   . "<td>" . $line['access'] . "</td>";
 
                 echo "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" 
@@ -113,15 +114,21 @@
 
                 //
                 $cur_albumid = $line['albumid'];
-                $query2 = "SELECT username FROM AlbumAccess where albumid=$cur_albumid";
+                $query2 = "SELECT username FROM AlbumAccess where albumid=$cur_albumid and username!='$username'";
                 $result2 = mysql_query($query2) or die("Query failed: " . mysql_error());
 
+                $print_shared_with = true;
                 while ($user_row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
                   $cur_username = $user_row['username'];
-                  if ($cur_username != $username) {
-                    echo "<tr><td></td><td><div class='drag_title'>$cur_username</div><div class='drag' style='display: none;'> Wanna move to trash? </div></td><td></td><td></td><td></td></tr>";
+
+                  if ( $print_shared_with ) {
+                    echo "<tr><td><div style='position:relative;left:30px;'>Shared with:</div></td><td></td><td></td><td></td><td></td></tr>";
+                    $print_shared_with = false;
                   }
+
+                  echo "<tr><td><div style='position:relative;left:50px;' class='drag_title'>$cur_username</div><div class='drag' style='display: none;' username='$cur_username'> Wanna move to trash? </div></td><td></td><td></td><td></td><td></td></tr>";
                 }
+                
               }
               
               mysql_free_result($result);
@@ -133,12 +140,9 @@
       </div>
 
 
-      <div id='fly'>
-        <h4>Fly</h4>
-      </div>
 
       <div class="span4">
-        <div><h5>Trash</h5></div>
+        <div><h3 class="dest" trash="true" >Trash</h3></div>
         <div><h5>Other Users</h5></div>
         <?php
           $conn = mysql_connect($db_host, $db_user, $db_passwd)
@@ -150,7 +154,8 @@
           $result = mysql_query($query) or die("Query failed: " . mysql_error()); 
             
           while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            echo '<div class="dest">'. $line['username'].' </div>';
+            $cur_username = $line['username'];
+            echo "<div class='dest' username='$cur_username'>$cur_username</div>";
           }       
         ?>
         

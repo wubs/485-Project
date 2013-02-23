@@ -7,10 +7,12 @@ document.onmouseover = function(e) {
   if (e.target.className == 'dest') {
     dest = e.target;
     //console.log('over');
+    dest.style.backgroundColor = "yellow";
   }
 };
 
 dest = null;
+drag = null;
 
 register_dests();
 
@@ -18,6 +20,7 @@ register_dests();
 
 document.onmouseout = function(e) {
   if (e.target.className == 'dest') {
+    dest.style.backgroundColor = null;
     dest = null;
     //console.log('out');
   }
@@ -65,7 +68,16 @@ function mouse_down(e) {
 
   offset_width = drag_title.offsetWidth;
 
-  drag = drag_title.nextSibling.nextSibling;
+  if (drag_title.nextSibling.className == "drag") {
+    drag = drag_title.nextSibling;
+    console.log(drag_title.nextSibling);
+  } else if (drag_title.nextSibling.nextSibling.className == "drag") {
+    drag = drag_title.nextSibling.nextSibling;
+    console.log(drag_title.nextSibling.nextSibling);
+  } else {
+    alert('something wrong');
+    return;
+  }
 
   offset_x = position_to_int(drag_title.style.left) - offset_width;
   offset_y = position_to_int(drag_title.style.top);
@@ -101,27 +113,49 @@ function mouse_move(e) {
 function mouse_up(e) {
   e = e || window.event;
   if (drag != null) {
-    if (dest) {  // test if a dest is under mouse
-      // user dropped the element at
-      // right location
+    if (dest && dest.hasAttribute('trash') && drag.hasAttribute('username') ) {  // test if a dest is under mouse
       console.log(dest);
+      
+      // withdraw access
 
+      // done, restore drag attributes
+      drag.style.zIndex = old_zIndex;
+      drag.style.pointerEvents = null;
+      drag.style.left = offset_x + 'px';
+      drag.style.top = offset_y + 'px';
+      document.onmousemove = null;
+      drag.style.display = "none";
+      drag.style.opacity = "0.0";
+      drag_title.style.opacity = "1";
+      drag = null;
+      // stop the interval loop
+    } else if (dest && dest.hasAttribute('username') && drag.hasAttribute('albumid') ) {
+      console.log("grant " + dest);
+        
+      
+      // grant access
 
-      // trigger ajax to grand user access to album
-      //
-      // username = dest.value()
-      // albumid = drag.value()
-      // $.post('add.php', {albumid = albu, }, fucntion() {
-      // 
-      // })
-    } 
+      // done, restore drag attributes
+      drag.style.zIndex = old_zIndex;
+      drag.style.pointerEvents = null;
+      drag.style.left = offset_x + 'px';
+      drag.style.top = offset_y + 'px';
+      document.onmousemove = null;
+      drag.style.display = "none";
+      drag.style.opacity = "0.0";
+      drag_title.style.opacity = "1";
+      drag = null;
+      // stop the interval loop
 
-    // created a closure
-    step = restore(e.clientX + offset_x - down_x, e.clientY + offset_y - down_y);
+    } else { 
 
-    // this will move the block back to origin pos
-    // setInterval will stop by step() if it is done
-    int_step = setInterval(step, 0.5);
+      // created a closure
+      step = restore(e.clientX + offset_x - down_x, e.clientY + offset_y - down_y);
+
+      // this will move the block back to origin pos
+      // setInterval will stop by step() if it is done
+      int_step = setInterval(step, 0.5);
+    }
   }
 }
 
