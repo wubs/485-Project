@@ -17,7 +17,7 @@
   // front-end src=$base64 
 
 
-  echo json_encode($base64);
+  echo json_encode($photo);
 
   mysql_close($conn);
 ?>

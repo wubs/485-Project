@@ -18,6 +18,34 @@ register_dests();
 
 // end of main
 
+// ajax 
+function ajax_post(url, data, callback) {
+  var httpRequest = new XMLHttpRequest();
+  var url = url;
+  var data = JSON.stringify(data);
+  var callback = callback;
+
+  var handler = function() {
+    if (httpRequest.readyState === 4) {
+      if (httpRequest.status === 200) {
+        // action
+        returned_obj = JSON.parse(httpRequest.responseText);
+        callback(returned_obj);
+        // action
+      } else {
+        alert('There was a problem with the request.');
+      }
+    }
+  };
+
+  httpRequest = new XMLHttpRequest();
+  httpRequest.onreadystatechange = handler;
+  httpRequest.open('POST', url);
+  httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  httpRequest.send('data=' + encodeURIComponent(data));
+}
+// end of ajax 
+
 document.onmouseout = function(e) {
   if (e.target.className == 'dest') {
     dest.style.backgroundColor = null;
@@ -97,7 +125,7 @@ function mouse_down(e) {
   drag.style.zIndex = 1;
 
   
-  setTimeout(function() {drag.style.display = "inline";}, 100);
+  setTimeout(function() {if (drag) drag.style.display = "inline";}, 100);
 
   document.onmousemove = mouse_move;
   document.body.focus();
@@ -110,6 +138,39 @@ function mouse_move(e) {
   drag.style.top = (offset_y + e.clientY - down_y) + 'px';
 }
 
+function refresh_ui(data, albumid) {
+  // data is already json  
+  var shared_users = data.shared_users;
+  var other_users = data.other_users;
+
+  var other_txt = "";
+  var other_users_block = document.getElementById('other_users') 
+    // other_users
+
+    for (var i=0; i< other_users.length; i++) {
+      other_txt += "<div class='dest' username='" + other_users[i] + "'>" + other_users[i] + "</div>";
+
+    }
+  other_users_block.innerHTML = other_txt;
+
+  var shared_users_block = document.getElementById(albumid); 
+
+  // if there are guys here
+  if (shared_users.length !=0 ) {
+    var shared_txt = "<div><span><div style='position:relative;left:30px;'>Shared with:</div></span><span></span><span></span><span></span><span></span></div>";
+
+    // shared users
+    for (var i=0 ;i < shared_users.length ;i++) {
+      shared_txt += "<div><span><div style='position:relative;left:50px;' class='drag_title'>" + shared_users[i] + "</div><div class='drag' style='display: none;' username='" + shared_users[i] + "' albumid='" + albumid + "' > Wanna move to trash? </div></span><span></span><span></span><span></span><span></span></div>";
+    }
+
+    shared_users_block.innerHTML = shared_txt;
+  } else {
+  // else no guy
+    shared_users_block.innerHTML = ""; 
+  }
+}
+
 
 function mouse_up(e) {
   e = e || window.event;
@@ -120,6 +181,9 @@ function mouse_up(e) {
       console.log("remove " + username + " from " + albumid);
       
       // withdraw access
+      ajax_post('delshare.php', {'username': username, 'albumid': albumid} , function(data) {
+        refresh_ui(data, albumid);
+      });
 
       // done, restore drag attributes
       drag.style.zIndex = old_zIndex;
@@ -138,19 +202,12 @@ function mouse_up(e) {
       var albumid = drag.getAttribute('albumid');
       console.log("grant " + username + " to " + albumid);
         
-      
       // grant access,   share
-      other_users_block = document.getElementById('other_users') 
-      other_users_block.innerHTML = "<h1> refreshed </h1>";
 
-      shared_users_block = document.getElementById(albumid); 
+      ajax_post('share.php', {'to_username': username, 'albumid': albumid} , function(data) {
+        refresh_ui(data, albumid);
+      });
 
-      var txt = "<tr><td><div style='position:relative;left:30px;'>Shared with:</div></td><td></td><td></td><td></td><td></td></tr>";
-      for (var i=0 ;i < 3 ;i++) {
-        txt += "<tr><td><div style='position:relative;left:50px;' class='drag_title'>" + i +  "</div><div class='drag' style='display: none;' username='" + i + "' albumid='" + i + "' > Wanna move to trash? </div></td><td></td><td></td><td></td><td></td></tr>";
-      }
-
-      shared_users_block.innerHTML = txt;
 
       // done, restore drag attributes
       drag.style.zIndex = old_zIndex;
@@ -167,11 +224,24 @@ function mouse_up(e) {
     } else { 
 
       // created a closure
-      step = restore(e.clientX + offset_x - down_x, e.clientY + offset_y - down_y);
+      if (Math.abs(e.clientX - down_x) < 5 ) {
+        // quick and DIRTY!
+        drag.style.zIndex = old_zIndex;
+        drag.style.pointerEvents = null;
+        drag.style.left = offset_x + 'px';
+        drag.style.top = offset_y + 'px';
+        document.onmousemove = null;
+        drag.style.display = "none";
+        drag.style.opacity = "0.0";
+        drag_title.style.opacity = "1";
+        drag = null;
+      } else {
+        step = restore(e.clientX + offset_x - down_x, e.clientY + offset_y - down_y);
 
-      // this will move the block back to origin pos
-      // setInterval will stop by step() if it is done
-      int_step = setInterval(step, 0.5);
+        // this will move the block back to origin pos
+        // setInterval will stop by step() if it is done
+        int_step = setInterval(step, 0.5);
+      }
     }
   }
 }
@@ -195,6 +265,12 @@ function restore(x, y) {
       this.count++;
     } else {
       // done, restore drag attributes
+      if (drag == null) {
+        alert('haha');
+        clearInterval(int_step);
+        document.onmousemove = null;
+        return;
+      }
       drag.style.zIndex = old_zIndex;
       drag.style.pointerEvents = null;
       drag.style.left = offset_x + 'px';

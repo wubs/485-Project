@@ -22,6 +22,15 @@
       position: relative;
       height: 50px;
     }
+
+    .old_row {
+      margin-top: 25px;
+      height: 30px;
+      margin-right: 150px;
+    }
+
+    #old_table span {
+    }
 </style>
 <?php include('lib.php'); ?>
 <?php include('include/head.php'); ?>
@@ -82,17 +91,7 @@
       </form>
 
       <div class="row">
-      <div class="span8">
-        <table >
-          <thead>
-            <tr>
-              <td class="span4">Album</td> 
-              <td class="span1">Access</td> 
-              <td ></td>
-            </tr>
-          </thead>
-
-          <tbody id="table_body" >
+      <div id="old_table" class="span8">
             <?php 
               $conn = mysql_connect($db_host, $db_user, $db_passwd)
                 or die("Connect Error: " . mysql_error());
@@ -105,12 +104,12 @@
               while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
                 // always
                 $cur_albumid = $line['albumid'];
-                echo "<tr> <td class='contains' ><div class='drag_title' style='font-weight:bold' >" . $line['title'] . "</div> <div class='drag' style='display: none;' albumid='$cur_albumid'> Give access to </div> </td>"
-                  . "<td>" . $line['access'] . "</td>";
+                echo "<div class='old_row'> <span class='contains' ><div class='drag_title' style='font-weight:bold' >" . $line['title'] . "</div> <div class='drag' style='display: none;' albumid='$cur_albumid'> Give access to </div> </span>"
+                  . "<span class='pull-right' style='margin-left: 30px; width:60px' >" . $line['access'] . "</span>";
 
-                echo "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" 
+                echo "<span class='pull-right'><a href='#myModal' role='button' class='btn btn-small click_edit' data-toggle='modal' albumid=" 
                   . $line['albumid'] . " album_title='" . $line['title'] . "' album_access='" . $line['access'] . "'>Edit</a>&nbsp&nbsp"
-                  . "<a class='btn btn-danger Del' albumid='". $line['albumid'] . "'>Del</a></td></tr>";
+                  . "<a class='btn btn-small Del' albumid='". $line['albumid'] . "'>Del</a></span></div>";
 
                 //
                 $cur_albumid = $line['albumid'];
@@ -123,11 +122,11 @@
                   $cur_username = $user_row['username'];
 
                   if ( $print_shared_with ) {
-                    echo "<tr><td><div style='position:relative;left:30px;'>Shared with:</div></td><td></td><td></td><td></td><td></td></tr>";
+                    echo "<div><span><div style='position:relative;left:30px;'>Shared with:</div></span><span></span><span></span><span></span><span></span></div>";
                     $print_shared_with = false;
                   }
 
-                  echo "<tr><td><div style='position:relative;left:50px;' class='drag_title'>$cur_username</div><div class='drag' style='display: none;' username='$cur_username' albumid='$cur_albumid' > Wanna move to trash? </div></td><td></td><td></td><td></td><td></td></tr>";
+                  echo "<div><span><div style='position:relative;left:50px;' class='drag_title'>$cur_username</div><div class='drag' style='display: none;' username='$cur_username' albumid='$cur_albumid' > Wanna move to trash? </div></span><span></span><span></span><span></span><span></span></div>";
                 }
                 echo "</div>";
                 
@@ -136,9 +135,7 @@
               mysql_free_result($result);
               mysql_close($conn);
             ?>
-          </tbody>
 
-        </table>
       </div>
 
 
