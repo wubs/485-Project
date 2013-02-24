@@ -22,6 +22,15 @@
       position: relative;
       height: 50px;
     }
+
+    .old_row {
+      margin-top: 25px;
+      height: 30px;
+      margin-right: 150px;
+    }
+
+    #old_table span {
+    }
 </style>
 <?php include('lib.php'); ?>
 <?php include('include/head.php'); ?>
@@ -82,17 +91,7 @@
       </form>
 
       <div class="row">
-      <div class="span8">
-        <table >
-          <thead>
-            <tr>
-              <td class="span4">Album</td> 
-              <td class="span1">Access</td> 
-              <td ></td>
-            </tr>
-          </thead>
-
-          <tbody id="table_body" >
+      <div id="old_table" class="span8">
             <?php 
               $conn = mysql_connect($db_host, $db_user, $db_passwd)
                 or die("Connect Error: " . mysql_error());
@@ -104,42 +103,47 @@
               
               while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
                 // always
-                echo "<tr> <td class='contains' ><div class='drag_title'>" . $line['title'] . "</div> <div class='drag' style='display: none;'> Give access to </div> </td>"
-                  . "<td>" . $line['access'] . "</td>";
+                $cur_albumid = $line['albumid'];
+                echo "<div class='old_row'> <span class='contains' ><div class='drag_title' style='font-weight:bold' >" . $line['title'] . "</div> <div class='drag' style='display: none;' albumid='$cur_albumid'> Give access to </div> </span>"
+                  . "<span class='pull-right' style='margin-left: 30px; width:60px' >" . $line['access'] . "</span>";
 
-                echo "<td><a href='#myModal' role='button' class='btn btn-primary click_edit' data-toggle='modal' albumid=" 
+                echo "<span class='pull-right'><a href='#myModal' role='button' class='btn btn-small click_edit' data-toggle='modal' albumid=" 
                   . $line['albumid'] . " album_title='" . $line['title'] . "' album_access='" . $line['access'] . "'>Edit</a>&nbsp&nbsp"
-                  . "<a class='btn btn-danger Del' albumid='". $line['albumid'] . "'>Del</a></td></tr>";
+                  . "<a class='btn btn-small Del' albumid='". $line['albumid'] . "'>Del</a></span></div>";
 
                 //
                 $cur_albumid = $line['albumid'];
-                $query2 = "SELECT username FROM AlbumAccess where albumid=$cur_albumid";
+                $query2 = "SELECT username FROM AlbumAccess where albumid=$cur_albumid and username!='$username'";
                 $result2 = mysql_query($query2) or die("Query failed: " . mysql_error());
 
+                echo "<div id='$cur_albumid'>";
+                $print_shared_with = true;
                 while ($user_row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
                   $cur_username = $user_row['username'];
-                  if ($cur_username != $username) {
-                    echo "<tr><td></td><td><div class='drag_title'>$cur_username</div><div class='drag' style='display: none;'> Wanna move to trash? </div></td><td></td><td></td><td></td></tr>";
+
+                  if ( $print_shared_with ) {
+                    echo "<div><span><div style='position:relative;left:30px;'>Shared with:</div></span><span></span><span></span><span></span><span></span></div>";
+                    $print_shared_with = false;
                   }
+
+                  echo "<div><span><div style='position:relative;left:50px;' class='drag_title'>$cur_username</div><div class='drag' style='display: none;' username='$cur_username' albumid='$cur_albumid' > Wanna move to trash? </div></span><span></span><span></span><span></span><span></span></div>";
                 }
+                echo "</div>";
+                
               }
               
               mysql_free_result($result);
               mysql_close($conn);
             ?>
-          </tbody>
 
-        </table>
       </div>
 
 
-      <div id='fly'>
-        <h4>Fly</h4>
-      </div>
 
-      <div class="span4">
-        <div><h5>Trash</h5></div>
+      <div class="span4" >
+        <div><h3 class="dest" trash="true" >Trash</h3></div>
         <div><h5>Other Users</h5></div>
+        <div id="other_users">
         <?php
           $conn = mysql_connect($db_host, $db_user, $db_passwd)
                 or die("Connect Error: " . mysql_error());
@@ -150,9 +154,11 @@
           $result = mysql_query($query) or die("Query failed: " . mysql_error()); 
             
           while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
-            echo '<div class="dest">'. $line['username'].' </div>';
+            $cur_username = $line['username'];
+            echo "<div class='dest' username='$cur_username'>$cur_username</div>";
           }       
         ?>
+        </div>
         
       </div>
 

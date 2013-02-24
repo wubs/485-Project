@@ -18,7 +18,7 @@
   $base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; 
 
 
-  echo json_encode($base64);
+  echo json_encode($photo);
 
   mysql_close($conn);
 ?>
