@@ -1,6 +1,8 @@
 <?php 
   include('lib.php'); 
-  $url = $_POST['url']; 
+  $json_string = $_POST['data'];
+  $data = json_decode($json_string);
+  $url = $data->{'url'};
 
   $conn = mysql_connect($db_host, $db_user, $db_passwd)
   or die("Connect Error: " . mysql_error());
@@ -15,10 +17,11 @@
   
   // $base64
   // front-end src=$base64 
-  $base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; 
+  $data = array();
+  $data['src'] = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; 
 
 
-  echo json_encode($photo);
+  echo json_encode($data);
 
   mysql_close($conn);
 ?>
