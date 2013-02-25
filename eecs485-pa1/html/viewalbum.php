@@ -170,7 +170,7 @@
             $photos = array();
             while ($photo = mysql_fetch_array($result, MYSQL_ASSOC) ) {
               array_push($photos, $photo);
-							$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
+              $base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
               if ($counter % $num == 0) {
                 echo "<tr>"
                   . "<td height='400px' align='center'>" 

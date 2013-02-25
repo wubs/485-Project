@@ -11,12 +11,14 @@
   
   mysql_select_db($db_name) or die("Could not select:" . $db_name);
 
-  $query = "SELECT COUNT(*) from User where username='$to_username'";
+  $query = "SELECT COUNT(*)from User where username='$to_username'";
   $result = mysql_query($query) or die("Query failed: " . mysql_error());
   $row = mysql_fetch_array($result,MYSQL_ASSOC);
 
+  $query2 = "SELECT access from Album where albumid='$albumid'";
+  $result2 = mysql_query($query2) or die("Query failed ". mysql_error());
   $data = array();
-  if ($row['COUNT(*)'] == 1 || $row['COUNT(*)']=="1") {
+  if (($row['COUNT(*)'] == 1 || $row['COUNT(*)']=="1")&& $result2['access']=='private') {
     $query = "INSERT IGNORE AlbumAccess (albumid, username) VALUES ($albumid, '$to_username')";
     $result = mysql_query($query) or die("Query failed: " . mysql_error());
 

@@ -118,6 +118,9 @@
 
                 echo "<div id='$cur_albumid'>";
                 $print_shared_with = true;
+                if($line['access']=='public'){
+                  $print_shared_with = false;
+                }
                 while ($user_row = mysql_fetch_array($result2, MYSQL_ASSOC)) {
                   $cur_username = $user_row['username'];
 
@@ -248,12 +251,13 @@
         $(".Share").live("click", function() {     
           var to_username = $("#to_username").val();
           var id = $("#sharing_albumid").val();
+          var access = $("#album_access").val();
           $.post("share.php", 
             {"albumid": id, "to_username": to_username},
             function(data) {
               location.reload();
             }
-          );   
+          );  
         });
 
         $(".del_share").live("click", function() {     
