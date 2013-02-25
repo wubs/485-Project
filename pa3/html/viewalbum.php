@@ -93,20 +93,19 @@
             while ($photo = mysql_fetch_array($result, MYSQL_ASSOC) ) {
               array_push($photos, $photo);
 							$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
+              $url = $photo['url'];
               if ($counter % $num == 0) {
                 echo "<tr>"
                   . "<td height='400px' align='center'>" 
                   . "<img class='img-rounded center click_photo' onclick='to_single(this)' "
-                  . "pic_id='" . $count . "'value=" 
-                  . ($counter+1) . " src=" . $base64 . ">"
+                  . "pic_id='$count' value='" . ($counter+1) . "' src=$base64 url='$url'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
               } else {
                 echo "<td height='400px' align='center'>"
                   . "<img class='img-rounded center click_photo' onclick='to_single(this)' "
-                  . "pic_id='" . $count . "'value=" 
-                  . ($counter+1) . " src=" . $base64 . ">"
+                  . "pic_id='$count' value='" . ($counter+1) . "' src=$base64 url='$url'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>"
@@ -132,9 +131,10 @@
               foreach ($photos as $photo) {
                 $base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"';
                 // inline-block of round_border is required !!!!!!
-                echo "<div class='round_border'>"
-                  . "<img class='new_image' pic_id='" . $count ."'" 
-                  . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
+                echo "<div class='round_border' pic_id='$count' url='" . $photo['url'] . "' >"
+                //  . "<img class='new_image' pic_id='" . $count ."'" 
+                //  . "src=" . $base64 . "  ">
+                    . "</div>";
                 $count++;
               }
               mysql_free_result($result);
@@ -151,6 +151,32 @@
       
       </div> <!-- end of single -->
     <script type="text/javascript">
+
+      function ajax_post(url, data, callback) {
+        var httpRequest = new XMLHttpRequest();
+        var url = url;
+        var data = JSON.stringify(data);
+        var callback = callback;
+
+        var handler = function() {
+          if (httpRequest.readyState === 4) {
+            if (httpRequest.status === 200) {
+              // action
+              returned_obj = JSON.parse(httpRequest.responseText);
+              callback(returned_obj);
+              // action
+            } else {
+              alert('There was a problem with the request.');
+            }
+          }
+        };
+
+        httpRequest = new XMLHttpRequest();
+        httpRequest.onreadystatechange = handler;
+        httpRequest.open('POST', url);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.send('data=' + encodeURIComponent(data));
+      }
 
       // global left position
       left_pos = null;
@@ -206,6 +232,7 @@
             var step = move_slowly(starting_left - td_width);
             int_handle = setInterval(step, 10);
             cur_pic_id++;
+            load_image();
           }
         } else {
           // move left
@@ -216,6 +243,7 @@
             var step = move_slowly(starting_left + td_width);
             int_handle = setInterval(step, 10);
             cur_pic_id--;
+            load_image();
           }
         }
       }
@@ -249,19 +277,66 @@
 
       }
 
+      function load_image() {
+        var image_frames = document.getElementsByClassName('round_border');
+        for (var i=0 ;i<image_frames.length; i++)
+        {
+          if (image_frames[i].getAttribute('pic_id') == cur_pic_id) {
+            var image_frame = image_frames[i];
+          }
+
+          if (image_frames[i].getAttribute('pic_id') == (parseInt(cur_pic_id)-1)) {
+            var image_left = image_frames[i];
+            console.log('left');
+          }
+
+          if (image_frames[i].getAttribute('pic_id') == (parseInt(cur_pic_id)+1)) {
+            var image_right = image_frames[i];
+            console.log('right');
+          }
+        }
+
+        if (image_frame && image_frame.childNodes.length == 0) {
+          cur_pic_url = image_frame.getAttribute('url');
+          ajax_post('fetch_image.php', {'url': cur_pic_url}, function(data) {
+            // ajax load the pic and its neighbour(s) 
+            image_frame.innerHTML = "<img class='new_image' pic_id='" + cur_pic_id + 
+              "' src=" + data.src + " >";
+          });
+        } 
+
+        if (image_left && image_left.childNodes.length == 0) {
+          var cur_left_url = image_left.getAttribute('url');
+          ajax_post('fetch_image.php', {'url': cur_left_url}, function(data) {
+            // ajax load the pic and its neighbour(s) 
+            image_left.innerHTML = "<img class='new_image' pic_id='" + (parseInt(cur_pic_id)-1) + 
+              "' src=" + data.src + " >";
+          });
+        }
+
+        if (image_right && image_right.childNodes.length == 0) {
+          var cur_right_url = image_right.getAttribute('url');
+          ajax_post('fetch_image.php', {'url': cur_right_url}, function(data) {
+            // ajax load the pic and its neighbour(s) 
+            image_right.innerHTML = "<img class='new_image' pic_id='" + (parseInt(cur_pic_id)+1) + 
+              "' src=" + data.src + " >";
+
+          });
+        }
+
+      }
+
       function to_single(target) {
         // start the event handlers
         document.onmousedown = swipe_start; 
         document.onmouseup = swipe_end; 
 
-        // pick up the pic id to show
-        //
-        // Global
         cur_pic_id = target.getAttribute('pic_id');
         console.log("cur pic: " + cur_pic_id);
 
-        var left = document.getElementById('blocker-left'); 
-        var right = document.getElementById('blocker-right'); 
+        // pick up the pic id to show
+        //
+        // Global
 
         // this should be the frame to view a single picture
         single = document.getElementById('single');
@@ -281,6 +356,9 @@
 
         // this is the scrollable part 
         new_viewer = document.getElementById('new_viewer');
+        // fill in new_viewer
+
+
 
         list = document.getElementById('list'); 
         //list.style.display = "none";
@@ -302,13 +380,14 @@
         var pic_count = last_pic_id + 1;
         new_viewer.style.width = (pic_count * (td_width + 5) ) + "px";
         new_viewer.style.position = "relative";
-        
+
         for (var i = 0; i < spans.length; i++ ) {
           spans[i].style.width = td_width + "px";
           spans[i].style.height = 500 + "px";
           spans[i].style.position = "relative";
         }
 
+        load_image();
         // focus
         //document.body.style.backgroundColor = "black";
       }
