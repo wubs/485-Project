@@ -141,22 +141,11 @@ function mouse_move(e) {
 function refresh_ui(data, albumid) {
   // data is already json  
   var shared_users = data.shared_users;
-  var other_users = data.other_users;
-
-  var other_txt = "";
-  var other_users_block = document.getElementById('other_users') 
-    // other_users
-
-    for (var i=0; i< other_users.length; i++) {
-      other_txt += "<div class='dest' username='" + other_users[i] + "'>" + other_users[i] + "</div>";
-
-    }
-  other_users_block.innerHTML = other_txt;
 
   var shared_users_block = document.getElementById(albumid); 
 
   // if there are guys here
-  if (shared_users.length !=0 ) {
+  if (shared_users && shared_users.length !=0 ) {
     var shared_txt = "<div><span><div style='position:relative;left:30px;'>Shared with:</div></span><span></span><span></span><span></span><span></span></div>";
 
     // shared users

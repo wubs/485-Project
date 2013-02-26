@@ -3,6 +3,12 @@
 <?php include('lib.php'); ?>
 <?php include('include/head.php'); ?>
   <style> 
+  .cap {
+    position: relative;
+    bottom: 0px;
+    height: 10%;
+    color: white;
+  }
   .center {
     height:300px;
     background-color:#b0e0e6;
@@ -15,18 +21,18 @@
     position: relative;
     overflow-x: hidden;
     overflow-y: hidden;
-    height: 500px; 
+    height: 520px; 
   }
 
   #new_viewer {
     display: inline-block;
-    height: 500px; 
+    height: 520px; 
   }
 
   .round_border {  /* this is for the td */
     display: inline-block;
-    height: 500px;
-    line-height: 500px;
+    height: 520px;
+    /*line-height: 520px;*/
     text-align: center;
     vertical-align: middle;
     margin-right:auto;
@@ -34,7 +40,7 @@
   }
   .new_image {    /* inside round_border */
     display: inline-block;
-    max-height: 90%;
+    max-height: 80%;
     max-width: 90%; 
     margin-left:auto;
     margin-right:auto;
@@ -43,7 +49,7 @@
   #blocker-left, #blocker-right {
     z-index: 100;
     position: relative;
-    height: 500px;
+    height: 520px;
   }
   #blocker-right {
   }
@@ -306,7 +312,7 @@
           ajax_post('fetch_image.php', {'url': cur_pic_url}, function(data) {
             // ajax load the pic and its neighbour(s) 
             image_frame.innerHTML = "<img class='new_image' pic_id='" + cur_pic_id + 
-              "' src=" + data.src + " >";
+              "' src=" + data.src + " > <div class='cap'>"+ data.cap + "</div> ";
           });
         } 
 
@@ -315,7 +321,7 @@
           ajax_post('fetch_image.php', {'url': cur_left_url}, function(data) {
             // ajax load the pic and its neighbour(s) 
             image_left.innerHTML = "<img class='new_image' pic_id='" + (parseInt(cur_pic_id)-1) + 
-              "' src=" + data.src + " >";
+              "' src=" + data.src + " > <div class='cap'>"+ data.cap + "</div> ";
           });
         }
 
@@ -324,7 +330,7 @@
           ajax_post('fetch_image.php', {'url': cur_right_url}, function(data) {
             // ajax load the pic and its neighbour(s) 
             image_right.innerHTML = "<img class='new_image' pic_id='" + (parseInt(cur_pic_id)+1) + 
-              "' src=" + data.src + " >";
+              "' src=" + data.src + " > <div class='cap'>"+ data.cap + "</div> ";
 
           });
         }
@@ -388,7 +394,7 @@
 
         for (var i = 0; i < spans.length; i++ ) {
           spans[i].style.width = td_width + "px";
-          spans[i].style.height = 500 + "px";
+          spans[i].style.height = 520 + "px";
           spans[i].style.position = "relative";
         }
 
