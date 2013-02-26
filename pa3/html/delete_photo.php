@@ -22,10 +22,8 @@
     $query = "DELETE from Contain where albumid =". $new_albumid. " and url='".$new_url."'";
 
     $result = mysql_query($query) or die(mysql_error());
-
-	  $query = "DELETE from Comment where url='".$new_url."'";
-    
-	  $result = mysql_query($query) or die(mysql_error());
+    $query = "DELETE from Comment where url='".$new_url."'";
+    $result = mysql_query($query) or die(mysql_error());
     
     $query = "SELECT albumid FROM Contain WHERE url='". $new_url."'"; 
 

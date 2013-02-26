@@ -70,6 +70,11 @@
       </li>
     </ul>
 
+    <form class="form-inline" action="#">
+        <input id="keyword" type="text" placeholder="keyword" name="keyword">
+        <a class= "btn btn-success click_search" albumid = "<?php echo $albumid;?>">Search</a>
+    </form>
+
     <div id="list">
       <!-- start edit from here -->
 
@@ -484,6 +489,7 @@
         });
       });
 
+
       $("#click_edit").live("click", function() { 
         if ( $(this).val() == 0 ) {
           $(this).popover("show");
@@ -512,11 +518,20 @@
         }
       });
 
+      $(".click_search").live("click", function(){
+        var id = $(this).attr('albumid');
+        var keywrd = $("#keyword").val();
+        alert("search"+id+keywrd);
+        ajax_post('fetch_keyword.php', {'albumid':id, 'keyword':keywrd}, function(data){
+          var list = document.getElementById("list");
+          list.innerHTML = data.html;
+        });
+      });
+
 
       function fetch_comments() {
         setTimeout(function() {
           var url = $(".item.active > img").attr("url");
-          
           $.post('fetch_comments.php', {url: url}, function(raw_data) {
             // empty comments div, poppulate with new data
             // data.datetime data.comments data.username
@@ -531,7 +546,9 @@
             }
           });
         }, 700);
-      }
+      } 
+
+       
     });
       
     </script>

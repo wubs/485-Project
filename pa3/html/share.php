@@ -17,8 +17,13 @@
 
   $query2 = "SELECT access from Album where albumid='$albumid'";
   $result2 = mysql_query($query2) or die("Query failed ". mysql_error());
+  $row2 = mysql_fetch_array($result2, MYSQL_ASSOC);
   $data = array();
-  if (($row['COUNT(*)'] == 1 || $row['COUNT(*)']=="1")&& $result2['access']=='private') {
+  if($row2['access']=='public'){
+    //No sharing for public albums
+    $data['msg'] = "public, ignore action";
+  }
+  else if ($row['COUNT(*)'] == 1 || $row['COUNT(*)']=="1") {
     $query = "INSERT IGNORE AlbumAccess (albumid, username) VALUES ($albumid, '$to_username')";
     $result = mysql_query($query) or die("Query failed: " . mysql_error());
 
