@@ -527,7 +527,7 @@
       $(".click_search").live("click", function(){
         var id = $(this).attr('albumid');
         var keywrd = $("#keyword").val();
-        alert("search"+id+keywrd);
+        //alert("search"+id+keywrd);
         ajax_post('fetch_keyword.php', {'albumid':id, 'keyword':keywrd}, function(data){
           var list = document.getElementById("list");
           list.innerHTML = data.html;
