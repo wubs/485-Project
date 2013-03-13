@@ -3,6 +3,7 @@ package edu.umich.eecs485.pa4;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import edu.umich.eecs485.pa4.utils.QueryHit;
@@ -17,6 +18,10 @@ import edu.umich.eecs485.pa4.utils.GenericIndexServer;
  * and serialization functionality.
  *******************************************************/
 public class IndexServer extends GenericIndexServer {
+    
+    
+   static HashMap<String, List<DocItem>> map;
+    
   /**
    * Creates a new <code>IndexServer</code> instance.
    *
@@ -36,7 +41,15 @@ public class IndexServer extends GenericIndexServer {
   public void initServer(File fname) {
     // Do something!
     System.err.println("Init server with fname " + fname);
+    
+    // here we will load the serialized map object back into mem.
+    
+    map = new HashMap<String, List<DocItem>>();
+    
+    //map = loadMap(fname);   // I plan to use JSON
+
   }
+  
 
   /**
    * The <code>processQuery</code> method takes a user query and
@@ -50,6 +63,20 @@ public class IndexServer extends GenericIndexServer {
   public List<QueryHit> processQuery(String query) {
     // Do something!
     System.err.println("Processing query '" + query + "'");
+    
+    List<String> words = new ArrayList<String>();
+    
+    // Split query String into words 
+    
+    // words = parse(query)
+    
+    // search map for each word in words
+    
+//    for (String word : words) {
+//        if (map.containsKey(word))
+//    }
+    
+    
     return new ArrayList<QueryHit>();
   }
   
