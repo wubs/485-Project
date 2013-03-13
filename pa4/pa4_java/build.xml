@@ -13,6 +13,9 @@
   <property name="dist"  location="dist"/>
   <property name="test.include" value="Test*"/>
 
+  <property name="main-class" value="edu.umich.eecs485.pa4.Indexer" />
+  <property name="server-class" value="edu.umich.eecs485.pa4.IndexServer" />
+
   <property name="test.build.data" value="${test.build}/data" />
   <property name="test.cache.data" value="${test.build}/cache" />
   <property name="test.debug.data" value="${test.build}/debug" />
@@ -112,4 +115,24 @@
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
   </target>
+
+  <target name="run_indexer" depends="dist">
+    <java fork="true" classname="${main-class}">
+      <classpath>
+        <path refid="classpath"/>
+        <path location="${dist}/pa4.jar"/>
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run_server" depends="dist">
+    <java fork="true" classname="${server-class}">
+      <classpath>
+        <path refid="classpath"/>
+        <path location="${dist}/pa4.jar"/>
+      </classpath>
+    </java>
+  </target>
+
 </project>
+
