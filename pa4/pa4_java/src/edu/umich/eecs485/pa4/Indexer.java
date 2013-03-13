@@ -1,12 +1,16 @@
 package edu.umich.eecs485.pa4;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.json.simple.JSONValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -26,6 +30,18 @@ public class Indexer {
    *
    * Fill in this method to do something useful!
    */
+  
+  public static String[] regSplit(String data) {
+      try {
+          byte[] utf8 = data.getBytes("UTF8");
+          String converted = new String(utf8, "UTF8"); 
+          return converted.split("\\s*[^0-9a-zA-Z]+\\s*");
+      } catch (UnsupportedEncodingException e) {
+          e.printStackTrace();
+          return null;
+      }
+  }
+          
   public void index(File contentFile, File outputFile) {
     // Our main function that reads raw file and output the invertedIndex
       HashMap<String, List<DocItem>> map = new HashMap<String, List<DocItem>>();
@@ -41,7 +57,7 @@ public class Indexer {
       List<DocItem> docList;
       
       for (DocItem item : data) {
-          String[] words = item.caption.split("\\s+");
+          String[] words = regSplit(item.caption);
           
           for (String word : words) {
               if (!map.containsKey(word)) {
@@ -57,8 +73,15 @@ public class Indexer {
               }
           }
       }
-      
       // serialize map into JSON 
+      try {
+          BufferedWriter out = new BufferedWriter(new FileWriter(outputFile));
+          out.write(JSONValue.toJSONString(map));
+          out.flush();
+          out.close();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
   }
   
   public static List<DocItem> readXML(File fXmlFile) {

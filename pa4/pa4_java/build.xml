@@ -122,6 +122,8 @@
         <path refid="classpath"/>
         <path location="${dist}/pa4.jar"/>
       </classpath>
+      <arg value="${in}" />
+      <arg value="${out}" />
     </java>
   </target>
 
