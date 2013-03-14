@@ -1,7 +1,10 @@
 package edu.umich.eecs485.pa4;
 
+import java.util.HashMap;
+
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import edu.umich.eecs485.pa4.utils.QueryHit;
 
@@ -10,40 +13,38 @@ public class DocItem extends QueryHit implements JSONAware{
     String url;
     String caption;
     
+    HashMap<String, Integer> tf;
+    
     public DocItem(String id, String url, String caption) {
         super(id, -1.0);
+        
         this.url = url;
         this.caption = caption;
+        this.tf = new HashMap<String, Integer>();
+    }
+    
+    public DocItem(String id, double score, String url, String caption, HashMap<String, Integer> tf) {
+        super(id, score);
+        
+        this.url = url;
+        this.caption = caption;
+        this.tf = tf;
+    }
+    
+    public int getIntId() {
+        return Integer.parseInt(this.getIdentifier());
     }
 
     public String toJSONString() {
         // TODO Auto-generated method stub
+        JSONObject obj = new JSONObject();
         
-        StringBuffer sb = new StringBuffer();
+        obj.put("id", this.getIdentifier());
+        obj.put("score", this.getScore());
+        obj.put("url",  this.url );
+        obj.put("caption",  this.caption  );
+        obj.put("tf", JSONValue.toJSONString(this.tf));
         
-        sb.append("{");
-        
-        sb.append(JSONObject.escape("id"));
-        sb.append(":");
-        sb.append("\"" + JSONObject.escape(this.getIdentifier()) + "\"");
-        sb.append(",");
-        
-        sb.append(JSONObject.escape("url"));
-        sb.append(":");
-        sb.append("\"" + JSONObject.escape(this.url) + "\"");
-        sb.append(",");
-        
-        sb.append(JSONObject.escape("caption"));
-        sb.append(":");
-        sb.append("\"" + JSONObject.escape(this.caption) + "\"");
-        sb.append(",");
-        
-        sb.append(JSONObject.escape("score"));
-        sb.append(":");
-        sb.append("\"" + JSONObject.escape(String.valueOf(this.getScore())) + "\"");
-        
-        sb.append("}");
-        
-        return sb.toString(); 
+        return obj.toString(); 
     }
 }
