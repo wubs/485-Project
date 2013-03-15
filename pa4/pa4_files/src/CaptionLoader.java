@@ -6,17 +6,36 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.io.File;
+import java.io.IOException;
 
 import java.sql.*;
+import java.util.Properties;
 
 public class CaptionLoader {
     static File fXmlFile = null;
     static String db_name = "pa1_db";
     static String db_user = "ruoran";
     static String db_pass = "1216";
+    static Properties cfg = new Properties();
+    
+    public static void loadCfg() {
+        try {
+            java.io.FileInputStream fis = new java.io.FileInputStream(new java.io.File("db.cfg"));
+//            cfg.load(CaptionLoader.class.getClassLoader().getResourceAsStream("db.cfg"));
+            cfg.load(fis);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        db_name = cfg.getProperty("dbName");
+        db_user = cfg.getProperty("dbUser");
+        db_pass = cfg.getProperty("dbPass");
+    }
     
     public static void main(String [] args) {
         
+        loadCfg();
+         
         try {
             System.out.println("Start loading caption");
             fXmlFile = new File("search.xml");

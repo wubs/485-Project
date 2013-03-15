@@ -170,7 +170,7 @@ public class IndexServer extends GenericIndexServer {
 
               if(i == (words.length-1)){
                   DocItem tempDocItem = map.get(words[i]).get(index[i]);
-                  result.add(QueryHit(tempDocItem.getIdentifier(), calScore(words, tempDocItem) ));
+                 // result.add(QueryHit(tempDocItem.getIdentifier(), calScore(words, tempDocItem) ));
                   for(int j = 0; j < totalWords; j++)
                       index[j] ++;
               }
