@@ -122,17 +122,19 @@
         <path refid="classpath"/>
         <path location="${dist}/pa4.jar"/>
       </classpath>
-      <arg value="${in}" />
-      <arg value="${out}" />
+      <arg value="search.xml" />
+      <arg value="inverted_index.json" />
     </java>
   </target>
-
-  <target name="run_server" depends="dist">
+ 
+  <target name="run_server" depends="dist, run_indexer">
     <java fork="true" classname="${server-class}">
       <classpath>
         <path refid="classpath"/>
         <path location="${dist}/pa4.jar"/>
       </classpath>
+      <arg value="9010" />
+      <arg value="inverted_index.json" />
     </java>
   </target>
 

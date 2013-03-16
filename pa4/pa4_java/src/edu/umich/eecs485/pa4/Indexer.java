@@ -35,7 +35,7 @@ public class Indexer {
       try {
           byte[] utf8 = data.getBytes("UTF8");
           String converted = new String(utf8, "UTF8"); 
-          return converted.split("\\s*[^0-9a-zA-Z]+\\s*");
+          return converted.split("\\s*[^0-9a-zA-Z']+\\s*");
       } catch (UnsupportedEncodingException e) {
           e.printStackTrace();
           return null;
@@ -55,11 +55,24 @@ public class Indexer {
       }
       
       List<DocItem> docList;
+      HashMap<String, Integer> tf;
+      DocItem item;
       
-      for (DocItem item : data) {
+      for (int i=0; i<data.size(); i++) {
+          item = data.get(i);
+          
           String[] words = regSplit(item.caption);
+          tf = new HashMap<String, Integer>();
           
           for (String word : words) {
+              // create tf for this doc
+              if (tf.containsKey(word)) {
+                  tf.put(word, new Integer(tf.get(word) + 1) );
+              } else {
+                  tf.put(word, new Integer(1));
+              }
+              
+              // add to return list
               if (!map.containsKey(word)) {
                   docList =  new LinkedList<DocItem>();
                   docList.add(item);
@@ -72,6 +85,7 @@ public class Indexer {
                   map.put(word, docList);
               }
           }
+          item.tf = tf;
       }
       // serialize map into JSON 
       try {
