@@ -15,7 +15,7 @@
           <!-- customize bellow -->
           
           <li><a href="<?php echo $home_url; ?>">Home</a></li>
-
+          <li><a href="search.php">Search</a></li>
           <li style="display:<?php echo $login_display; ?>"><a href="viewalbumlist.php">All Albums</a></li>
           <li style="display:<?php echo $user_display; ?>"><a href="myalbumlist.php">My Albums</a></li>
         </ul>

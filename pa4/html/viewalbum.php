@@ -83,19 +83,11 @@
 
     <div id="list">
       <!-- start edit from here -->
-
-<!-- When adding a photo, do as follows
-		 $path = "/path/to/image.jpg";
-     $imagesrc = file_get_contents($path);
-		 $base64 = base64_encode($imagedata);
-		 $format = pathinfo($path, PATHINFO_EXTENSION);
-		 update tables: Contain, Photo, Album;
--->
         <table width="100%" height="100%" algin="center" valign="center">
           <?php 
-						$query = 'SELECT Contain.albumid, Contain.caption, Contain.url, Contain.sequencenum, Photo.code, Photo.format, Photo.date FROM Contain, Photo WHERE Contain.albumid='
-							.$albumid
-							.' and Contain.url=Photo.url ORDER BY Contain.sequencenum';
+            $query = 'SELECT Contain.albumid, Contain.caption, Contain.url, Contain.sequencenum, Photo.code, Photo.format, Photo.date FROM Contain, Photo WHERE Contain.albumid='
+              .$albumid
+              .' and Contain.url=Photo.url ORDER BY Contain.sequencenum';
             $result = mysql_query($query) or die("Query failed: " . mysql_error());
             $counter = 0; // control two img per row
             $count = 0; // countrol pic_id
@@ -103,7 +95,7 @@
             $photos = array();
             while ($photo = mysql_fetch_array($result, MYSQL_ASSOC) ) {
               array_push($photos, $photo);
-							$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
+              $base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
               $url = $photo['url'];
               if ($counter % $num == 0) {
                 echo "<tr>"
