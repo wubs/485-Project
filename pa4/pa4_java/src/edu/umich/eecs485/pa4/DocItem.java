@@ -35,10 +35,12 @@ public class DocItem extends QueryHit implements JSONAware{
         return Integer.parseInt(this.getIdentifier().trim());
     }
     
+    public int hashCode() {
+        return Integer.parseInt(this.getIdentifier());
+    }
+    
     public boolean equals(Object obj) {
         DocItem that = (DocItem) obj;
-        System.out.println("this id: " + this.getIdentifier());
-        System.out.println("that id: " + that.getIdentifier());
         if (this.getIdentifier().equals(that.getIdentifier())) {
             return true;
         } else {
