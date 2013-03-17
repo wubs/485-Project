@@ -1,7 +1,10 @@
 package edu.umich.eecs485.pa4;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -41,6 +44,21 @@ public class Indexer {
           return null;
       }
   }
+  
+  public HashSet<String> loadStopWords() throws IOException {
+      HashSet<String> re = new HashSet<String>();
+      try {
+          BufferedReader in = new BufferedReader(new FileReader(new File("english.stop")));
+          while (in.ready()) {
+              re.add(in.readLine().trim());
+          }
+      } catch (FileNotFoundException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+      }
+      
+      return re;
+  }
           
   public void index(File contentFile, File outputFile) {
     // Our main function that reads raw file and output the invertedIndex
@@ -56,7 +74,15 @@ public class Indexer {
       
       List<DocItem> docList;
       HashMap<String, Long> tf;
+      HashSet<String> stopWords = null;
       DocItem item;
+      
+      try {
+          stopWords = loadStopWords();
+      } catch (IOException e1) {
+          // TODO Auto-generated catch block
+          e1.printStackTrace();
+      }
       
       for (int i=0; i<data.size(); i++) {
           item = data.get(i);
@@ -64,7 +90,12 @@ public class Indexer {
           String[] words = regSplit(item.caption);
           tf = new HashMap<String, Long>();
           
-          for (String word : words) {
+          String word;
+          for (int j=0; j<words.length; j++) {
+              word = words[j].toLowerCase();
+              if (stopWords != null && stopWords.contains(word)) {
+                  continue;
+              }
               // create tf for this doc
               if (tf.containsKey(word)) {
                   tf.put(word, new Long(tf.get(word) + 1) );
@@ -128,7 +159,6 @@ public class Indexer {
                   temp = new DocItem(seq, url, caption);
 
                   list.add(temp);
-
               }
           }
           return list;

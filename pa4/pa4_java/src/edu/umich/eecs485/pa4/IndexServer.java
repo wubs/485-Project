@@ -165,11 +165,11 @@ public class IndexServer extends GenericIndexServer {
           boolean foundFlag;
           while ( searchEnd(searchMap) ) {
               foundFlag = false;
-              System.out.println(nextWord);
 
               String word, preWord;
               int pos, prePos;
               DocItem foundDocItem;
+              Integer temp;
               
               // 1. check if we found a result
               for (int i=1; i<totalWords; i++) {
@@ -177,39 +177,41 @@ public class IndexServer extends GenericIndexServer {
                   preWord = queryWords.get(i-1); 
                   pos = searchMap.get(word).intValue();
                   prePos = searchMap.get(preWord).intValue();
-                  if (map.get(word).get(pos).getIntId() != map.get(word).get(pos).getIntId()) {
-                      break;
+                  if (map.get(word).get(pos).getIntId() != map.get(preWord).get(prePos).getIntId()) {
+                      System.out.println("not found incre pointer");
+                      // if we didn't find a word
+                      // find the word where the pointer have smallest doc id
+                      // get smallest doc id among all words
+                      for (String curWord : queryWords) {
+                          pos = searchMap.get(curWord).intValue();
+                          if (map.get(curWord).get(pos).getIntId() < min) {
+                              min = map.get(curWord).get(pos).getIntId();
+                              nextWord = curWord;
+                          }
+                      }
+
+                      temp = searchMap.get(nextWord);
+                      searchMap.put(nextWord, new Integer(temp.intValue() + 1));
                   }
 
-                  // found one word
-                  foundDocItem = map.get(word).get(pos);
-                  result.add(new QueryHit(foundDocItem.getIdentifier(), calScore(words, foundDocItem)) );
-                  
-                  // increament pointer for each word in query words
-                  for (String eachWord : queryWords) {
-                      searchMap.put(eachWord, new Integer(searchMap.get(eachWord).intValue() + 1));
-                  }
-                  
-                  // step 2. will not run in this case
-                  foundFlag = true;
+              }
+              
+              // found one word
+              word = queryWords.get(0);
+              pos = searchMap.get(word).intValue();
+              foundDocItem = map.get(word).get(pos);
+              
+              result.add(new QueryHit(foundDocItem.getIdentifier(), calScore(words, foundDocItem)) );
+
+              // increament pointer for each word in query words
+              for (String eachWord : queryWords) {
+                  searchMap.put(eachWord, new Integer(searchMap.get(eachWord).intValue() + 1));
               }
 
-              // 2. get smallest doc id among all words
-              Integer temp;
-
-              if (!foundFlag) {
-                  // if we didn't find a word
-                  // find the word where the pointer have smallest doc id
-                  for (String curWord : queryWords) {
-                      pos = searchMap.get(curWord).intValue();
-                      if (map.get(curWord).get(pos).getIntId() < min) {
-                          min = map.get(curWord).get(pos).getIntId();
-                          nextWord = curWord;
-                      }
-                  }
-
-                  temp = searchMap.get(nextWord);
-                  searchMap.put(nextWord, new Integer(temp.intValue() + 1));
+              System.out.println("found one word");
+              
+              for (String testWord : queryWords) {
+                  System.out.println(testWord + " " + searchMap.get(testWord));
               }
           }
       }
@@ -221,10 +223,14 @@ public class IndexServer extends GenericIndexServer {
   public static boolean searchEnd(HashMap<String, Integer> searchMap) {
       for (Map.Entry<String, Integer> entry : searchMap.entrySet() ) {
           // entry.getValue(): index of DocItemList,  length - 1
-          if (entry.getValue() == map.get(entry.getKey()).size() ) {
+          System.out.println("cur pos " + entry.getValue());
+          System.out.println("max siz " + map.get(entry.getKey()).size());
+          if (entry.getValue() == map.get(entry.getKey()).size() - 1) {
+              System.out.println("false");
               return false;
           }
       }
+      System.out.println("true");
       return true;
   }
 
