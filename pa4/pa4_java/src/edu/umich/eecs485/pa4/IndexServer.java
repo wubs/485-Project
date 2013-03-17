@@ -128,22 +128,6 @@ public class IndexServer extends GenericIndexServer {
    * Fill in this method to do something useful!
    */
   
-  private boolean endSearching(int []index, int [] size) {
-      
-      System.out.println("no end");
-      
-      int i = 0, temp;
-      
-      for(int j=0; j<index.length; j++) {
-          
-          temp = index[j];
-          
-          if(temp > size[i++]) {
-              return true;
-          }
-      }
-      return false;
-  }
   
   public List<QueryHit> processQuery(String query) {
       
@@ -171,12 +155,16 @@ public class IndexServer extends GenericIndexServer {
       
       if (totalWords == 1 && map.get(nextWord) != null) {
           // single word query
+          System.out.println("single word");
           for (DocItem item: map.get(nextWord)) {
               result.add( new QueryHit(item.getIdentifier(), calScore(words, item)) );
           }
       } else { 
           // multiple word query
+          System.out.println("multi word");
+          boolean foundFlag;
           while ( searchEnd(searchMap) ) {
+              foundFlag = false;
               System.out.println(nextWord);
 
               String word, preWord;
@@ -195,22 +183,34 @@ public class IndexServer extends GenericIndexServer {
 
                   // found one word
                   foundDocItem = map.get(word).get(pos);
-                  result.add(new QueryHit(foundDocItem.getIdentifier(), foundDocItem.getScore()) );
+                  result.add(new QueryHit(foundDocItem.getIdentifier(), calScore(words, foundDocItem)) );
+                  
+                  // increament pointer for each word in query words
+                  for (String eachWord : queryWords) {
+                      searchMap.put(eachWord, new Integer(searchMap.get(eachWord).intValue() + 1));
+                  }
+                  
+                  // step 2. will not run in this case
+                  foundFlag = true;
               }
 
               // 2. get smallest doc id among all words
               Integer temp;
 
-              // find the word where the pointer have smallest doc id
-              for (String curWord : queryWords) {
-                  pos = searchMap.get(curWord).intValue();
-                  if (map.get(curWord).get(pos).getIntId() < min) {
-                      min = map.get(curWord).get(pos).getIntId();
-                      nextWord = curWord;
+              if (!foundFlag) {
+                  // if we didn't find a word
+                  // find the word where the pointer have smallest doc id
+                  for (String curWord : queryWords) {
+                      pos = searchMap.get(curWord).intValue();
+                      if (map.get(curWord).get(pos).getIntId() < min) {
+                          min = map.get(curWord).get(pos).getIntId();
+                          nextWord = curWord;
+                      }
                   }
+
+                  temp = searchMap.get(nextWord);
+                  searchMap.put(nextWord, new Integer(temp.intValue() + 1));
               }
-              temp = searchMap.get(nextWord);
-              searchMap.put(nextWord, new Integer(temp.intValue() + 1));
           }
       }
       System.out.println(result.size());
@@ -228,67 +228,6 @@ public class IndexServer extends GenericIndexServer {
       return true;
   }
 
-  public List<QueryHit> processQuery2(String query) {
-
-      System.out.println("Processing query '" + query + "'");
-      ArrayList<QueryHit> result = new ArrayList<QueryHit>();
-      
-      // Split query String into words
-      String [] words = query.split(" "); 
-      int totalWords = words.length;
-
-      int [] index = new int[totalWords];        
-      int [] size = new int[totalWords];
-      int maxId = Integer.MIN_VALUE;
-      
-      
-      for (int i=0; i < totalWords; i++) {
-          if (map.get(words[i]) == null) {
-              return result;
-          }
-          size[i] = map.get(words[i]).size();
-          maxId = Math.max(maxId, map.get(words[i]).get(0).getIntId() );
-          System.out.println(maxId);
-      }
-
-      
-      // Start searching
-      
-      while(true){
-          int i = 0;
-          while(i < totalWords){
-
-              while( map.get(words[i]).get(index[i]).getIntId() < maxId) {
-                  index[i]++;
-              }                
-              
-
-              if(map.get(words[i]).get(index[i]).getIntId() > maxId)
-              {
-                  maxId = map.get(words[i]).get(index[i]).getIntId();
-                  break;
-              }
-              
-
-              if( i == (words.length-1) ){
-                  DocItem tempDocItem = map.get(words[i]).get(index[i]);
-                  System.out.println(tempDocItem.getIdentifier());
-                  result.add(new QueryHit(tempDocItem.getIdentifier(), calScore(words, tempDocItem) ));
-                  for(int j = 0; j < totalWords; j++) {
-                      index[j]++;
-                  }
-              }
-              
-              
-              i++;
-          }// while(i < )
-          if(endSearching(index, size)) {
-              System.out.println("end");
-              return result;
-          }
-      }// while(1)
-  }// processQuery
- 
   private double calScore(String [] words, DocItem docItem){
       HashMap<String, Double> queryTf = new HashMap<String, Double>();
       HashMap<String, Double> idf = new HashMap<String, Double>();
@@ -329,7 +268,6 @@ public class IndexServer extends GenericIndexServer {
 
       result = nu / (Math.sqrt(de1) * Math.sqrt(de2));
 
-      System.out.println("cal done");
       return result;
   }
   

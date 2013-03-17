@@ -89,8 +89,6 @@ public abstract class GenericIndexServer {
           }
           List<QueryHit> hits = processQuery(queryStr);
 
-          System.out.println("got hits list");
-          
           //
           // Now we can handle the QueryHit JSON encoding
           //
