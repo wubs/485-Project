@@ -270,6 +270,8 @@ public class IndexServer extends GenericIndexServer {
   }
 
   private double calScore(String [] words, DocItem docItem){
+  
+  		System.out.println("***** START CALSCORE ********");
       HashMap<String, Double> queryTf = new HashMap<String, Double>();
       HashMap<String, Double> idf = new HashMap<String, Double>();
 
@@ -280,7 +282,7 @@ public class IndexServer extends GenericIndexServer {
       String word;
       for (int i=0; i< words.length; i++) {
           word = words[i];
-
+					
           if ( !queryTf.containsKey(word) ) {
               queryTf.put(word, new Double(1)); 
           } else {
@@ -288,31 +290,36 @@ public class IndexServer extends GenericIndexServer {
           }
           // TODO make "totalDocument" a global double variable, for PA4, it should be 200
           double totalDocument = 200.0;
-          idf.put(word, Math.log10((totalDocument/((double)map.get(word).size()) )) );
-          
+          if(!idf.containsKey(word))
+	          idf.put(word, Math.log10((totalDocument/((double)map.get(word).size()) )) );
       }
       System.out.println("1");
 
-      double result = 0;
+      double result = 0, temp1 = 0, temp2 = 0;
       for (int i=0; i< words.length; i++) {
           word = words[i];
-          
-          double temp1 = queryTf.get(word) * idf.get(word);
-          double temp2 = docItem.tf.get(word) * idf.get(word);
+					System.out.println(word);          
+          temp1 = queryTf.get(word) * idf.get(word);
+          if(docItem.tf.containsKey(word))
+	          temp2 = docItem.tf.get(word) * idf.get(word);
+	        else
+	        	temp2 = 0;
+	        System.out.println(temp1 + " " + temp2);
           nu += temp1 * temp2;
           de1 += temp1 * temp1;
           de2 += temp2 * temp2;
       }
 
+			System.out.println(de1 + " " + de2 + " " + nu);
 
       System.out.println("2");
       
       if(de2 == 0) {
+      		System.out.println("***** END CALSCORE 0*******");
           return 0;
       }
-
+      
       result = nu / (Math.sqrt(de1) * Math.sqrt(de2));
-      System.out.println("3");
 
       return result;
   }
