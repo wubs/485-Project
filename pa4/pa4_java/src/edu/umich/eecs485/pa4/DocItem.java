@@ -34,6 +34,17 @@ public class DocItem extends QueryHit implements JSONAware{
     public int getIntId() {
         return Integer.parseInt(this.getIdentifier().trim());
     }
+    
+    public boolean equals(Object obj) {
+        DocItem that = (DocItem) obj;
+        System.out.println("this id: " + this.getIdentifier());
+        System.out.println("that id: " + that.getIdentifier());
+        if (this.getIdentifier().equals(that.getIdentifier())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public String toJSONString() {
         // TODO Auto-generated method stub

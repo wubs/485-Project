@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -128,8 +129,42 @@ public class IndexServer extends GenericIndexServer {
    * Fill in this method to do something useful!
    */
   
-  
   public List<QueryHit> processQuery(String query) {
+      System.out.println("Processing query '" + query + "'");
+      ArrayList<QueryHit> result = new ArrayList<QueryHit>();
+      
+      // Split query String into words
+      String [] words = query.split("\\s*[^0-9a-zA-Z']+\\s*"); 
+      String word;
+      int totalWords = words.length;
+      
+      HashSet<DocItem> union = new HashSet<DocItem>(); 
+      
+      for (int i=0; i<totalWords; i++) {
+          word = words[i];
+          System.out.println(word);
+          for (DocItem temp : map.get(word)) {
+              if (!union.contains(temp)) {
+                  union.add(temp);
+              }
+          }
+      }
+      
+      
+      for (DocItem item: union) {
+          
+          System.out.println(item.getIdentifier());
+      }
+//      for (DocItem item: union) {
+//          System.out.println(item.getIdentifier());
+//          result.add( new QueryHit(item.getIdentifier(), calScore(words, item)) );
+//      }
+      
+      System.out.println("got result");
+      return result;
+  }
+  
+  public List<QueryHit> processQuery2(String query) {
       
       System.out.println("Processing query '" + query + "'");
       ArrayList<QueryHit> result = new ArrayList<QueryHit>();
@@ -254,7 +289,9 @@ public class IndexServer extends GenericIndexServer {
           // TODO make "totalDocument" a global double variable, for PA4, it should be 200
           double totalDocument = 200.0;
           idf.put(word, Math.log10((totalDocument/((double)map.get(word).size()) )) );
+          
       }
+      System.out.println("1");
 
       double result = 0;
       for (int i=0; i< words.length; i++) {
@@ -268,11 +305,14 @@ public class IndexServer extends GenericIndexServer {
       }
 
 
+      System.out.println("2");
+      
       if(de2 == 0) {
           return 0;
       }
 
       result = nu / (Math.sqrt(de1) * Math.sqrt(de2));
+      System.out.println("3");
 
       return result;
   }
