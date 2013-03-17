@@ -16,7 +16,7 @@
             }
           ?> 
         </span>
-        <h2> PA3 </h2>
+        <h2> PA4 </h2>
         <p> This is <?php echo $config_title ?> <b>group36</b> </p>
         <h3>(spacejunkie is admin) </h3>
       </div>
