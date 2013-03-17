@@ -55,21 +55,21 @@ public class Indexer {
       }
       
       List<DocItem> docList;
-      HashMap<String, Integer> tf;
+      HashMap<String, Long> tf;
       DocItem item;
       
       for (int i=0; i<data.size(); i++) {
           item = data.get(i);
           
           String[] words = regSplit(item.caption);
-          tf = new HashMap<String, Integer>();
+          tf = new HashMap<String, Long>();
           
           for (String word : words) {
               // create tf for this doc
               if (tf.containsKey(word)) {
-                  tf.put(word, new Integer(tf.get(word) + 1) );
+                  tf.put(word, new Long(tf.get(word) + 1) );
               } else {
-                  tf.put(word, new Integer(1));
+                  tf.put(word, new Long(1));
               }
               
               // add to return list
@@ -87,6 +87,7 @@ public class Indexer {
           }
           item.tf = tf;
       }
+      
       // serialize map into JSON 
       try {
           BufferedWriter out = new BufferedWriter(new FileWriter(outputFile));

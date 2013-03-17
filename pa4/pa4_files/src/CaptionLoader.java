@@ -13,9 +13,11 @@ import java.util.Properties;
 
 public class CaptionLoader {
     static File fXmlFile = null;
-    static String db_name = "pa1_db";
-    static String db_user = "ruoran";
-    static String db_pass = "1216";
+    static String db_name;
+    static String db_user;
+    static String db_pass;
+    static String db_host;
+    
     static Properties cfg = new Properties();
     
     public static void loadCfg() {
@@ -27,15 +29,17 @@ public class CaptionLoader {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        db_name = cfg.getProperty("dbName");
-        db_user = cfg.getProperty("dbUser");
-        db_pass = cfg.getProperty("dbPass");
+        db_name = cfg.getProperty("dbName", "pa1_db");
+        db_user = cfg.getProperty("dbUser", "ruoran");
+        db_pass = cfg.getProperty("dbPass", "1216");
+        db_host = cfg.getProperty("dbHost", "localhost");
     }
     
     public static void main(String [] args) {
         
         loadCfg();
          
+        // load raw_data file
         try {
             System.out.println("Start loading caption");
             fXmlFile = new File("search.xml");
@@ -44,9 +48,10 @@ public class CaptionLoader {
             System.exit(1); 
         }
 
+        // load db
         try {
             System.out.println("Connecting DB");
-            String db_url = "jdbc:mysql://localhost:3306/" + db_name;
+            String db_url = "jdbc:mysql://localhost/" + db_name;
             Connection conn = null;
             Statement statement = null;
             int updateQuery = 0;

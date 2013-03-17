@@ -74,6 +74,8 @@ public abstract class GenericIndexServer {
         // Test to make sure the URL is properly formed,
         // then grab the query string contents
         //
+        
+        
         if ("/search".equals(path)) {
           String queryStr = null;
           String query = uri.getQuery();
@@ -87,6 +89,8 @@ public abstract class GenericIndexServer {
           }
           List<QueryHit> hits = processQuery(queryStr);
 
+          System.out.println("got hits list");
+          
           //
           // Now we can handle the QueryHit JSON encoding
           //
@@ -109,7 +113,7 @@ public abstract class GenericIndexServer {
           responseBody.write((out.toString()).getBytes());
         }
         responseBody.close();
-      }
+      } 
     }
   }
   
@@ -118,7 +122,7 @@ public abstract class GenericIndexServer {
    * Jetty callback
    */
   public void get() {
-    //processQuery(req.get("query"));
+      //processQuery(req.get("query"));
   }
 
   /**

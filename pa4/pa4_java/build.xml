@@ -7,11 +7,11 @@
   <property name="src" location="src"/>
   <property name="build" location="build"/>
   <property name="build.classes" location="build"/>
-  <property name="test.src" location="test"/>
+  <property name="test.src" location="src/test"/>
   <property name="test.build" location="build/test"/>
   <property name="lib" location="lib"/>
   <property name="dist"  location="dist"/>
-  <property name="test.include" value="Test*"/>
+  <property name="test.include" value="*Test*"/>
 
   <property name="main-class" value="edu.umich.eecs485.pa4.Indexer" />
   <property name="server-class" value="edu.umich.eecs485.pa4.IndexServer" />
@@ -89,9 +89,7 @@
       <classpath refid="test.classpath"/>
 
       <batchtest todir="${test.build}" unless="testcase">
-        <fileset dir="${test.src}"
-	         includes="**/${test.include}.java"
-		 excludes="**/${test.exclude}.java" />
+        <fileset dir="${test.src}" includes="**/${test.include}.java"/>
       </batchtest>
       <batchtest todir="${test.build}" if="testcase">
         <fileset dir="${test.src}" includes="**/${testcase}.java"/>

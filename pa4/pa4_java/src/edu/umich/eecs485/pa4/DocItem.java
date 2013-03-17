@@ -10,21 +10,21 @@ import edu.umich.eecs485.pa4.utils.QueryHit;
 
 public class DocItem extends QueryHit implements JSONAware{
 
-    String url;
-    String caption;
+    public String url;
+    public String caption;
     
-    HashMap<String, Integer> tf;
+    public HashMap<String, Long> tf;
     
     public DocItem(String id, String url, String caption) {
         super(id, -1.0);
         
         this.url = url;
         this.caption = caption;
-        this.tf = new HashMap<String, Integer>();
+        this.tf = new HashMap<String, Long>();
     }
     
-    public DocItem(String id, double score, String url, String caption, HashMap<String, Integer> tf) {
-        super(id, score);
+    public DocItem(String id, double score, String url, String caption, HashMap<String, Long> tf) {
+        super(id.trim(), score);
         
         this.url = url;
         this.caption = caption;
@@ -32,7 +32,7 @@ public class DocItem extends QueryHit implements JSONAware{
     }
     
     public int getIntId() {
-        return Integer.parseInt(this.getIdentifier());
+        return Integer.parseInt(this.getIdentifier().trim());
     }
 
     public String toJSONString() {
