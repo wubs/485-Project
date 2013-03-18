@@ -120,8 +120,8 @@
         <path refid="classpath"/>
         <path location="${dist}/pa4.jar"/>
       </classpath>
-      <arg value="search.xml" />
-      <arg value="inverted_index.json" />
+      <arg value="../search.xml" />
+      <arg value="../index/inverted_index.json" />
     </java>
   </target>
  
@@ -132,7 +132,7 @@
         <path location="${dist}/pa4.jar"/>
       </classpath>
       <arg value="9010" />
-      <arg value="inverted_index.json" />
+      <arg value="../index/inverted_index.json" />
     </java>
   </target>
 
