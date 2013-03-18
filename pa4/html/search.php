@@ -183,8 +183,8 @@
         $(".click_search").live("click", function(){
           var id = $(this).attr('albumid');
           var keywrd = $("#keyword").val();
-          alert("search"+id+keywrd);
-          ajax_post('server.php', {'albumid':id, 'keyword':keywrd}, function(data){
+          alert("search: "+id+" "+keywrd);
+          $.post('search_action.php', {'albumid':id, 'keyword':keywrd}, function(data){
             var list = document.getElementById("list");
             list.innerHTML = data.html;
           });
