@@ -156,12 +156,14 @@ public class IndexServer extends GenericIndexServer {
           result.add( new QueryHit(item.getIdentifier(), calScore(words, item)) );
       }
       
-      Collections.sort( result, new MyIntComparable());
+      // this will sort doc item in descending order
+      Collections.sort( result, new DocItemComparator());
       
       return result;
   }
   
-  public static class MyIntComparable implements Comparator<QueryHit>{
+  public static class DocItemComparator implements Comparator<QueryHit>{
+      // this will sort doc item in descending order
       
       @Override
       public int compare(QueryHit o1, QueryHit o2) {
