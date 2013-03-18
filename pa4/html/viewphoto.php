@@ -63,43 +63,58 @@
     -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
   }
-  .round_border {
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
+
+  .cap {
+    position: relative;
+    bottom: 0px;
+    height: 10%;
+    color: white;
   }
-  .btn-file {
-    position:relative;
-    overflow:hidden;
+  .center {
+    height:200px;
+    background-color:#b0e0e6;
   }
-  .btn-file > input {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0;
-    font-size: 23px;
-    cursor: pointer;
-    opacity: 0;
-    filter: alpha(opacity=0);
-    transform: translate(-300px, 0) scale(4);
-    direction: ltr;
+
+  #single {
+    height: 700px; 
   }
-  input[type="file"] {
-    height: 30px;
-    line-height: 30px;
-    width: auto;
+  #single_block {
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 520px; 
   }
-  .fileupload-preview {
+
+  #new_viewer {
     display: inline-block;
-    margin-bottom: 5px;
-    overflow: hidden;
+    height: 520px; 
+  }
+
+  .round_border {  /* this is for the td */
+    display: inline-block;
+    height: 520px;
+    /*line-height: 520px;*/
     text-align: center;
     vertical-align: middle;
+    margin-right:auto;
+    z-index: 200;
   }
-  .fileupload .thumbnail > img {
+  .new_image {    /* inside round_border */
     display: inline-block;
-    max-height: 100%;
-    vertical-align: middle;
+    max-height: 80%;
+    max-width: 90%; 
+    margin-left:auto;
+    margin-right:auto;
+    padding: 5%;
+  }
+  #blocker-left, #blocker-right {
+    z-index: 100;
+    position: relative;
+    height: 520px;
+  }
+  #blocker-right {
+  }
+  #blocker-left {
   }
   .opt {
     width: 33%;  
@@ -164,49 +179,11 @@
           </div>
       </div> <!-- end of div single -->
 
+
       <div id="list">
-      <!-- start edit from here -->
-        <table width="100%" height="100%" algin="center" valign="center">
-          <?php 
-            //$query = 'SELECT * FROM Contain WHERE albumid=' 
-            //  . $albumid . ' ORDER BY sequencenum';
-            //Change the query to include the column Photo.code;
-						$query = 'SELECT albumid, caption, sequencenum FROM Contain WHERE Contain.albumid='
-							.$albumid
-							.' and Contain.url= "'
-              . $url
-              .'"';
-            $result = mysql_query($query) or die("Query failed: " . mysql_error());
-            $counter = 0;
-            $num = 2; // how many pics per row
-            $photos = array();
-            while ($photo = mysql_fetch_array($result, MYSQL_ASSOC) ) {
-              array_push($photos, $photo);
-							$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
-              if ($counter % $num == 0) {
-                echo "<tr>"
-                  . "<td height='400px' align='center'>" 
-                  . "<img class='img-rounded center click_photo' value=" 
-                  . ($counter+1) . " src=" . $base64 . ">"
-                  . "<div>" . $photo['caption'] . "</div>"
-                  . "<div>" . $photo['date'] . "</div>"
-                  . "</td>";
-              } else {
-                echo "<td height='400px' align='center'>"
-                  . "<img class='img-rounded center click_photo' value="
-                  . ($counter+1) . " src=" . $base64 . ">"
-                  . "<div>" . $photo['caption'] . "</div>"
-                  . "<div>" . $photo['date'] . "</div>"
-                  . "</td>"
-                  . "</tr>";
-              }
-              $counter = $counter + 1;
-            }
-          ?>
-        </table>
-
+      <!-- start edit from here -->    
       </div> <!-- end of div list -->
-
+    <?php mysql_close($conn); ?>  
     <!-- edit above -->
     </div> <!-- /container -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
@@ -280,10 +257,17 @@
         });
       });
 
+      $(".click_photo").live("click", function() { 
+          var seq = $(this).attr("seq");
+          var albumid = $(this).attr("albumid");
+          //$.post('viewphoto.php',{'url':url}, function(data){
+          //  alert(url);
+          //});
+          location.href = "viewphoto.php?data="+albumid+seq;
+        });
+
     });
 
-    
-      
     </script>
   </body>
 </html>

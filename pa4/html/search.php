@@ -82,17 +82,23 @@
             }
           ?> 
         </span>
-        <h2> Search </h2>
-        <form class="form-inline" action="#">
-          <input id="keyword" type="text" placeholder="keyword" name="keyword">
+        <div style="text-align:center"><h1> Search </h1></div>
+        <form class="form-inline" style="text-align:center" action="#">
+          <input id="keyword" type="text" style = "width:80%" placeholder="keyword" name="keyword">
+          <br><br>
           <a class= "btn btn-success click_search" albumid = "5">Search</a>
         </form>
       </div>
 
-      <div id="list">
+      <table width="100%" height="100%" align="center" valign="center"> 
+        <div id="list">
+        </div>
+        <br>
+        <div id="list2">
       <!-- start edit from here -->
-        <table width="100%" height="100%" align="center" valign="center">
-          <?php 
+         <hr>
+         <h3>Sample Photos</h3>
+         <?php 
             $query = 'SELECT Contain.albumid, Contain.caption, Contain.url, Contain.sequencenum, Photo.date FROM Contain, '
               .'Photo WHERE Contain.albumid='
               .$albumid
@@ -142,9 +148,10 @@
               $count++;
             }
           ?>
-        </table>
+        
 
       </div> <!-- end of div list -->
+    </table>
     <!-- edit above -->
     </div> <!-- /container -->
 

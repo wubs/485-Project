@@ -13,7 +13,10 @@
   $myResults = queryIndex($port, $host, $searchterms);
 
     //Change the html in List
-    $load="<table width='100%' height='100%' align='center' valign='center'>";        
+    echo "<hr><h3>Search Result</h3>"
+      ."<p>Number of hits: ". sizeof($myResults)."</p>"
+      ."<table width='100%' height='100%' align='center' valign='center'>"; 
+    //$load = empty();   
     $counter = 0; // control two img per row
     $count = 0; // control pic_id
     $num = 4; // how many pics per row
@@ -24,60 +27,53 @@
         $seq = $hit['id'];
         $url = "static/images/" . $hit['id'] . ".jpg";
 
-        $query = "SELECT caption FROM Contain WHERE sequencenum=$seq";
+        $query = "SELECT caption FROM Contain WHERE sequencenum=$seq and albumid='".$albumid."'";
         $result = mysql_query($query) or die("Query failed: " . mysql_error());
         $row = mysql_fetch_array($result, MYSQL_ASSOC);
 
         if ($counter % $num == 0) {
-           $load .= "<tr>"
-            . "<td height='400px' align='center'>" 
-            . "<img class='img-rounded center click_photo' onclick='to_single(this)'"
-            . "pic_id='$count' value='" . ($counter+1) . "' src='$url' seq='$seq'>"
-            . "<div>" . $row['caption'] . "</div>"
-            . "<div>" . $row['date'] . "</div>"
-            . "<div>" . $hit['score'] . "</div>"
+          echo "<tr>"
+           . "<td height='200px' align='center'>" 
+           . "<img class='img-rounded center click_photo' value=" 
+           . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq' albumid='$albumid'>"
+           . "<div>" . $row['caption'] . "</div>"
+           . "<div>score: " .$hit['score']."</div>" 
+           . "</td>";
+        } else if($counter % $num == 1){
+          echo "<td height='200px' align='center'>" 
+           . "<img class='img-rounded center click_photo' value=" 
+           . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq' albumid='$albumid'>"
+           . "<div>" . $row['caption'] . "</div>"
+           . "<div>score: " .$hit['score']."</div>" 
+           . "</td>";
+        }else if($counter % $num == 2){
+           echo "<td height='200px' align='center'>" 
+            . "<img class='img-rounded center click_photo' value=" 
+           . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq' albumid='$albumid'>"
+           . "<div>" . $row['caption'] . "</div>"
+           //. "<div>" . $photo['date'] . "</div>"
+            . "<div>score: " .$hit['score']."</div>" 
             . "</td>";
-        
-        }   
-        else if($counter % $num == 1){
-           $load .= "<td height='400px' align='center'>"
-            . "<img class='img-rounded center click_photo' onclick='to_single(this)'"
-            . "pic_id='$count' value='" . ($counter+1) . "' src='$url' seq='$seq'>"
-            . "<div>" . $row['caption'] . "</div>"
-            . "<div>" . $row['date'] . "</div>" 
-            . "<div>" . $hit['score'] . "</div>"
-            . "</td>";
-        } 
-        else if($counter % $num == 2){
-           $load .= "<td height='400px' align='center'>"
-            . "<img class='img-rounded center click_photo' onclick='to_single(this)'"
-            . "pic_id='$count' value='" . ($counter+1) . "' src='$url' seq='$seq'>"
-            . "<div>" . $row['caption'] . "</div>"
-            . "<div>" . $row['date'] . "</div>" 
-            . "<div>" . $hit['score'] . "</div>"
-            . "</td>";
-        } 
-        else if($counter % $num == 3){
-           $load .= "<td height='400px' align='center'>"
-            . "<img class='img-rounded center click_photo' onclick='to_single(this)'"
-            . "pic_id='$count' value='" . ($counter+1) . "' src='$url' seq='$seq'>"
-            . "<div>" . $row['caption'] . "</div>"
-            . "<div>" . $row['date'] . "</div>" 
-            . "<div>" . $hit['score'] . "</div>"
-            . "</td>"
-            . "</tr>";
-        } 
+        }else if($counter % $num == 3){
+            echo "<td height='200px' align='center'>"
+            . "<img class='img-rounded center click_photo' value=" 
+           . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq' albumid='$albumid'>"
+           . "<div>" . $row['caption'] . "</div>"
+         //. "<div>" . $photo['date'] . "</div>"
+             . "<div>score: " .$hit['score']."</div>" 
+             . "</td>"
+             . "</tr>";
+        }
         $counter++;
         $count++;
-        $i++;
-        }
+      }
     }
     else{
-       $load .="<p>Result not found.</p>"; 
+       echo "<p> Result not found.</p>"; 
     }
   
-    $load .= "</table>";
+    echo "</table>";
 
     mysql_close($conn);
-    echo json_encode($load);
+    //echo json_encode($load);
 ?>
