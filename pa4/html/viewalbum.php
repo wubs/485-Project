@@ -101,14 +101,14 @@
                 echo "<tr>"
                   . "<td height='400px' align='center'>" 
                   . "<img class='img-rounded center click_photo' onclick='to_single(this)' "
-                  . "pic_id='$count' value='" . ($counter+1) . "' src=$base64 url='$url'>"
+                  . "pic_id='$count' value='" . ($counter+1) . "' src='$url' url='$url'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
               } else {
                 echo "<td height='400px' align='center'>"
                   . "<img class='img-rounded center click_photo' onclick='to_single(this)' "
-                  . "pic_id='$count' value='" . ($counter+1) . "' src=$base64 url='$url'>"
+                  . "pic_id='$count' value='" . ($counter+1) . "' src='$url' url='$url'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>"

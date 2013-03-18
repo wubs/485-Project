@@ -254,14 +254,6 @@
         }
       });
 
-      $("#click_caption").live("click", function() { 
-        var url = $(this).attr("url");
-        var text = $("#new_caption").val();
-        alert(url+text);
-        $.post('edit_caption.php', {'url': url, 'caption': text}, function(data) {
-          location.reload();
-        });
-      });
 
       $(".click_similar").live("click", function(){
           var id = $(this).attr('albumid');
@@ -273,7 +265,18 @@
           });
         });
 
+      $("#click_caption").live("click", function() { 
+        var url = $(this).attr("url");
+        var text = $("#new_caption").val();
+        alert(url+text);
+        $.post("edit_caption.php", {'url': url, 'caption': text}, function(data) {
+          location.reload();
+        });
+      });
+
     });
+
+    
       
     </script>
   </body>
