@@ -150,40 +150,34 @@
           </div>
         </div>  
 
-<!-- When adding a photo, do as follows
-		 $path = "/path/to/image.jpg";
-     $imagesrc = file_get_contents($path);
-		 $base64 = base64_encode($imagedata);
-		 $format = pathinfo($path, PATHINFO_EXTENSION);
-		 update tables: Contain, Photo, Album;
--->
         <table width="100%" height="100%" algin="center" valign="center">
           <?php 
             //$query = 'SELECT * FROM Contain WHERE albumid=' 
             //  . $albumid . ' ORDER BY sequencenum';
             //Change the query to include the column Photo.code;
-						$query = 'SELECT Contain.albumid, Contain.caption, Contain.url, Contain.sequencenum, Photo.code, Photo.format, Photo.date FROM Contain, Photo WHERE Contain.albumid='
-							.$albumid
-							.' and Contain.url=Photo.url ORDER BY Contain.sequencenum';
+            $query = 'SELECT Contain.albumid, Contain.caption, Contain.url, Contain.sequencenum, Photo.code, Photo.format, Photo.date FROM Contain, Photo WHERE Contain.albumid='
+              .$albumid
+              .' and Contain.url=Photo.url ORDER BY Contain.sequencenum';
             $result = mysql_query($query) or die("Query failed: " . mysql_error());
             $counter = 0;
             $num = 2; // how many pics per row
             $photos = array();
             while ($photo = mysql_fetch_array($result, MYSQL_ASSOC) ) {
               array_push($photos, $photo);
-							$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
+              $base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
+              $url = $photo['url'];
               if ($counter % $num == 0) {
                 echo "<tr>"
                   . "<td height='400px' align='center'>" 
                   . "<img class='img-rounded center click_photo' value=" 
-                  . ($counter+1) . " src=" . $base64 . ">"
+                  . ($counter+1) . " src=" . $url . ">"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
               } else {
                 echo "<td height='400px' align='center'>"
                   . "<img class='img-rounded center click_photo' value="
-                  . ($counter+1) . " src=" . $base64 . ">"
+                  . ($counter+1) . " src=" . $url . ">"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>"
@@ -217,16 +211,15 @@
               //     . $photo['caption'] . "</p></div></div>";
               //}
 							$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
-              if ($flag == 0) {
-								
+              if ($flag == 0) {						
                 echo "<div class='item active round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
+                   . " src='" . $photo['url'] . "' url=" . $photo['url'] . "></div>";
                 $flag = 1;
               } else {
                 echo "<div class='item round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
-                   . "src=" . $base64 . " url=" . $photo['url'] . "></div>";
+                   . " src='" . $photo['url'] . "' url=" . $photo['url'] . "></div>";
               }
             }
             mysql_free_result($result);

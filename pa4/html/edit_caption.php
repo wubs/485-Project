@@ -10,7 +10,7 @@
   mysql_select_db($db_name) or die("Could not select:" . $db_name);
 
   $query = "Update Contain SET caption= $caption WHERE url= $url";
-  echo $query;
+  //echo $query;
   $result = mysql_query($query) or die(mysql_error());
 
   mysql_free_result($result);

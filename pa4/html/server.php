@@ -44,8 +44,6 @@
       $results = array();
     }*/
 
-
-
     //end of testing
 
 
@@ -56,6 +54,7 @@
     $num = 4; // how many pics per row
 
     $i = 0;
+    $load = "<p>Number of hits: ". sizeof($results). "</p>";
     if(sizeof($results) >= 1){
       while ($i<sizeof($results)) {
         $photo['id'] = array_slice($results['id'], $i, 1);
