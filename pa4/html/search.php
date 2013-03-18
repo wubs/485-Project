@@ -186,7 +186,7 @@
           alert("search: "+id+" "+keywrd);
           $.post('search_action.php', {'albumid':id, 'keyword':keywrd}, function(data){
             var list = document.getElementById("list");
-            list.innerHTML = data.html;
+            list.innerHTML = data;
           });
         });
 

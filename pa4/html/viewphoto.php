@@ -259,9 +259,9 @@
           var id = $(this).attr('albumid');
           var keywrd = $(this).attr('keyword');
           alert("search"+id+keywrd);
-          ajax_post('server.php', {'albumid':id, 'keyword':keywrd}, function(data){
+          $.post('search_action.php', {'albumid':id, 'keyword':keywrd}, function(data){
             var list = document.getElementById("list");
-            list.innerHTML = data.html;
+            list.innerHTML = data;
           });
         });
 

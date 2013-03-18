@@ -1,4 +1,4 @@
-<?php include_once('../lib.php'); ?>
+<?php include_once('lib.php'); ?>
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
