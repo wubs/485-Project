@@ -170,14 +170,14 @@
                 echo "<tr>"
                   . "<td height='400px' align='center'>" 
                   . "<img class='img-rounded center click_photo' value=" 
-                  . ($counter+1) . " src=" . $url . ">"
+                  . ($counter+1) . " src=" . $url . " seq= '".$photo['sequencenum']."' albumid = '$albumid'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
               } else {
                 echo "<td height='400px' align='center'>"
                   . "<img class='img-rounded center click_photo' value="
-                  . ($counter+1) . " src=" . $url . ">"
+                  . ($counter+1) . " src=" . $url . " seq= '".$photo['sequencenum']."' albumid = '$albumid'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>"
@@ -210,7 +210,7 @@
               //     . "src=" . $photo['url'] . "><div class='carousel-caption'><p>" 
               //     . $photo['caption'] . "</p></div></div>";
               //}
-							$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
+              $base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
               if ($flag == 0) {						
                 echo "<div class='item active round_border'>"
                    . "<img class='img-rounded' style='height:100%;margin-left:auto;margin-right:auto;'" 
@@ -279,15 +279,18 @@
       });
 
       $(".click_photo").live("click", function() { 
-        $("#myCarousel").carousel(parseInt($(this).attr('value')) - 1); 
-        setTimeout(function() {$("#list").css("display", "none");}, 350);
-        setTimeout(function() {$("#single").css("display","inline");}, 550);
-        fetch_comments();
-        setTimeout(function () {
-          var s = $(".item.active > img").attr("url")
-          var img_name = s.substring(s.lastIndexOf('/')+1);
-          $(".breadcrumb").append("<li id='active_breadcrumb' class='active'>"+img_name+"</li>");
-        }, 1000);
+        //$("#myCarousel").carousel(parseInt($(this).attr('value')) - 1); 
+        //setTimeout(function() {$("#list").css("display", "none");}, 350);
+        //setTimeout(function() {$("#single").css("display","inline");}, 550);
+        //fetch_comments();
+        //setTimeout(function () {
+        // var s = $(".item.active > img").attr("url")
+        //  var img_name = s.substring(s.lastIndexOf('/')+1);
+        //  $(".breadcrumb").append("<li id='active_breadcrumb' class='active'>"+img_name+"</li>");
+        //}, 1000);
+        var seq = $(this).attr("seq");
+        var albumid = $(this).attr("albumid");
+        location.href = "viewphoto.php?data="+albumid+seq;
       });
 
       $(".click_back").live("click", function() { 
