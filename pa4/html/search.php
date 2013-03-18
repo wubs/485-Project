@@ -10,7 +10,7 @@
     color: white;
   }
   .center {
-    height:300px;
+    height:200px;
     background-color:#b0e0e6;
   }
 
@@ -100,24 +100,39 @@
             $result = mysql_query($query) or die("Query failed: " . mysql_error());
             $counter = 0; // control two img per row
             $count = 0; // countrol pic_id
-            $num = 2; // how many pics per row
+            $num = 4; // how many pics per row
             $photos = array();
             while ($photo = mysql_fetch_array($result, MYSQL_ASSOC) ) {
               array_push($photos, $photo);
               //$base64 = '"data:image/'.$photo['format'].';base64,' . $photo['code'].'"'; //Fetch the 64Base code for current img
               $url = $photo['url'];
+              $seq = $photo['sequencenum'];
               if ($counter % $num == 0) {
                 echo "<tr>"
-                  . "<td height='400px' align='center'>" 
-                  . "<img class='img-rounded center click_photo' onclick='to_single(this)' "
-                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url url='$url'>"
+                  . "<td height='200px' align='center'>" 
+                  . "<img class='img-rounded center click_photo' method = 'post' value=" 
+                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
-              } else {
-                echo "<td height='400px' align='center'>"
-                  . "<img class='img-rounded center click_photo' onclick='to_single(this)' "
-                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url url='$url'>"
+              } else if($counter % $num == 1){
+                echo "<td height='200px' align='center'>" 
+                  . "<img class='img-rounded center click_photo' method = 'post' value=" 
+                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq'>"
+                  . "<div>" . $photo['caption'] . "</div>"
+                  . "<div>" . $photo['date'] . "</div>"
+                  . "</td>";
+              }else if($counter % $num == 2){
+                echo "<td height='200px' align='center'>" 
+                  . "<img class='img-rounded center click_photo' method = 'post' value=" 
+                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq'>"
+                  . "<div>" . $photo['caption'] . "</div>"
+                  . "<div>" . $photo['date'] . "</div>"
+                  . "</td>";
+              }else if($counter % $num == 3){
+                echo "<td height='200px' align='center'>"
+                  . "<img class='img-rounded center click_photo' method = 'post' value=" 
+                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>"
@@ -163,6 +178,7 @@
         httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         httpRequest.send('data=' + encodeURIComponent(data));
     }
+
     $(function () {
         $(".click_search").live("click", function(){
           var id = $(this).attr('albumid');
@@ -173,7 +189,15 @@
             list.innerHTML = data.html;
           });
         });
-    });
+
+        $(".click_photo").live("click", function() { 
+          var seq = $(this).attr("seq");
+          //$.post('viewphoto.php',{'url':url}, function(data){
+          //  alert(url);
+          //});
+          location.href = "viewphoto.php?seq="+seq;
+        });
+   });
     </script>
   </body>
 </html>

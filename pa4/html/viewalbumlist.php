@@ -56,8 +56,8 @@
             //  $query = "SELECT * FROM Album WHERE username='$cur_username'";
             //  $result = mysql_query($query) or die("Query failed: " . mysql_error());
 
-						//	$queryprivate = "SELECT * FROM Album WHERE access='private'";
-						//	$userlist = mysql_query($queryprivate) or die("Query failed: " . mysql_error());
+            //	$queryprivate = "SELECT * FROM Album WHERE access='private'";
+            //	$userlist = mysql_query($queryprivate) or die("Query failed: " . mysql_error());
             //}
 
             while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
