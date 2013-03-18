@@ -100,15 +100,19 @@
               if ($counter % $num == 0) {
                 echo "<tr>"
                   . "<td height='400px' align='center'>" 
-                  . "<img class='img-rounded center click_photo' onclick='to_single(this)' "
-                  . "pic_id='$count' value='" . ($counter+1) . "' src='$url' url='$url'>"
+                  //. "<img class='img-rounded center click_photo' onclick='to_single(this)' "
+                  //. "pic_id='$count' value='" . ($counter+1) . "' src='$url' url='$url'>"
+                  . "<img class='img-rounded center click_photo' value=" 
+                  . ($counter+1) . " src=" . $url . " seq= '".$photo['sequencenum']."' albumid = '$albumid'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
               } else {
                 echo "<td height='400px' align='center'>"
-                  . "<img class='img-rounded center click_photo' onclick='to_single(this)' "
-                  . "pic_id='$count' value='" . ($counter+1) . "' src='$url' url='$url'>"
+                  //. "<img class='img-rounded center click_photo' onclick='to_single(this)' "
+                  //. "pic_id='$count' value='" . ($counter+1) . "' src='$url' url='$url'>"
+                  . "<img class='img-rounded center click_photo' value=" 
+                  . ($counter+1) . " src=" . $url . " seq= '".$photo['sequencenum']."' albumid = '$albumid'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>"
@@ -525,6 +529,15 @@
           list.innerHTML = data.html;
         });
       });
+      
+      $(".click_photo").live("click", function() { 
+          var seq = $(this).attr("seq");
+          var albumid = $(this).attr("albumid");
+          //$.post('viewphoto.php',{'url':url}, function(data){
+          //  alert(url);
+          //});
+          location.href = "viewphoto.php?data="+albumid+seq;
+        });
 
 
       function fetch_comments() {

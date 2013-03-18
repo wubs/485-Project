@@ -68,7 +68,12 @@ public class CaptionLoader {
                     "(5, 'PA4 Album', NOW(), NOW(), 'public', 'traveler');";
             System.out.println(queryString);
             updateQuery = statement.executeUpdate(queryString);
-            
+
+            //Create AlbumAccess
+            queryString = "INSERT IGNORE AlbumAccess(albumid, username) values" +
+                    "(5, 'traveler');";
+            System.out.println(queryString);
+            updateQuery = statement.executeUpdate(queryString);
             
             // load Photo table
 

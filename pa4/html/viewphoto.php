@@ -3,8 +3,9 @@
 <?php include('lib.php'); ?>
 <?php include('include/head.php'); ?>
 <?php 
-  $new_seq = $_GET['seq'];
-  $new_url = 'static/images/'.$new_seq.'.jpg'; 
+  $new_data = $_GET['data'];
+  $new_seq = substr($new_data,1);
+  $albumid = substr($new_data,0,1);
 ?>
   <style> 
   .center {
@@ -111,7 +112,7 @@
     <?php include('include/navbar.php'); ?>
     <div class="container">
     <?php 
-      $albumid = 5; 
+      //$albumid = 5; 
       $conn = mysql_connect($db_host, $db_user, $db_passwd) or die("Connect Error: " . mysql_error());
       mysql_select_db($db_name) or die("Could not select:" . $db_name);
       $query = "SELECT title, username FROM Album WHERE albumid=$albumid";
@@ -119,6 +120,11 @@
       $temp = mysql_fetch_array($result, MYSQL_ASSOC); 
       $album_title = $temp['title']; 
       $album_owner = $temp['username']; 
+
+      $query = "SELECT url FROM Contain WHERE albumid = $albumid AND sequencenum = $new_seq";
+      $result = mysql_query($query) or die("Query failed: " . mysql_error());
+      $temp = mysql_fetch_array($result, MYSQL_ASSOC); 
+      $new_url = $temp['url'];
     ?>
     <ul class="breadcrumb">
       <li><a href="viewalbumlist.php">Album List</a><span class="divider">/</span></li>
@@ -143,7 +149,7 @@
       
         <div  class="myWell" > <!-- Buttons and comments -->
           <div class="row-fluid btn-group">
-              <a href="#" role="button" class="btn click_back opt" >Back</a>
+              <a role="button" class="btn click_back opt">Back</a>
 
               <a id="click_edit" value=false class="btn opt" rel="popover" data-html=true 
                 data-trigger="click" data-placement="top"
@@ -236,7 +242,7 @@
     $(function () {
 
       $(".click_back").live("click", function() { 
-        location.href="search.php";
+        history.back();
       });
 
       $(".click_collapse").live("click", function() { 

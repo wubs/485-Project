@@ -110,29 +110,29 @@
               if ($counter % $num == 0) {
                 echo "<tr>"
                   . "<td height='200px' align='center'>" 
-                  . "<img class='img-rounded center click_photo' method = 'post' value=" 
-                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq'>"
+                  . "<img class='img-rounded center click_photo' value=" 
+                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq' albumid='$albumid'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
               } else if($counter % $num == 1){
                 echo "<td height='200px' align='center'>" 
-                  . "<img class='img-rounded center click_photo' method = 'post' value=" 
-                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq'>"
+                  . "<img class='img-rounded center click_photo' value=" 
+                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq' albumid='$albumid'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
               }else if($counter % $num == 2){
                 echo "<td height='200px' align='center'>" 
-                  . "<img class='img-rounded center click_photo' method = 'post' value=" 
-                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq'>"
+                  . "<img class='img-rounded center click_photo' value=" 
+                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq' albumid='$albumid'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>";
               }else if($counter % $num == 3){
                 echo "<td height='200px' align='center'>"
-                  . "<img class='img-rounded center click_photo' method = 'post' value=" 
-                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq'>"
+                  . "<img class='img-rounded center click_photo' value=" 
+                  . "pic_id='$count' value='" . ($counter+1) . "' src=$url seq='$seq' albumid='$albumid'>"
                   . "<div>" . $photo['caption'] . "</div>"
                   . "<div>" . $photo['date'] . "</div>"
                   . "</td>"
@@ -192,10 +192,11 @@
 
         $(".click_photo").live("click", function() { 
           var seq = $(this).attr("seq");
+          var albumid = $(this).attr("albumid");
           //$.post('viewphoto.php',{'url':url}, function(data){
           //  alert(url);
           //});
-          location.href = "viewphoto.php?seq="+seq;
+          location.href = "viewphoto.php?data="+albumid+seq;
         });
    });
     </script>
