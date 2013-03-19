@@ -137,7 +137,7 @@ public class IndexServer extends GenericIndexServer {
       ArrayList<QueryHit> result = new ArrayList<QueryHit>();
       
       // Split query String into words
-      String [] words = query.split("\\s*[^0-9a-zA-Z']+\\s*"); 
+      String [] words = query.toLowerCase().split("\\s*[^0-9a-zA-Z']+\\s*"); 
       String word;
       int totalWords = words.length;
       
@@ -295,7 +295,7 @@ public class IndexServer extends GenericIndexServer {
 
       String word;
       for (int i=0; i< words.length; i++) {
-          word = words[i];
+          word = words[i].toLowerCase();
 					
           if ( !queryTf.containsKey(word) ) {
               queryTf.put(word, new Double(1)); 

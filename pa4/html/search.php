@@ -190,10 +190,12 @@
         $(".click_search").live("click", function(){
           var id = $(this).attr('albumid');
           var keywrd = $("#keyword").val();
-          alert("search: "+id+" "+keywrd);
+          var start_time = new Date().getTime() / 1000;
           $.post('search_action.php', {'albumid':id, 'keyword':keywrd}, function(data){
             var list = document.getElementById("list");
             list.innerHTML = data;
+
+            $("#time_spent").text("Time spent: " + (new Date().getTime() / 1000 - start_time).toFixed(3) + "s" );
           });
         });
 

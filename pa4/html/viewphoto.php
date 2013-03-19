@@ -154,11 +154,11 @@
           <td align='center'>
             <img class="img-rounded center" style="height:100%;margin-left:auto;margin-right:auto;" src= "<?php echo $new_url ?>">
             <?php
-               $query = 'SELECT caption FROM Contain WHERE url= "'. $new_url.'"';
+               $query = 'SELECT caption, sequencenum FROM Contain WHERE url= "'. $new_url.'"';
                //echo "<p>".$query."</p>";
                $result = mysql_query($query) or die("Query failed: " . mysql_error());
                $photo = mysql_fetch_array($result, MYSQL_ASSOC); 
-               echo "<div>" . $photo['caption'] . "</div>";
+               echo "<div id='cur_id' cur_id=". $photo['sequencenum'] . ">" . $photo['caption'] . "</div>";
             ?>
         </table>
       
@@ -241,8 +241,8 @@
       $(".click_similar").live("click", function(){
           var id = $(this).attr('albumid');
           var keywrd = $(this).attr('keyword');
-          alert("search"+id+keywrd);
-          $.post('search_action.php', {'albumid':id, 'keyword':keywrd}, function(data){
+          var cur_id = $("#cur_id").attr('cur_id');
+          $.post('search_action.php', {'cur': cur_id, 'albumid':id, 'keyword':keywrd}, function(data){
             var list = document.getElementById("list");
             list.innerHTML = data;
           });
@@ -251,7 +251,6 @@
       $("#click_caption").live("click", function() { 
         var url = $(this).attr("url");
         var text = $("#new_caption").val();
-        alert(url+text);
         $.post("edit_caption.php", {'url': url, 'caption': text}, function(data) {
           location.reload();
         });
