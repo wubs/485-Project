@@ -1,59 +1,107 @@
 PA 4
 ====
 
+db_config.php
+-------------
+Check `db_config.php.example` 
+Fill in the values and place a new file named `db_config.php` in to directory `pa5/html`.
 
-Building index
---------------
-
-
-```
-class Obj {
-   url = url // the id
-   caption = caption
-}
-
-
-List<Obj> raw_data_list = "SELECT url, caption from Photo;"
-
-Map<String, List<DocObj>> map = new Map<...>();
-
-for (Obj cur : raw_data_list) {
-    for (String word : cur.caption) {
-        if ( map.contains(word) ) {
-            list_of_docs = map.get(word);
-            if cur.url in list_of_docs:
-                update (list_of_docs) // calculate TF-IDF
-        } else {
-            add to list
-        }
-    }
-}
-```
-
-Load Caption
-------------
+CaptionLoader - subproject of PA4
+=================================
 
 Caption laoding is done by a java sub-project called CaptionLoader.
 This is a simple Ant project.
 
-`pa4/pa4_files` is the root dir of CaptionLoader.
+`pa4/caption_loader` is the root dir of CaptionLoader.
 
-`pa4/pa4_files/build.xml` shows the options.
-
-To load data,
-
-1. `cd pa4/pa4_files`
-2. `ant`
-
-The second step will compile build and run the CaptionLoader.
-
-The source code is at `pa4/pa4_files/src/CaptionLoader.java`.
+db.cfg
+------
+Change db name, uesr, pass here.
 
 
-What this program does is add data into Photo table, Contains table, and Album table.
+Source code 
+-----------
 
-In Album table, a new album with id=5 will be created, traveler is the owner.
+`src/CaptionLoader.java`
 
-In Photo table, url is `"static/images/" + image_name`, the column code is string `empty` because we will serve image as static file by their url. And, date is created using `NOW()`
 
-In Contains table, captions are loaded from raw_data.
+Ant - build.xml
+---------------
+
+Check the file for detail.
+
+After `db.cfg` is configured. 
+
+`ant run` will load the images into database.
+
+1. We used old db schema. column code and type are for base64 images, which is not used in pa4.
+
+2. We didn't load the date, because all dates are the same.
+
+
+Images
+------
+
+This program will not move the files under `flickr-images/` to `/static/images/`
+
+You need to manually move those:
+`cp pa4/caption_loader/flickr-images/* pa4/html/static/images/`
+
+
+PA4 Java - Indexer & IndexServer
+===============================
+
+1. run indexer
+--------------
+
+`ant run_indexer`, will compile the project and out put the inverted index.
+
+The output filename is `inverted_index.json`, with path `pa4/index/inverted_index.json`.
+
+This is defined in `build.xml`
+
+You can also execute this program using the complex way, as stated in pa4 instruction.
+
+2. run index server
+-------------------
+
+`and run_server`, will run indexer first and then load the fresh inverted index file.
+
+The input filename is `inverted_index.json`, with path `pa4/index/inverted_index.json`.
+
+The port is `9010`.
+
+This is also defined in `build.xml`
+
+You can also execute this program using the complex way, as stated in pa4 instruction.
+
+
+
+3. Build.xml
+-----------
+
+```
+This is customized part of pa4/pa4_java/build.xml 
+
+<target name="run_indexer" depends="dist">
+  <java fork="true" classname="${main-class}">
+    <classpath>
+      <path refid="classpath"/>
+      <path location="${dist}/pa4.jar"/>
+    </classpath>
+    <arg value="../search.xml" />
+    <arg value="../index/inverted_index.json" />
+  </java>
+</target>
+
+<target name="run_server" depends="dist, run_indexer">
+  <java fork="true" classname="${server-class}">
+    <classpath>
+      <path refid="classpath"/>
+      <path location="${dist}/pa4.jar"/>
+    </classpath>
+    <arg value="9010" />
+    <arg value="../index/inverted_index.json" />
+  </java>
+</target>
+```
