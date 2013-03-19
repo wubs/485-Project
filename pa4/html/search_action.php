@@ -36,11 +36,6 @@
         $seq = $hit['id'];
         $url = "static/images/" . $hit['id'] . ".jpg";
 
-        error_log("start");
-        error_log($cur_pic);
-        error_log($seq);
-        error_log("start");
-
         if (isset($cur_pic) && intval($cur_pic) == intval($seq) ) {
           continue;
         }
