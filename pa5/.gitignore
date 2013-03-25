@@ -1,0 +1,6 @@
+*.class
+*.net
+*.tar.gz
+hits_invindex
+build
+dist
