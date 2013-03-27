@@ -15,10 +15,12 @@ class Pagerank {
 		HashSet<Integer> inputLinks;
 		int output;
 		double PRWeight;
+		double oldPRWeight;
 		
 		public PRNode(String input, double inputWeight)
 		{
 			label = input;
+			oldPRWeight = inputWeight;
 			PRWeight = inputWeight;
 			output = 0;
 			inputLinks = new HashSet<Integer>();
@@ -164,7 +166,7 @@ class Pagerank {
 			while(it2.hasNext())
 			{
 				PRNode tempNode= PRMap.get(it2.next());
-				tempWeight += dvalue*tempNode.PRWeight/((double)tempNode.output);
+				tempWeight += dvalue*tempNode.oldPRWeight/((double)tempNode.output);
 			}
 			
 			//Handle virtual links
@@ -175,18 +177,25 @@ class Pagerank {
 				//System.out.println(VirtualLinkCurrentNodeID);
 				if(pairs.getKey() != VirtualLinkCurrentNodeID)
 				{
-					tempWeight += dvalue*PRMap.get(VirtualLinkCurrentNodeID).PRWeight / ((double)NodeNum - 1.0);
+					tempWeight += dvalue*PRMap.get(VirtualLinkCurrentNodeID).oldPRWeight / ((double)NodeNum - 1.0);
 				}
 			}
 			
-			double tempCurrentWeight = pairs.getValue().PRWeight;
-			if(Math.abs(tempCurrentWeight - tempWeight)/tempCurrentWeight > maxchange)
+			
+			if(Math.abs(pairs.getValue().oldPRWeight - tempWeight)/pairs.getValue().oldPRWeight > maxchange)
 			{
 				continueUpdate = true;
 			}
 			pairs.getValue().PRWeight = tempWeight;
 			
 		}
+		
+		it = PRMap.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<Integer, PRNode> pairs = (Map.Entry)it.next();
+			pairs.getValue().oldPRWeight = pairs.getValue().PRWeight;
+		}
+		
 	}
 	
 	public void CalculatePR()
