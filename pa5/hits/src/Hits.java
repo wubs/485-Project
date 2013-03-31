@@ -1,25 +1,21 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionGroup;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.OptionBuilder;
-
 class Hits {
   public static class Page {
-    private int pageID;
+    private Integer pageID;
     private String pageTitle;
     private double authScore;  
     private double hubScore;
@@ -35,7 +31,7 @@ class Hits {
         outEdge = new LinkedList<Page>();
     }
     
-    public Page(int pageID, String pageTitle) {
+    public Page(Integer pageID, String pageTitle) {
         // normal case
         setPageID(pageID);
         setPageTitle(pageTitle);
@@ -85,11 +81,11 @@ class Hits {
         this.hubScore = hubScore;
     }
 
-    public int getPageID() {
+    public Integer getPageID() {
         return pageID;
     }
 
-    public void setPageID(int pageID) {
+    public void setPageID(Integer pageID) {
         this.pageID = pageID;
     }
 
@@ -276,27 +272,60 @@ class Hits {
       System.out.println("seed got, len: " + seedSet.size());
       
       // Step 4. get base set
-      List<Page> basePageSet = new ArrayList<Page>();
       
+      // This set contains pageID: Integer.
+      // We could get the corresponding Page for O(1) 
+      HashSet<Integer> basePageSet = new HashSet<Integer>();
+      
+      Integer maxID = new Integer(0);
       Page curPage;
       for (Integer pageID : seedSet) {
           curPage = page_map.get(pageID);
           // 4.1 add cur
-          basePageSet.add(curPage);
-          
+          basePageSet.add(curPage.getPageID());
+          if (pageID > maxID) {
+              maxID = pageID;
+          }
           // 4.2 get inEdges
           for (Page pointingToCur : curPage.getInEdgeList()) {
-              basePageSet.add(pointingToCur);
+              basePageSet.add(pointingToCur.getPageID());
+              if (pointingToCur.getPageID() > maxID) {
+                  maxID = pointingToCur.getPageID();
+              }
           }
-          
           // 4.3 get outEdges
           for (Page pointedFromCur : curPage.getOutEdgeList()) {
-              basePageSet.add(pointedFromCur);
+              basePageSet.add(pointedFromCur.getPageID());
+              if (pointedFromCur.getPageID() > maxID) {
+                  maxID = pointedFromCur.getPageID();
+              }
           }
       }
       
       System.out.println("Got the base page set, len: " + basePageSet.size());
-     
+      
+      //Collections.sort(basePageSet, new PageIDComparator());
+      
+      System.out.println("maxID: " + maxID.toString());
+      try{
+          FileWriter fstream = new FileWriter(outputFName);
+          BufferedWriter out = new BufferedWriter(fstream);
+          
+          // Here is a Pigeonhole sort
+          Integer tempID;
+          Page tempP;
+          for (int i=0; i<maxID.intValue(); i++) {
+              tempID = new Integer(i); 
+              if (basePageSet.contains(tempID)) {
+                  tempP = page_map.get(tempID);
+                  out.write(tempP.getPageID().toString());
+                  out.write("\n");
+              }
+          }
+          out.close();
+      } catch (Exception e){//Catch exception if any
+          System.err.println("Error: " + e.getMessage());
+      }
       // Step 5. start looping
       
       if (k != null) {
@@ -306,6 +335,20 @@ class Hits {
           // 5.B until converge 
       }
   }
+  
+  // This is not used anymore, we use Pigeonhole sort instead
+  public static class PageIDComparator implements Comparator<Page>{
+      @Override
+      public int compare(Page o1, Page o2) {
+          if (o1.getPageID().intValue() > o2.getPageID().intValue() ) {
+              return 1;
+          } else if (o1.getPageID().intValue() == o2.getPageID().intValue() ) {
+              return 0;
+          } else {
+              return -1;
+          }
+      }
+  } 
 
   public static void loadMap(String indexFName) {
       map = new HashMap<String, List<Integer>>();
