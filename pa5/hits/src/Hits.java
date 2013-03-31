@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +31,8 @@ class Hits {
         setPageID(-1);
         setAuthScore(0);
         setHubScore(0);
-        setOutEdge(null);
-        setInEdge(null);
+        inEdge = new LinkedList<Page>();
+        outEdge = new LinkedList<Page>();
     }
     
     public Page(int pageID, String pageTitle) {
@@ -40,23 +41,31 @@ class Hits {
         setPageTitle(pageTitle);
         setAuthScore(1);
         setHubScore(1);
-        setOutEdge(null);
-        setInEdge(null);
+        inEdge = new LinkedList<Page>();
+        outEdge = new LinkedList<Page>();
     }
     
-    public List<Page> getOutEdge() {
+    public void addOutEdge(Page to) {
+        this.outEdge.add(to);
+    }
+    
+    public void addInEdge(Page from) {
+        this.inEdge.add(from);
+    }
+    
+    public List<Page> getOutEdgeList() {
         return outEdge;
     }
 
-    public void setOutEdge(List<Page> outEdge) {
+    public void setOutEdgeList(List<Page> outEdge) {
         this.outEdge = outEdge;
     }
 
-    public List<Page> getInEdge() {
+    public List<Page> getInEdgeList() {
         return inEdge;
     }
 
-    public void setInEdge(List<Page> inEdge) {
+    public void setInEdgeList(List<Page> inEdge) {
         this.inEdge = inEdge;
     }
 
@@ -110,7 +119,6 @@ class Hits {
   } 
   
   public static List<Integer> getSeedSet(String [] words, Map<String, List<Integer>> map) {
-
       List<Integer> result = new ArrayList<Integer>();  // contains pageID
       
       int totalWords = words.length;
@@ -198,13 +206,19 @@ class Hits {
               }
           }
       }
+      
       System.out.println(result.size());
-
       return result;
   }
   
   static Map<String, List<Integer>> map;
+  static Map<Integer, Page> page_map;
 
+  public static void commandWrong() {
+      System.out.println("h value> (-k <numiterations> | -converge <maxchange>) " +
+              "\"queries\" <input-net-file> <input-inverted-index-file> <output-file>");
+      System.exit(0);
+  }
   public static void main(String [] args) {
       // h
       // -k | -converge
@@ -213,18 +227,88 @@ class Hits {
       // inverted index
       // out file
       
-      System.out.println(args[0].toString());
-      
-      System.exit(0);
       
       
+      if (args.length != 7) {
+          System.out.println("Missing argument(s), see help below");
+          commandWrong();
+      }
       
+      Integer h = new Integer(args[0]);
       
-      String invertedIndex = "";
-      // Step 2. load inverted index 
+      String opt = (String) args[1];
       
-      map = new HashMap<String, List<Integer>>();
+      Integer k = null;
+      Double converge = null;
+      if (opt.equals("-k")) {
+          k = new Integer(args[2]);
+      } else if(opt.equals("-converge")) {
+          converge = new Double(args[2]);
+      } else {
+          System.out.println("-k or -converge wrong");
+          commandWrong();
+      }
+      
+      String query = (String) args[3];
+      String netFName = (String) args[4];
+      String indexFName = (String) args[5];
+      String outputFName = (String) args[6];
+      
+      System.out.println(h);
+      System.out.println(k);
+      System.out.println(converge);
+      System.out.println(query);
+      System.out.println(netFName);
+      System.out.println(indexFName);
+      System.out.println(outputFName);
+      
+      // Step 2. load inverted index, and net file
+      loadMap(indexFName);
+      System.out.println("map loaded from inverted index"); 
 
+      loadPageMap(netFName);
+      System.out.println("page map loaded from net file"); 
+     
+      // Step 3. get seed set
+      // by searching the inverted index with query words.
+      String [] queryWords  = query.toLowerCase().split(" "); 
+      List<Integer> seedSet = getSeedSet(queryWords, map);
+      System.out.println("seed got, len: " + seedSet.size());
+      
+      // Step 4. get base set
+      List<Page> basePageSet = new ArrayList<Page>();
+      
+      Page curPage;
+      for (Integer pageID : seedSet) {
+          curPage = page_map.get(pageID);
+          // 4.1 add cur
+          basePageSet.add(curPage);
+          
+          // 4.2 get inEdges
+          for (Page pointingToCur : curPage.getInEdgeList()) {
+              basePageSet.add(pointingToCur);
+          }
+          
+          // 4.3 get outEdges
+          for (Page pointedFromCur : curPage.getOutEdgeList()) {
+              basePageSet.add(pointedFromCur);
+          }
+      }
+      
+      System.out.println("Got the base page set, len: " + basePageSet.size());
+     
+      // Step 5. start looping
+      
+      if (k != null) {
+          // 5.A k-loop
+      
+      } else {
+          // 5.B until converge 
+      }
+  }
+
+  public static void loadMap(String indexFName) {
+      map = new HashMap<String, List<Integer>>();
       try {
           String line;
           String[] lineSplited;
@@ -232,9 +316,10 @@ class Hits {
           Integer pageID;
           List<Integer> tempList; 
 
-          BufferedReader invertedIndexReader = new BufferedReader(new FileReader(invertedIndex));
+          BufferedReader invertedIndexReader = new BufferedReader(new FileReader(indexFName));
+          long count = 1;
           while (invertedIndexReader.ready()) {
-              line = invertedIndexReader.readLine();
+              line = invertedIndexReader.readLine().toLowerCase();
               lineSplited = line.split(" ");
               word = lineSplited[0];
               pageID = new Integer(lineSplited[1]);
@@ -248,32 +333,78 @@ class Hits {
                   tempList.add(pageID);
                   map.put(word, tempList);
               }
+              System.out.println("reading line " + count++);
           }
-
           // map is constructed
           // map should be a static value
-
       } catch (FileNotFoundException e) {
           // invertedIndexReader 
           e.printStackTrace();
       } catch (IOException e) {
           e.printStackTrace();
       }
-      
-      // search the inverted index with query words.
+  }
+  
+  public static void loadPageMap(String netFName) {
+      page_map = new HashMap<Integer, Page>();
+      try {
+          String line;
+          String[] lineSplited;
+          
+          Integer pageID;
+          String pageTitle;
+          Page tempPage; 
+          
+          Page fromPage;
+          Page toPage;
+          
+          boolean firstStage = true;
 
-      String [] queryWords  = {"a", "b", "c"};
-     
-      // Step 3. get seed set
-      
-      List<Integer> seedSet = getSeedSet(queryWords, map);
-      
-      // Step 4. get base set
-      
-      // Step 5. start looping
-      
-      // 5.a k-loop
-      
-      // 5.b until converge 
+          BufferedReader invertedIndexReader = new BufferedReader(new FileReader(netFName));
+          long count = 1;
+          while (invertedIndexReader.ready()) {
+              line = invertedIndexReader.readLine();
+              
+              if (line.charAt(0) == '*') {
+                  if ( line.substring(1).split(" ")[0].equals("Vertices") ) {
+                      firstStage = true;
+                  } else if ( line.substring(1).split(" ")[0].equals("Arcs") ) {
+                      firstStage = false;
+                  }
+                  continue;
+              }
+              
+              lineSplited = line.split(" ");
+
+              if (firstStage) {
+                  // 1. First stage, read Nodes
+                  pageID = new Integer(lineSplited[0]);
+                  pageTitle = lineSplited[1];
+                  if (page_map.containsKey(pageID)) {
+                      System.out.println("wait duplicated pageID?");
+                      System.exit(0);
+                  } else {
+                      tempPage = new Page(pageID, pageTitle);
+                      page_map.put(pageID, tempPage);
+                  }
+              } else {
+                  // 2. Second stage, read Edges
+                  fromPage = page_map.get(new Integer(lineSplited[0]));
+                  toPage = page_map.get(new Integer(lineSplited[1]));
+                  
+                  fromPage.addOutEdge(toPage);
+                  toPage.addInEdge(fromPage);
+              }
+              
+              System.out.println("reading line " + count++);
+          }
+          // page_map is constructed
+          // page_map should be a static value
+      } catch (FileNotFoundException e) {
+          // invertedIndexReader 
+          e.printStackTrace();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
   }
 }
