@@ -213,60 +213,7 @@ class Hits {
       // inverted index
       // out file
       
-      CommandLineParser parser = new BasicParser();
-      
-      Options opts = new Options();
-      
-      opts.addOption("h", false, "h value");
-      opts.addOption("k", true, "stop on iteration");
-      opts.addOption("converge", true, "stop on convergence");
-      opts.addOption("query", false, "the query");
-      opts.addOption("net", false, "net file");
-      opts.addOption("index", false, "index file");
-      opts.addOption("output", false, "output file");
-      
-      try {
-          CommandLine line = parser.parse(opts, args);
-          System.out.println(line.getArgList().toString());
-          
-          // 1. check required options
-          if (line.hasOption("h") 
-                  && (line.hasOption("k") || line.hasOption("converge")) 
-                  && line.hasOption("query")
-                  && line.hasOption("net")
-                  && line.hasOption("index")
-                  && line.hasOption("output") ) {
-              
-              String h = (String) line.getOptionValue("h");
-              System.out.println("h: " + h);
-              
-              String k = (String) line.getOptionValue("k");
-              System.out.println("k: " + k);
-              
-              String converge = (String) line.getOptionValue("converge");
-              System.out.println("converge: " + converge);
-              
-              String query = (String) line.getOptionValue("query");
-              System.out.println("query: " + query);
-              
-              String net = (String) line.getOptionValue("net");
-              System.out.println("netfile: " + net);
-              
-              String index = (String) line.getOptionValue("index");
-              System.out.println("index: " + index);
-              
-              String output = (String) line.getOptionValue("output");
-              System.out.println("output: " + output);
-          } else {
-              System.out.println("<h value> (-k <numiterations> | -converge <maxchange>)" +
-              		" \"queries\" <input-net-file> <input-inverted-index-file> <output-file>");
-              System.exit(0);
-          }
-          
-      } catch( ParseException exp ) {
-          System.out.println("parse error!!!");
-          System.out.println(exp.getMessage());
-      }
+      System.out.println(args[0].toString());
       
       System.exit(0);
       
