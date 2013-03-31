@@ -133,13 +133,16 @@ class Pagerank {
 	
 	public void writeToFile(){
 		try {
+		
+			Map<Integer, PRNode> pagerank_treemap = new TreeMap<Integer, PRNode>(PRMap);
+			
 			FileWriter fileWriter =
 					new FileWriter(outputFileName);
 	
 			BufferedWriter bufferedWriter =
 					new BufferedWriter(fileWriter);
 					
-			Iterator it = PRMap.entrySet().iterator();
+			Iterator it = pagerank_treemap.entrySet().iterator();
     	while (it.hasNext()) {
         Map.Entry<Integer, PRNode> pairs = (Map.Entry)it.next();
 
@@ -182,7 +185,7 @@ class Pagerank {
 			}
 			
 			
-			if(Math.abs(pairs.getValue().oldPRWeight - tempWeight)/pairs.getValue().oldPRWeight > maxchange)
+			if(100.0* Math.abs(pairs.getValue().oldPRWeight - tempWeight)/pairs.getValue().oldPRWeight > maxchange)
 			{
 				continueUpdate = true;
 			}
