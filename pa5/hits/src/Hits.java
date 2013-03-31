@@ -19,6 +19,8 @@ class Hits {
     private String pageTitle;
     private double authScore;  
     private double hubScore;
+    private double newAuthScore;  
+    private double newHubScore;
     private List<Page> inEdge = null;
     private List<Page> outEdge = null;
     
@@ -39,6 +41,34 @@ class Hits {
         setHubScore(1);
         inEdge = new LinkedList<Page>();
         outEdge = new LinkedList<Page>();
+    }
+    
+    public boolean converged(double converge) {
+        if ( Math.abs(getNewAuthScore() - getAuthScore()) / getAuthScore() <= converge 
+             && Math.abs(getNewHubScore() - getHubScore()) / getHubScore() <= converge) {
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+    
+    public void updateNewAuth(double levelSum) {
+        double temp = getNewAuthScore() / Math.sqrt(levelSum);
+        setNewAuthScore(temp);
+    }
+    
+    public void updateNewHub(double levelSum) {
+        double temp = getNewHubScore() / Math.sqrt(levelSum);
+        setNewHubScore(temp);
+    }
+    
+    public void updateAuth() {
+        setAuthScore(getNewAuthScore()); 
+    }
+    
+    public void updateHub() {
+        setHubScore(getNewHubScore());
     }
     
     public void addOutEdge(Page to) {
@@ -95,6 +125,22 @@ class Hits {
 
     public void setPageTitle(String pageTitle) {
         this.pageTitle = pageTitle;
+    }
+
+    public double getNewAuthScore() {
+        return newAuthScore;
+    }
+
+    public void setNewAuthScore(double newAuthScore) {
+        this.newAuthScore = newAuthScore;
+    }
+
+    public double getNewHubScore() {
+        return newHubScore;
+    }
+
+    public void setNewHubScore(double newHubScore) {
+        this.newHubScore = newHubScore;
     }
 
   }
@@ -207,133 +253,10 @@ class Hits {
       return result;
   }
   
-  static Map<String, List<Integer>> map;
-  static Map<Integer, Page> page_map;
-
   public static void commandWrong() {
       System.out.println("h value> (-k <numiterations> | -converge <maxchange>) " +
               "\"queries\" <input-net-file> <input-inverted-index-file> <output-file>");
       System.exit(0);
-  }
-  public static void main(String [] args) {
-      // h
-      // -k | -converge
-      // "query"
-      // in net file
-      // inverted index
-      // out file
-      
-      
-      
-      if (args.length != 7) {
-          System.out.println("Missing argument(s), see help below");
-          commandWrong();
-      }
-      
-      Integer h = new Integer(args[0]);
-      
-      String opt = (String) args[1];
-      
-      Integer k = null;
-      Double converge = null;
-      if (opt.equals("-k")) {
-          k = new Integer(args[2]);
-      } else if(opt.equals("-converge")) {
-          converge = new Double(args[2]);
-      } else {
-          System.out.println("-k or -converge wrong");
-          commandWrong();
-      }
-      
-      String query = (String) args[3];
-      String netFName = (String) args[4];
-      String indexFName = (String) args[5];
-      String outputFName = (String) args[6];
-      
-      System.out.println(h);
-      System.out.println(k);
-      System.out.println(converge);
-      System.out.println(query);
-      System.out.println(netFName);
-      System.out.println(indexFName);
-      System.out.println(outputFName);
-      
-      // Step 2. load inverted index, and net file
-      loadMap(indexFName);
-      System.out.println("map loaded from inverted index"); 
-
-      loadPageMap(netFName);
-      System.out.println("page map loaded from net file"); 
-     
-      // Step 3. get seed set
-      // by searching the inverted index with query words.
-      String [] queryWords  = query.toLowerCase().split(" "); 
-      List<Integer> seedSet = getSeedSet(queryWords, map);
-      System.out.println("seed got, len: " + seedSet.size());
-      
-      // Step 4. get base set
-      
-      // This set contains pageID: Integer.
-      // We could get the corresponding Page for O(1) 
-      HashSet<Integer> basePageSet = new HashSet<Integer>();
-      
-      Integer maxID = new Integer(0);
-      Page curPage;
-      for (Integer pageID : seedSet) {
-          curPage = page_map.get(pageID);
-          // 4.1 add cur
-          basePageSet.add(curPage.getPageID());
-          if (pageID > maxID) {
-              maxID = pageID;
-          }
-          // 4.2 get inEdges
-          for (Page pointingToCur : curPage.getInEdgeList()) {
-              basePageSet.add(pointingToCur.getPageID());
-              if (pointingToCur.getPageID() > maxID) {
-                  maxID = pointingToCur.getPageID();
-              }
-          }
-          // 4.3 get outEdges
-          for (Page pointedFromCur : curPage.getOutEdgeList()) {
-              basePageSet.add(pointedFromCur.getPageID());
-              if (pointedFromCur.getPageID() > maxID) {
-                  maxID = pointedFromCur.getPageID();
-              }
-          }
-      }
-      
-      System.out.println("Got the base page set, len: " + basePageSet.size());
-      
-      //Collections.sort(basePageSet, new PageIDComparator());
-      
-      System.out.println("maxID: " + maxID.toString());
-      try{
-          FileWriter fstream = new FileWriter(outputFName);
-          BufferedWriter out = new BufferedWriter(fstream);
-          
-          // Here is a Pigeonhole sort
-          Integer tempID;
-          Page tempP;
-          for (int i=0; i<maxID.intValue(); i++) {
-              tempID = new Integer(i); 
-              if (basePageSet.contains(tempID)) {
-                  tempP = page_map.get(tempID);
-                  out.write(tempP.getPageID().toString());
-                  out.write("\n");
-              }
-          }
-          out.close();
-      } catch (Exception e){//Catch exception if any
-          System.err.println("Error: " + e.getMessage());
-      }
-      // Step 5. start looping
-      
-      if (k != null) {
-          // 5.A k-loop
-      
-      } else {
-          // 5.B until converge 
-      }
   }
   
   // This is not used anymore, we use Pigeonhole sort instead
@@ -450,4 +373,196 @@ class Hits {
           e.printStackTrace();
       }
   }
+  
+  static Map<String, List<Integer>> map;
+  static Map<Integer, Page> page_map;
+
+  public static void main(String [] args) {
+      
+      if (args.length != 7) {
+          System.out.println("Missing argument(s), see help below");
+          commandWrong();
+      }
+      
+      Integer h = new Integer(args[0]);
+      
+      String opt = (String) args[1];
+      
+      Integer k = null;
+      Double converge = null;
+      if (opt.equals("-k")) {
+          k = new Integer(args[2]);
+      } else if(opt.equals("-converge")) {
+          converge = new Double(args[2]);
+      } else {
+          System.out.println("-k or -converge wrong");
+          commandWrong();
+      }
+      
+      String query = (String) args[3];
+      String netFName = (String) args[4];
+      String indexFName = (String) args[5];
+      String outputFName = (String) args[6];
+      
+      // Step 2. load inverted index, and net file
+      loadMap(indexFName);
+      System.out.println("map loaded from inverted index"); 
+
+      loadPageMap(netFName);
+      System.out.println("page map loaded from net file"); 
+     
+      // Step 3. get seed set
+      // by searching the inverted index with query words.
+      String [] queryWords  = query.toLowerCase().split(" "); 
+      List<Integer> seedSet = getSeedSet(queryWords, map);
+      System.out.println("seed got, len: " + seedSet.size());
+      
+      // Step 4. get base set
+      
+      // This set contains pageID: Integer.
+      // We could get the corresponding Page for O(1) 
+      HashSet<Integer> basePageSet = new HashSet<Integer>();
+      
+      Integer maxID = new Integer(0);
+      Page curPage;
+      for (Integer pageID : seedSet) {
+          curPage = page_map.get(pageID);
+          // 4.1 add cur
+          basePageSet.add(curPage.getPageID());
+          if (pageID > maxID) {
+              maxID = pageID;
+          }
+          // 4.2 get inEdges
+          for (Page pointingToCur : curPage.getInEdgeList()) {
+              basePageSet.add(pointingToCur.getPageID());
+              if (pointingToCur.getPageID() > maxID) {
+                  maxID = pointingToCur.getPageID();
+              }
+          }
+          // 4.3 get outEdges
+          for (Page pointedFromCur : curPage.getOutEdgeList()) {
+              basePageSet.add(pointedFromCur.getPageID());
+              if (pointedFromCur.getPageID() > maxID) {
+                  maxID = pointedFromCur.getPageID();
+              }
+          }
+      }
+      
+      System.out.println("Got the base page set, len: " + basePageSet.size());
+      
+      //Collections.sort(basePageSet, new PageIDComparator());
+      
+      
+      // Step 5. start looping
+      if (k != null) {
+          // 5.A k-loop
+          for (int i=0; i<k;i++) {
+              double sumAuth = 0;
+              double sumHub = 0;
+              for (Integer curPageID : basePageSet) {
+                  curPage = page_map.get(curPageID);
+                  double newAuthScore = 0;
+                  double newHubScore = 0;
+                  
+                  for (Page in : curPage.getInEdgeList() ) {
+                      newAuthScore += in.getHubScore();
+                  }
+                  curPage.setNewAuthScore(newAuthScore);
+                  sumAuth += Math.pow(newAuthScore, 2);
+                  
+                  for (Page out : curPage.getOutEdgeList() ) {
+                      newHubScore += out.getAuthScore();
+                  }
+                  curPage.setNewHubScore(newHubScore);
+                  sumHub += Math.pow(newHubScore, 2);
+              }
+              
+              // normalize
+              for (Integer curPageID : basePageSet) {
+                  curPage = page_map.get(curPageID);
+                  curPage.updateNewAuth(sumAuth);
+                  curPage.updateNewHub(sumHub);
+                  curPage.updateAuth();
+                  curPage.updateHub();
+              }
+          }
+      } else {
+          boolean totallyConverged = true;
+          while (true) {
+              double sumAuth = 0;
+              double sumHub = 0;
+              for (Integer curPageID : basePageSet) {
+                  curPage = page_map.get(curPageID);
+                  double newAuthScore = 0;
+                  double newHubScore = 0;
+                  
+                  for (Page in : curPage.getInEdgeList() ) {
+                      newAuthScore += in.getHubScore();
+                  }
+                  curPage.setNewAuthScore(newAuthScore);
+                  sumAuth += Math.pow(newAuthScore, 2);
+                  
+                  for (Page out : curPage.getOutEdgeList() ) {
+                      newHubScore += out.getAuthScore();
+                  }
+                  curPage.setNewHubScore(newHubScore);
+                  sumHub += Math.pow(newHubScore, 2);
+              }
+              // normalize
+              for (Integer curPageID : basePageSet) {
+                  curPage = page_map.get(curPageID);
+                  curPage.updateNewAuth(sumAuth);
+                  curPage.updateNewHub(sumHub);
+                  
+                  
+                  if ( !curPage.converged(converge) ) {
+                      // if one not converged, all fail, go to next loop
+                      System.out.println( String.format("A: %s / %s \nH: %s / %s",
+                              curPage.getAuthScore(), curPage.getNewAuthScore(),
+                              curPage.getHubScore(), curPage.getNewHubScore()) 
+                              );
+                      
+                      totallyConverged = false;
+                  }
+                  
+                  curPage.updateAuth();
+                  curPage.updateHub();
+              }
+              
+              if (totallyConverged) {
+                  break;
+              }
+          }
+      }
+      
+      System.out.println("maxID: " + maxID.toString());
+      try{
+          FileWriter fstream = new FileWriter(outputFName);
+          BufferedWriter out = new BufferedWriter(fstream);
+          
+          // Here is a Pigeonhole sort
+          Integer tempID;
+          for (int i=0; i<maxID.intValue(); i++) {
+              tempID = new Integer(i); 
+              if (basePageSet.contains(tempID)) {
+                  if (h == 0) {
+                      break;
+                  }
+                  h--;
+                  curPage = page_map.get(tempID);
+                  
+                  String line = String.format("%s, %s, %s\n", 
+                          curPage.getPageID(), 
+                          curPage.getAuthScore(),
+                          curPage.getHubScore());
+
+                  out.write(line);
+              }
+          }
+          out.close();
+      } catch (Exception e){//Catch exception if any
+          System.err.println("Error: " + e.getMessage());
+      }
+  }
+  
 }
