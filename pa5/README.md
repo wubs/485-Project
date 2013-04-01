@@ -12,9 +12,20 @@ Similarly download `small.net`, `large.net` and place them under `pa5/pagerank`.
 1. Pagerank
 -----------
 
-
+### Original README is in /pagerank/ReadMe.pdf
 ### a. how to run
+To Compile:
+```
+cd pagerank/src
+javac Pagerank.java
 
+```
+To Run:
+```
+cd pagerank/src
+java Pagerank [d value] [-k numiterations or -converge maxchange] [input filename] [output filename]
+
+```
 ### b. notes
 
 
