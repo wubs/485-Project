@@ -23,6 +23,18 @@ Similarly download `small.net`, `large.net` and place them under `pa5/pagerank`.
 
 ### a. how to run
 
+To Compile the default ant job should do the work.
+```
+ant 
+```
+
+To execute
+```
+cd hits
+java -Xms500m -Xmx2000m -jar dist/Hits.jar 20 -converge 5 "ability" hits.net hits_invindex output.data
+java -Xms500m -Xmx2000m -jar dist/Hits.jar 20 -k 10 "ability" hits.net hits_invindex output.data
+```
+
 ### b. notes
 
 
