@@ -326,10 +326,10 @@ class Hits {
           
           boolean firstStage = true;
 
-          BufferedReader invertedIndexReader = new BufferedReader(new FileReader(netFName));
+          BufferedReader netReader = new BufferedReader(new FileReader(netFName));
           long count = 1;
-          while (invertedIndexReader.ready()) {
-              line = invertedIndexReader.readLine();
+          while (netReader.ready()) {
+              line = netReader.readLine();
               
               if (line.charAt(0) == '*') {
                   if ( line.substring(1).split(" ")[0].equals("Vertices") ) {
@@ -367,7 +367,7 @@ class Hits {
           // page_map is constructed
           // page_map should be a static value
       } catch (FileNotFoundException e) {
-          // invertedIndexReader 
+          // netReader 
           e.printStackTrace();
       } catch (IOException e) {
           e.printStackTrace();
@@ -487,7 +487,6 @@ class Hits {
               }
           }
       } else {
-          boolean totallyConverged = true;
           while (true) {
               double sumAuth = 0;
               double sumHub = 0;
@@ -508,9 +507,11 @@ class Hits {
                   curPage.setNewHubScore(newHubScore);
                   sumHub += Math.pow(newHubScore, 2);
               }
-              // normalize
+              
+              boolean totallyConverged = true;
               for (Integer curPageID : basePageSet) {
                   curPage = page_map.get(curPageID);
+                  // normalize
                   curPage.updateNewAuth(sumAuth);
                   curPage.updateNewHub(sumHub);
                   
