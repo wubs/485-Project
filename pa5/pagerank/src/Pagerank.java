@@ -69,8 +69,8 @@ class Pagerank {
 			{
 				//System.out.println(i);
 				words = bufferedReader.readLine().split(" ");
-				int tempNode = Integer.parseInt(words[0]);
-				PRMap.put(tempNode, new PRNode(1.0/NodeNum));
+				Integer tempNodeID = new Integer(words[0]);
+				PRMap.put(tempNodeID, new PRNode(1.0/NodeNum));
 //				VirtualLink.add(tempNode);
 			}
 	
@@ -86,14 +86,14 @@ class Pagerank {
 			while((line = bufferedReader.readLine()) != null)
 			{
 				words = line.split(" ");
-				int outgoingNode = Integer.parseInt(words[0]);
-				int incomingNode = Integer.parseInt(words[1]);
+				Integer outgoingNode = new Integer(words[0]);
+				Integer incomingNode = new Integer(words[1]);
 				
-				if(outgoingNode != incomingNode)
+				if(!outgoingNode.equals(incomingNode))
 				{
 					//VirtualLink.remove(outgoingNode);
 					PRMap.get(incomingNode).inputLinks.add(outgoingNode);
-					PRMap.get(outgoingNode).output ++;
+					PRMap.get(outgoingNode).output++;
 				}
 			}
 			
