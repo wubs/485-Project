@@ -11,15 +11,13 @@ import java.util.*;
 class Pagerank {
 	
 	class PRNode{
-		String label;
 		HashSet<Integer> inputLinks;
 		int output;
 		double PRWeight;
 		double oldPRWeight;
 		
-		public PRNode(String input, double inputWeight)
+		public PRNode(double inputWeight)
 		{
-			label = input;
 			oldPRWeight = inputWeight;
 			PRWeight = inputWeight;
 			output = 0;
@@ -69,10 +67,11 @@ class Pagerank {
 			
 			for(int i = 0; i < NodeNum; i ++)
 			{
+				//System.out.println(i);
 				words = bufferedReader.readLine().split(" ");
 				int tempNode = Integer.parseInt(words[0]);
-				PRMap.put(tempNode, new PRNode(words[1], new Double(1.0/NodeNum)));
-				VirtualLink.add(tempNode);
+				PRMap.put(tempNode, new PRNode(1.0/NodeNum));
+//				VirtualLink.add(tempNode);
 			}
 	
 			words = bufferedReader.readLine().split(" ");
@@ -92,13 +91,21 @@ class Pagerank {
 				
 				if(outgoingNode != incomingNode)
 				{
-					VirtualLink.remove(outgoingNode);
+					//VirtualLink.remove(outgoingNode);
 					PRMap.get(incomingNode).inputLinks.add(outgoingNode);
 					PRMap.get(outgoingNode).output ++;
 				}
 			}
 			
 			bufferedReader.close();			
+			Iterator it = PRMap.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry<Integer, PRNode> pairs = (Map.Entry)it.next();
+				if(pairs.getValue().output==0)
+				{
+					VirtualLink.add(pairs.getKey());
+				}
+			}			
 		}
 		catch(FileNotFoundException ex) {
 			System.out.println("Unable to open file '" + 
