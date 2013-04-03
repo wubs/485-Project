@@ -71,7 +71,7 @@ class Pagerank {
 				words = bufferedReader.readLine().split(" ");
 				int tempNode = Integer.parseInt(words[0]);
 				PRMap.put(tempNode, new PRNode(1.0/NodeNum));
-//				VirtualLink.add(tempNode);
+				VirtualLink.add(tempNode);
 			}
 	
 			words = bufferedReader.readLine().split(" ");
@@ -82,30 +82,37 @@ class Pagerank {
 				System.exit(1);
 			}
 			
-			String line = null;
-			while((line = bufferedReader.readLine()) != null)
+			int connectionsNum = Integer.parseInt(words[1]);
+			System.out.println("Start building connections " + connectionsNum);
+			for(int i = 0; i < connectionsNum; i ++)
 			{
-				words = line.split(" ");
+				//System.out.println(connectionsNum+": "+i);
+				words = bufferedReader.readLine().split(" ");
 				int outgoingNode = Integer.parseInt(words[0]);
 				int incomingNode = Integer.parseInt(words[1]);
 				
 				if(outgoingNode != incomingNode)
 				{
-					//VirtualLink.remove(outgoingNode);
+					if(VirtualLink.contains(outgoingNode))
+					{
+						VirtualLink.remove(outgoingNode);
+					}
 					PRMap.get(incomingNode).inputLinks.add(outgoingNode);
 					PRMap.get(outgoingNode).output ++;
 				}
 			}
 			
 			bufferedReader.close();			
+		/*	System.out.println("start handling virtual link");
+			
 			Iterator it = PRMap.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry<Integer, PRNode> pairs = (Map.Entry)it.next();
-				if(pairs.getValue().output==0)
-				{
-					VirtualLink.add(pairs.getKey());
-				}
-			}			
+    	while (it.hasNext()) {
+        Map.Entry<Integer, PRNode> pairs = (Map.Entry)it.next();
+        if(pairs.getValue().output == 0)
+        {
+        	VirtualLink.add(pairs.getKey());
+        }
+      }*/
 		}
 		catch(FileNotFoundException ex) {
 			System.out.println("Unable to open file '" + 
@@ -167,6 +174,7 @@ class Pagerank {
 	// Update page rank for once and make sure to check the max change
 	public void updatePROnce()
 	{
+		System.out.println("*****************\n start iteration");
 		Iterator it = PRMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Integer, PRNode> pairs = (Map.Entry)it.next();
@@ -206,6 +214,8 @@ class Pagerank {
 			pairs.getValue().oldPRWeight = pairs.getValue().PRWeight;
 		}
 		
+		System.out.println("iteration done!\n*****************");
+		
 	}
 	
 	public void CalculatePR()
@@ -235,9 +245,10 @@ class Pagerank {
   public static void main(String [] args) {
   	Pagerank pr = new Pagerank();
   	pr.getArguments(args);
-  	
+  	System.out.println("finish building map");
   	pr.CalculatePR();
   	
+  	System.out.println("$$$$$$$$$$ Start writing to file%");
   	pr.writeToFile();
   }
 }
