@@ -72,7 +72,6 @@ class Pagerank {
 
 				Integer tempNodeID = new Integer(words[0]);
 				OldWeight.put(tempNodeID, weight);
-				NewWeight.put(tempNodeID, weight);
 				PRMap.put(tempNodeID, new PRNode(weight));
 				VirtualLink.add(tempNodeID);
 			}
@@ -167,11 +166,21 @@ class Pagerank {
 	public void updatePROnce()
 	{
 		System.out.println("*****************\n start iteration");
+		
+		double virtualLinkTotal = 0;		
+		Iterator virtualItr = VirtualLink.iterator();
+		while(virtualItr.hasNext())
+		{
+			virtualLinkTotal += dvalue*OldWeight.get((Integer) virtualItr.next());
+		}
+		virtualLinkTotal /= ((double)NodeNum - 1.0);
+		System.out.println("done with virtual link");	
+		
 		Iterator it = PRMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Integer, PRNode> pairs = (Map.Entry)it.next();
 			Integer pairsKey = (Integer)pairs.getKey();
-			double tempWeight = (1-dvalue)/(NodeNum);
+			double tempWeight = (1-dvalue)/(NodeNum) + virtualLinkTotal;
 			
 			Iterator it2 = pairs.getValue().inputLinks.iterator();
 			while(it2.hasNext())
@@ -181,14 +190,9 @@ class Pagerank {
 				tempWeight += dvalue*OldWeight.get(tempKey)/((double)tempNode.output);
 			}
 			
-			Iterator virtualItr = VirtualLink.iterator();
-			while(virtualItr.hasNext())
+			if(VirtualLink.contains(pairsKey))
 			{
-				int VirtualLinkCurrentNodeID = (Integer) virtualItr.next();
-				if(pairsKey != VirtualLinkCurrentNodeID)
-				{
-					tempWeight += dvalue*OldWeight.get(VirtualLinkCurrentNodeID) / ((double)NodeNum - 1.0);
-				}
+				tempWeight -= 	dvalue*OldWeight.get(pairsKey)/((double)NodeNum - 1.0);
 			}
 			
 			double tempOldWeight = OldWeight.get(pairsKey);
@@ -204,7 +208,9 @@ class Pagerank {
 		}
 		
 		System.out.println("copying hashmaps");
-		OldWeight = new HashMap(NewWeight);
+		HashMap<Integer, Double> tempStorage = NewWeight;
+		NewWeight = OldWeight;
+		OldWeight = tempStorage;
 		
 		System.out.println("iteration done!\n*****************");
 		
