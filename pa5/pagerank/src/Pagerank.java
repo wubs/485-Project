@@ -14,11 +14,9 @@ class Pagerank {
 		HashSet<Integer> inputLinks;
 		int output;
 		double PRWeight;
-		double oldPRWeight;
 		
 		public PRNode(double inputWeight)
 		{
-			oldPRWeight = inputWeight;
 			PRWeight = inputWeight;
 			output = 0;
 			inputLinks = new HashSet<Integer>();
@@ -26,6 +24,8 @@ class Pagerank {
 	}
 	
 	HashMap<Integer, PRNode> PRMap;
+	HashMap<Integer, Double> OldWeight;
+	HashMap<Integer, Double> NewWeight;
 	HashSet<Integer> VirtualLink;
 	
 	double dvalue;
@@ -36,9 +36,6 @@ class Pagerank {
 	String outputFileName;
 	int NodeNum;
 	
-	// if -1; means error; 
-	// if 0, use itenum as criteria
-	// if 1, use maxChange as stop criteria
 	int useIteOrMax; 
 	
 	public Pagerank()
@@ -50,6 +47,8 @@ class Pagerank {
 		useIteOrMax = -1;
 		NodeNum = 0 ;
 		PRMap = new HashMap<Integer, PRNode>();
+		OldWeight = new	HashMap<Integer, Double>();
+		NewWeight = new	HashMap<Integer, Double>();
 		VirtualLink = new HashSet<Integer>();
 	}
 	
@@ -65,13 +64,17 @@ class Pagerank {
 						
 			NodeNum = Integer.parseInt(bufferedReader.readLine().split(" ")[1]);
 			
+			double weight = 1.0/((double)(NodeNum));
+			
 			for(int i = 0; i < NodeNum; i ++)
 			{
-				//System.out.println(i);
 				words = bufferedReader.readLine().split(" ");
-				int tempNode = Integer.parseInt(words[0]);
-				PRMap.put(tempNode, new PRNode(1.0/NodeNum));
-				VirtualLink.add(tempNode);
+
+				Integer tempNodeID = new Integer(words[0]);
+				OldWeight.put(tempNodeID, weight);
+				NewWeight.put(tempNodeID, weight);
+				PRMap.put(tempNodeID, new PRNode(weight));
+				VirtualLink.add(tempNodeID);
 			}
 	
 			words = bufferedReader.readLine().split(" ");
@@ -86,33 +89,23 @@ class Pagerank {
 			System.out.println("Start building connections " + connectionsNum);
 			for(int i = 0; i < connectionsNum; i ++)
 			{
-				//System.out.println(connectionsNum+": "+i);
 				words = bufferedReader.readLine().split(" ");
-				int outgoingNode = Integer.parseInt(words[0]);
-				int incomingNode = Integer.parseInt(words[1]);
+				Integer outgoingNode = new Integer(words[0]);
+				Integer incomingNode = new Integer(words[1]);
 				
-				if(outgoingNode != incomingNode)
+				if(!outgoingNode.equals(incomingNode))
 				{
 					if(VirtualLink.contains(outgoingNode))
 					{
 						VirtualLink.remove(outgoingNode);
 					}
 					PRMap.get(incomingNode).inputLinks.add(outgoingNode);
-					PRMap.get(outgoingNode).output ++;
+					PRMap.get(outgoingNode).output++;
 				}
 			}
 			
 			bufferedReader.close();			
-		/*	System.out.println("start handling virtual link");
-			
-			Iterator it = PRMap.entrySet().iterator();
-    	while (it.hasNext()) {
-        Map.Entry<Integer, PRNode> pairs = (Map.Entry)it.next();
-        if(pairs.getValue().output == 0)
-        {
-        	VirtualLink.add(pairs.getKey());
-        }
-      }*/
+
 		}
 		catch(FileNotFoundException ex) {
 			System.out.println("Unable to open file '" + 
@@ -171,48 +164,47 @@ class Pagerank {
 		}
 	}
 	
-	// Update page rank for once and make sure to check the max change
 	public void updatePROnce()
 	{
 		System.out.println("*****************\n start iteration");
 		Iterator it = PRMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Integer, PRNode> pairs = (Map.Entry)it.next();
+			Integer pairsKey = (Integer)pairs.getKey();
 			double tempWeight = (1-dvalue)/(NodeNum);
 			
 			Iterator it2 = pairs.getValue().inputLinks.iterator();
 			while(it2.hasNext())
 			{
-				PRNode tempNode= PRMap.get(it2.next());
-				tempWeight += dvalue*tempNode.oldPRWeight/((double)tempNode.output);
+				Integer tempKey = (Integer)it2.next();
+				PRNode tempNode= PRMap.get(tempKey);
+				tempWeight += dvalue*OldWeight.get(tempKey)/((double)tempNode.output);
 			}
 			
-			//Handle virtual links
 			Iterator virtualItr = VirtualLink.iterator();
 			while(virtualItr.hasNext())
 			{
 				int VirtualLinkCurrentNodeID = (Integer) virtualItr.next();
-				//System.out.println(VirtualLinkCurrentNodeID);
-				if(pairs.getKey() != VirtualLinkCurrentNodeID)
+				if(pairsKey != VirtualLinkCurrentNodeID)
 				{
-					tempWeight += dvalue*PRMap.get(VirtualLinkCurrentNodeID).oldPRWeight / ((double)NodeNum - 1.0);
+					tempWeight += dvalue*OldWeight.get(VirtualLinkCurrentNodeID) / ((double)NodeNum - 1.0);
 				}
 			}
 			
+			double tempOldWeight = OldWeight.get(pairsKey);
 			
-			if(100.0* Math.abs(pairs.getValue().oldPRWeight - tempWeight)/pairs.getValue().oldPRWeight > maxchange)
+			if(100.0* Math.abs(tempOldWeight- tempWeight)/tempOldWeight > maxchange)
 			{
 				continueUpdate = true;
 			}
-			pairs.getValue().PRWeight = tempWeight;
+			
+			NewWeight.put(pairsKey,tempWeight);
+			PRMap.get(pairsKey).PRWeight = tempWeight;
 			
 		}
 		
-		it = PRMap.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<Integer, PRNode> pairs = (Map.Entry)it.next();
-			pairs.getValue().oldPRWeight = pairs.getValue().PRWeight;
-		}
+		System.out.println("copying hashmaps");
+		OldWeight = new HashMap(NewWeight);
 		
 		System.out.println("iteration done!\n*****************");
 		
