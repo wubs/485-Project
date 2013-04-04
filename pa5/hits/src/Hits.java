@@ -422,9 +422,12 @@ class Hits {
       // This set contains pageID: Integer.
       // We could get the corresponding Page for O(1) 
       HashSet<Integer> basePageSet = new HashSet<Integer>();
+
+      HashSet<Integer> fiftySet = new HashSet<Integer>();
       
       Integer maxID = new Integer(0);
       Page curPage;
+      
       for (Integer pageID : seedSet) {
           curPage = page_map.get(pageID);
           // 4.1 add cur
@@ -434,24 +437,39 @@ class Hits {
           }
           // 4.2 get inEdges
           for (Page pointingToCur : curPage.getInEdgeList()) {
-              basePageSet.add(pointingToCur.getPageID());
+              fiftySet.add(pointingToCur.getPageID());
               if (pointingToCur.getPageID() > maxID) {
                   maxID = pointingToCur.getPageID();
               }
           }
           // 4.3 get outEdges
           for (Page pointedFromCur : curPage.getOutEdgeList()) {
-              basePageSet.add(pointedFromCur.getPageID());
+              fiftySet.add(pointedFromCur.getPageID());
               if (pointedFromCur.getPageID() > maxID) {
                   maxID = pointedFromCur.getPageID();
               }
           }
       }
       
+      // add fifty page to base set, the fifty with smaller pageID
+      
+      int temp_i = 0;
+      Integer tempI;
+      while (true)  {
+          if (temp_i == 50) {
+              break;
+          } 
+          tempI = new Integer(temp_i);
+          if (fiftySet.contains(tempI)) {
+              basePageSet.add(tempI);
+          }
+          temp_i++;
+          System.out.println("Got the base page set, len: " + basePageSet.size());
+      }
+      
       System.out.println("Got the base page set, len: " + basePageSet.size());
       
       //Collections.sort(basePageSet, new PageIDComparator());
-      
       
       // Step 5. start looping
       if (k != null) {

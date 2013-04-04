@@ -1,6 +1,11 @@
 PA5
 ===
 
+file is located at 
+eecs485-08.eecs.umich.edu
+/home/wubs/pa5/pg5largeoutput.txt 
+
+
 Datasets are ignored by git.
 
 Please download `hits.net`, `hits_inindex` and place them under `pa5/hits`.
