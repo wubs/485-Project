@@ -23,7 +23,7 @@ You can also execute this program using the complex way, as stated in pa4 instru
 2. run index server
 -------------------
 
-`and run_server`, will run indexer first and then load the fresh inverted index file.
+`ant run_server`, will run indexer first and then load the fresh inverted index file.
 
 The input filename is `inverted_index.json`, with path `pa4/index/inverted_index.json`.
 
