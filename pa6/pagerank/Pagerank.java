@@ -231,7 +231,6 @@ class Pagerank {
 		OldWeight = tempStorage;
 		
 		System.out.println("iteration done!\n*****************");
-		
 	}
 	
 	public void CalculatePR()
