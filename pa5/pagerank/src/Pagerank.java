@@ -103,8 +103,19 @@ class Pagerank {
 				}
 			}
 			
-			bufferedReader.close();			
-
+			bufferedReader.close();
+            
+            
+            
+            Set<Integer> treeSet = new TreeSet<Integer>(VirtualLink);
+            System.out.println("\n***%%%$$$$$$$\nThere are "+treeSet.size()+"virtual links");
+            Iterator virtualItr = treeSet.iterator();
+            while(virtualItr.hasNext())
+            {
+                System.out.println(virtualItr.next());
+            }
+            System.out.println("***%%%$$$$$$$\n");
+            
 		}
 		catch(FileNotFoundException ex) {
 			System.out.println("Unable to open file '" + 
