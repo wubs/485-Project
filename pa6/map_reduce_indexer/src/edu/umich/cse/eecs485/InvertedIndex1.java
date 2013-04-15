@@ -21,88 +21,88 @@ import java.util.regex.Pattern;
 
 public class InvertedIndex1
 {
-	public static class Map extends Mapper<LongWritable, Text, Text, LongWritable> {
+    public static class Map extends Mapper<LongWritable, Text, Text, LongWritable> {
 
-    // static final to reduce mem usage
-    private final static LongWritable one = new LongWritable(1);
+        // static final to reduce mem usage
+        private final static LongWritable one = new LongWritable(1);
 
-		public void map(LongWritable key, Text value, Context context)
-				throws IOException, InterruptedException {
+        public void map(LongWritable key, Text value, Context context)
+                throws IOException, InterruptedException {
 
-			String strId = "";
-			String strBody = "";
+            String strId = "";
+            String strBody = "";
 
-			// Parse the xml and read data (page id and article body)
-			// Using XOM library
-			Builder builder = new Builder();
+            // Parse the xml and read data (page id and article body)
+            // Using XOM library
+            Builder builder = new Builder();
 
-			try {
-				Document doc = builder.build(value.toString(), null);
+            try {
+                Document doc = builder.build(value.toString(), null);
 
-				Nodes nodeId = doc.query("//eecs485_article_id");
-				strId = nodeId.get(0).getChild(0).getValue();
-				
-				Nodes nodeBody = doc.query("//eecs485_article_body");
-				strBody = nodeBody.get(0).getChild(0).getValue();
-			}
-			catch (ParsingException ex) { 
-				System.out.println("Not well-formed.");
-				System.out.println(ex.getMessage());
-			}  
-			catch (IOException ex) {
-				System.out.println("io exception");
-			}
-			
-			// Tokenize document body
-			Pattern pattern = Pattern.compile("\\w+");
-			Matcher matcher = pattern.matcher(strBody);
-			
-			while (matcher.find()) {
-				// Write the parsed token
-        // key = term, docid   value = 1
-				context.write(new Text(matcher.group() + "," + strId), one);
-			}
-		}
-	}
+                Nodes nodeId = doc.query("//eecs485_article_id");
+                strId = nodeId.get(0).getChild(0).getValue();
 
-	public static class Reduce extends Reducer<Text, LongWritable, Text, LongWritable> {
-		
-		public void reduce(Text key, Iterable<LongWritable> values, Context context)
-				throws IOException, InterruptedException {
-			
-      // function starts here 
-      
-      int sum = 0;
+                Nodes nodeBody = doc.query("//eecs485_article_body");
+                strBody = nodeBody.get(0).getChild(0).getValue();
+            }
+            catch (ParsingException ex) { 
+                System.out.println("Not well-formed.");
+                System.out.println(ex.getMessage());
+            }  
+            catch (IOException ex) {
+                System.out.println("io exception");
+            }
 
-			for (LongWritable value : values) {
-        sum += value.get();
-			}
-			
-			context.write(key, new LongWritable(sum));
-		}
-	}
+            // Tokenize document body
+            Pattern pattern = Pattern.compile("\\w+");
+            Matcher matcher = pattern.matcher(strBody);
 
-	public static void main(String[] args) throws Exception
-	{
-		Configuration conf = new Configuration();
+            while (matcher.find()) {
+                // Write the parsed token
+                // key = term, docid   value = 1
+                context.write(new Text(matcher.group() + "," + strId), one);
+            }
+        }
+    }
 
-		conf.set("xmlinput.start", "<eecs485_article>");
-		conf.set("xmlinput.end", "</eecs485_article>");
+    public static class Reduce extends Reducer<Text, LongWritable, Text, LongWritable> {
 
-		Job job = new Job(conf, "XmlParser");
+        public void reduce(Text key, Iterable<LongWritable> values, Context context)
+                throws IOException, InterruptedException {
 
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(LongWritable.class);
+            // function starts here 
 
-		job.setMapperClass(Map.class);
-		job.setReducerClass(Reduce.class);
+            int sum = 0;
 
-		job.setInputFormatClass(XmlInputFormat.class);
-		job.setOutputFormatClass(TextOutputFormat.class);
+            for (LongWritable value : values) {
+                sum += value.get();
+            }
 
-		FileInputFormat.addInputPath(job, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+            context.write(key, new LongWritable(sum));
+        }
+    }
 
-		job.waitForCompletion(true);
-	}
+    public static void main(String[] args) throws Exception
+    {
+        Configuration conf = new Configuration();
+
+        conf.set("xmlinput.start", "<eecs485_article>");
+        conf.set("xmlinput.end", "</eecs485_article>");
+
+        Job job = new Job(conf, "XmlParser");
+
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(LongWritable.class);
+
+        job.setMapperClass(Map.class);
+        job.setReducerClass(Reduce.class);
+
+        job.setInputFormatClass(XmlInputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
+
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        job.waitForCompletion(true);
+    }
 }

@@ -54,7 +54,7 @@ public class InvertedIndex4 {
           docid_tfidf = value.toString().split(":");
           docid = docid_tfidf[0]; 
           tfidf = docid_tfidf[1]; 
-          
+
           list.append(String.format("%s:%s ", docid, tfidf));
       }
       // remove trailing space
@@ -67,22 +67,22 @@ public class InvertedIndex4 {
 
   public static void main(String[] args) throws Exception
   {
-    Configuration conf = new Configuration();
+      Configuration conf = new Configuration();
 
-    Job job = new Job(conf, "InvertedIndex3");
+      Job job = new Job(conf, "InvertedIndex3");
 
-    job.setOutputKeyClass(Text.class);
-    job.setOutputValueClass(Text.class);
+      job.setOutputKeyClass(Text.class);
+      job.setOutputValueClass(Text.class);
 
-    job.setMapperClass(Map.class);
-    job.setReducerClass(Reduce.class);
+      job.setMapperClass(Map.class);
+      job.setReducerClass(Reduce.class);
 
-    job.setInputFormatClass(TextInputFormat.class);
-    job.setOutputFormatClass(TextOutputFormat.class);
+      job.setInputFormatClass(TextInputFormat.class);
+      job.setOutputFormatClass(TextOutputFormat.class);
 
-    FileInputFormat.addInputPath(job, new Path(args[0]));
-    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+      FileInputFormat.addInputPath(job, new Path(args[0]));
+      FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-    job.waitForCompletion(true);
+      job.waitForCompletion(true);
   }
 }
