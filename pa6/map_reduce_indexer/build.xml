@@ -1,0 +1,28 @@
+<project name="map_reduce_indexer" basedir="." default="main">
+  <property name="src.dir" value="src" />
+  <property name="build.dir" value="build" />
+  <property name="classes.dir" value="${build.dir}/classes" />
+  <property name="dist.dir" value="dist" />
+
+  <path id="classpath">
+    <fileset dir="../hadoop/lib" includes="**/*.jar" />
+    <pathelement location="../hadoop/hadoop-core-1.0.1.jar" />
+  </path>
+
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+    <delete dir="${dist.dir}"/>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${classes.dir}"/>
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+    </jar>
+  </target>
+
+  <target name="main" depends="clean,compile,jar"/>
+</project>

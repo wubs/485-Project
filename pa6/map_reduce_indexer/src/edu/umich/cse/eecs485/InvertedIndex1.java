@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class InvertedIndex
+public class InvertedIndex1
 {
 	public static class Map extends Mapper<LongWritable, Text, Text, LongWritable> {
 
