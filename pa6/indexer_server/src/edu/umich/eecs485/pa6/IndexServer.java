@@ -127,14 +127,13 @@ public class IndexServer extends GenericIndexServer {
       String [] words = query.toLowerCase().split("\\s*[^0-9a-zA-Z']+\\s*"); 
       String word;
       int totalWords = words.length;
-      
-      HashSet<HashMap<String, DocItem> > union = new HashSet<HashMap<String, DocItem> >(); 
+      HashSet<DocItem> union = new HashSet<DocItem>(); 
       
       for (int i=0; i<totalWords; i++) {
           word = words[i];
           
           if (map.get(word) != null) {
-              union.addAll(map.get(word));
+              union.addAll(map.get(word).values());
           }
       }
       
@@ -164,8 +163,9 @@ public class IndexServer extends GenericIndexServer {
         word_df = df_map.get(word) + 1;
       else
         word_df = 1;
-      
-      word_df = Math.log10((totalDoc+1)/(word_df));
+      //TODO:
+      // Verify with Ruoran "doc_length" is the total number of doc
+      word_df = Math.log10((doc_length+1)/(word_df));
 
       if ( !query_tfidf.containsKey(word) ) {
         query_tfidf.put(word, new Double(word_df)); 
@@ -179,7 +179,7 @@ public class IndexServer extends GenericIndexServer {
       word = words[i];
       temp1 = query_tfidf.get(word);
       if(map.containsKey(word)) {
-        temp2 = map.get(word).get(item.getIdentifier());
+        temp2 = map.get(word).get(item.getIdentifier()).tfidf;
       } else {
         temp2 = 0;
       }
