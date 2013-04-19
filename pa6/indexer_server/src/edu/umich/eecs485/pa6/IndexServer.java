@@ -30,7 +30,7 @@ import edu.umich.eecs485.pa6.utils.GenericIndexServer;
 public class IndexServer extends GenericIndexServer {
     
     
-   static HashMap<String, List<DocItem>> map;
+   static HashMap<String, HashMap<String, DocItem> > map;
    
    static HashMap<String, Double> pr_map;
    
@@ -51,13 +51,13 @@ public class IndexServer extends GenericIndexServer {
     
     // here we will load the serialized map object back into mem.
   
-    map = new HashMap<String, List<DocItem>>();
+    map = new HashMap<String, HashMap<String, DocItem> >();
     
     try {
         BufferedReader read = new BufferedReader(new FileReader(fname));
         
         String line;
-        ArrayList<DocItem> listDocItem;
+        HashMap<String, DocItem> listDocItem;
         String[] key_value;
         String word;
         String value;
@@ -79,13 +79,13 @@ public class IndexServer extends GenericIndexServer {
             df_list = value.split("\\s+", 2);
             df = df_list[0];
             list = df_list[1].split("\\s+");
-            listDocItem = new ArrayList<DocItem>();
+            listDocItem = new HashMap<String, DocItem>();
             
             for (int j=0; j<list.length; j++) {
                 docid = list[j].split(":")[0];
                 tfidf = list[j].split(":")[1];
                 item = new DocItem(docid, tfidf);
-                listDocItem.add(item);
+                listDocItem.put(docid, item);
             }
             
             df_map.put(word, new Double(df));
@@ -128,7 +128,7 @@ public class IndexServer extends GenericIndexServer {
       String word;
       int totalWords = words.length;
       
-      HashSet<DocItem> union = new HashSet<DocItem>(); 
+      HashSet<HashMap<String, DocItem> > union = new HashSet<HashMap<String, DocItem> >(); 
       
       for (int i=0; i<totalWords; i++) {
           word = words[i];
@@ -149,9 +149,53 @@ public class IndexServer extends GenericIndexServer {
   }
   
   public static double calScore(String[] words, DocItem item) {
-      // TODO
-      double score = Math.random() * 10;
-      return score;
+
+    HashMap<String, Double> query_tfidf = new HashMap<String, Double>();
+
+    double de1 = 0;
+    double de2 = 0;
+    double nu = 0;
+    double word_df = 0;
+
+    String word;
+    for (int i=0; i< words.length; i++) {
+      word = words[i].toLowerCase();
+      if(df_map.containsKey(word))
+        word_df = df_map.get(word) + 1;
+      else
+        word_df = 1;
+      
+      word_df = Math.log10((totalDoc+1)/(word_df));
+
+      if ( !query_tfidf.containsKey(word) ) {
+        query_tfidf.put(word, new Double(word_df)); 
+      } else {
+        query_tfidf.put(word, Double.valueOf( query_tfidf.get(word) + word_df)); 
+      }    
+    }
+
+    double result = 0, temp1 = 0, temp2 = 0;
+    for (int i=0; i< words.length; i++) {
+      word = words[i];
+      temp1 = query_tfidf.get(word);
+      if(map.containsKey(word)) {
+        temp2 = map.get(word).get(item.getIdentifier());
+      } else {
+        temp2 = 0;
+      }
+      nu += temp1 * temp2;
+      de1 += temp1 * temp1;
+      de2 += temp2 * temp2;
+    }
+
+
+    if(de2 == 0) {
+      return 0;
+    }
+
+    result = nu / (Math.sqrt(de1) * Math.sqrt(de2));
+
+    return result;
   }
   
   public static class DocItemComparator implements Comparator<QueryHit>{
