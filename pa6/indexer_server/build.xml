@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="pa4" default="compile" basedir=".">
+<project name="indexer_server" default="compile" basedir=".">
     <description>
         simple example build file
     </description>
@@ -13,8 +13,7 @@
   <property name="dist"  location="dist"/>
   <property name="test.include" value="*Test*"/>
 
-  <property name="main-class" value="edu.umich.eecs485.pa4.Indexer" />
-  <property name="server-class" value="edu.umich.eecs485.pa4.IndexServer" />
+  <property name="server-class" value="edu.umich.eecs485.pa6.IndexServer" />
 
   <property name="test.build.data" value="${test.build}/data" />
   <property name="test.cache.data" value="${test.build}/cache" />
@@ -104,7 +103,7 @@
     <mkdir dir="${dist}/lib"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/pa4.jar" basedir="${build}"/>
+    <jar jarfile="${dist}/lib/pa6.jar" basedir="${build}"/>
   </target>
 
   <target name="clean"
@@ -114,25 +113,15 @@
     <delete dir="${dist}"/>
   </target>
 
-  <target name="run_indexer" depends="dist">
-    <java fork="true" classname="${main-class}">
+  <target name="run_server" depends="dist">
+    <java maxmemory="3248m" fork="true" classname="${server-class}">
       <classpath>
         <path refid="classpath"/>
-        <path location="${dist}/pa4.jar"/>
-      </classpath>
-      <arg value="../search.xml" />
-      <arg value="../index/inverted_index.json" />
-    </java>
-  </target>
- 
-  <target name="run_server" depends="dist, run_indexer">
-    <java fork="true" classname="${server-class}">
-      <classpath>
-        <path refid="classpath"/>
-        <path location="${dist}/pa4.jar"/>
+        <path location="${dist}/pa6.jar"/>
       </classpath>
       <arg value="9010" />
-      <arg value="../index/inverted_index.json" />
+      <arg value="../map_reduce_indexer/inv4_out/part-r-00000" />
+      <arg value="../pagerank/output.txt" />
     </java>
   </target>
 
