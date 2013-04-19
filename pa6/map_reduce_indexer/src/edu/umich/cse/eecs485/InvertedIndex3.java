@@ -16,6 +16,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class InvertedIndex3 {
 
+    public static double totalDoc = 0;
     public static class Map extends Mapper<LongWritable, Text, Text, Text> {
         public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException { 
             // value is a line 
@@ -39,6 +40,7 @@ public class InvertedIndex3 {
                 tf = splited_docid_tf[1];
 
                 context.write(new Text(docid), new Text(String.format("%s:%s:%s", term, df, tf)));
+                totalDoc++;
             }
         }
     }
@@ -48,11 +50,6 @@ public class InvertedIndex3 {
             StringBuilder list = new StringBuilder(); 
 
             double tfidf;
-            // TODO:
-            //      Figure out how many document in total
-            //      and make this variable accessible by
-            //      others.
-            double totalDoc = 1000000;
 
             String term, df, tf;
             String[] term_df_tf;
@@ -64,8 +61,8 @@ public class InvertedIndex3 {
                 tf = term_df_tf[2];
                 double tfD = Double.parseDouble(tf);
                 double dfD = Double.parseDouble(df);
-                double idf = Math.log10(totalDoc/dfD);
-                tfidf = tf * idf;
+                double idf = Math.log10(totalDoc / dfD);
+                tfidf = tfD * idf;
                 list.append(String.format("%s:%s:%f,", term, df, tfidf));
             }
     

@@ -32,7 +32,11 @@ public class IndexServer extends GenericIndexServer {
     
    static HashMap<String, List<DocItem>> map;
    
-   static HashMap<String, Double > pr_map;
+   static HashMap<String, Double> pr_map;
+   
+   static HashMap<String, Double> df_map;
+   
+   static long doc_length;
    
    File pr_file;
     
@@ -84,6 +88,7 @@ public class IndexServer extends GenericIndexServer {
                 listDocItem.add(item);
             }
             
+            df_map.put(word, new Double(df));
             map.put(word, listDocItem);
             System.out.println(i++);
         }
@@ -163,7 +168,6 @@ public class IndexServer extends GenericIndexServer {
           }
       }
   }
-  
   
   public static void main(String argv[]) throws IOException {
     if (argv.length < 2) {
