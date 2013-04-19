@@ -1,4 +1,4 @@
-package edu.umich.eecs485.pa4.utils;
+package edu.umich.eecs485.pa6.utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +22,8 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
-import edu.umich.eecs485.pa4.utils.QueryHit;
-import edu.umich.eecs485.pa4.utils.GenericIndexServer;
+import edu.umich.eecs485.pa6.utils.QueryHit;
+import edu.umich.eecs485.pa6.utils.GenericIndexServer;
 
 /******************************************************
  * <code>GenericIndexServer</code> handles all the network and

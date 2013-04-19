@@ -1,4 +1,4 @@
-package edu.umich.eecs485.pa4.utils;
+package edu.umich.eecs485.pa6.utils;
 
 public class QueryHit {
     String id;

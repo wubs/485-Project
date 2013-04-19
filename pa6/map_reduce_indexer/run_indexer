@@ -1,0 +1,11 @@
+#!/bin/sh
+
+./inv1.sh
+
+./inv2.sh
+
+./inv3.sh
+
+./inv4.sh
+
+echo "Done"

@@ -1,0 +1,10 @@
+*.jar
+bin
+output
+build
+dist
+inv1_out
+inv2_out
+inv3_out
+inv4_out
+part-r-0000*

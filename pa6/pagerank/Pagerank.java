@@ -61,61 +61,68 @@ class Pagerank {
 	
 			BufferedReader bufferedReader = 
 						new BufferedReader(fileReader);
-						
-			NodeNum = Integer.parseInt(bufferedReader.readLine().split(" ")[1]);
-			
-			double weight = 1.0/((double)(NodeNum));
-			
-			for(int i = 0; i < NodeNum; i ++)
+            
+            bufferedReader.readLine();
+            String readLine;
+            while(!bufferedReader.readLine().equalsIgnoreCase("</eecs485_edges>"))
 			{
-				words = bufferedReader.readLine().split(" ");
-
-				Integer tempNodeID = new Integer(words[0]);
-				OldWeight.put(tempNodeID, weight);
-				PRMap.put(tempNodeID, new PRNode(weight));
-				VirtualLink.add(tempNodeID);
-			}
-	
-			words = bufferedReader.readLine().split(" ");
-			
-			if(!words[0].equals("*Arcs"))
-			{
-				System.out.println("There are more than " + NodeNum + " nodes in this file");
-				System.exit(1);
-			}
-			
-			int connectionsNum = Integer.parseInt(words[1]);
-			System.out.println("Start building connections " + connectionsNum);
-			for(int i = 0; i < connectionsNum; i ++)
-			{
-				words = bufferedReader.readLine().split(" ");
-				Integer outgoingNode = new Integer(words[0]);
-				Integer incomingNode = new Integer(words[1]);
-				
+                readLine = bufferedReader.readLine();
+				Integer outgoingNode = new Integer(readLine.substring(14,readLine.indexOf("</eecs485_from>")));
+                
+                if(outgoingNode == 5262)
+                    System.out.println(readLine);
+                
+                readLine = bufferedReader.readLine();
+				Integer incomingNode = new Integer(readLine.substring(12,readLine.indexOf("</eecs485_to>")));
+                if(incomingNode == 5262)
+                    System.out.println(readLine);
+				            
 				if(!outgoingNode.equals(incomingNode))
 				{
-					if(VirtualLink.contains(outgoingNode))
-					{
-						VirtualLink.remove(outgoingNode);
-					}
-					PRMap.get(incomingNode).inputLinks.add(outgoingNode);
-					PRMap.get(outgoingNode).output++;
+                    if(!PRMap.containsKey(incomingNode))
+                    {
+                        NodeNum ++;
+                        PRMap.put(incomingNode, new PRNode(0));
+                    }
+                    PRMap.get(incomingNode).inputLinks.add(outgoingNode);
+                    
+                    if(!PRMap.containsKey(outgoingNode))
+                    {
+                        NodeNum ++;
+                        PRMap.put(outgoingNode, new PRNode(0));
+                    }
+                    PRMap.get(outgoingNode).output++;
+
+					
 				}
+                
+                bufferedReader.readLine();
 			}
 			
+			double weight = 1.0/((double)(NodeNum));
+            
+            
+            Iterator it = PRMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Integer, PRNode> pairs = (Map.Entry)it.next();
+                pairs.getValue().PRWeight = weight;
+                OldWeight.put(pairs.getKey(), weight);
+                if(pairs.getValue().output == 0)
+                {
+                    VirtualLink.add(pairs.getKey());
+                }
+            }
+			
 			bufferedReader.close();
-            
-            
-            
-            Set<Integer> treeSet = new TreeSet<Integer>(VirtualLink);
+           /* Set<Integer> treeSet = new TreeSet<Integer>(VirtualLink);
             System.out.println("\n***%%%$$$$$$$\nThere are "+treeSet.size()+"virtual links");
             Iterator virtualItr = treeSet.iterator();
             while(virtualItr.hasNext())
             {
                 System.out.println(virtualItr.next());
             }
-            System.out.println("***%%%$$$$$$$\n");
-            
+            System.out.println("***%%%$$$$$$$\n");*/
+
 		}
 		catch(FileNotFoundException ex) {
 			System.out.println("Unable to open file '" + 
@@ -224,7 +231,6 @@ class Pagerank {
 		OldWeight = tempStorage;
 		
 		System.out.println("iteration done!\n*****************");
-		
 	}
 	
 	public void CalculatePR()
