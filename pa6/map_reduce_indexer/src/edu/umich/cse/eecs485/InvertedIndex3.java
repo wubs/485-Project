@@ -48,18 +48,27 @@ public class InvertedIndex3 {
             StringBuilder list = new StringBuilder(); 
 
             double tfidf;
+            // TODO:
+            //      Figure out how many document in total
+            //      and make this variable accessible by
+            //      others.
+            double totalDoc = 1000000;
 
             String term, df, tf;
             String[] term_df_tf;
+            
             for (Text value : values) {
                 term_df_tf = value.toString().split(":");
-                term = term_df_tf[0]; 
-                df = term_df_tf[1]; 
-                tf = term_df_tf[2]; 
-                // change this TODO!
-                tfidf = Double.parseDouble(tf) * 100 / Double.parseDouble(df); 
-                list.append(String.format("%s:%s:%s,", term, df, tfidf));
+                term = term_df_tf[0];
+                df = term_df_tf[1];
+                tf = term_df_tf[2];
+                double tfD = Double.parseDouble(tf);
+                double dfD = Double.parseDouble(df);
+                double idf = Math.log10(totalDoc/dfD);
+                tfidf = tf * idf;
+                list.append(String.format("%s:%s:%f,", term, df, tfidf));
             }
+    
             // remove trailing coma 
             list.deleteCharAt(list.length()-1);
             context.write(key, new Text(list.toString()));
