@@ -1,2 +1,100 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Le styles -->
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+</head>
+<style>
+  .popover {
+    width: 250px;
+  }
+</style>
+
+<body>
+    <div class="container">
+    <!-- start edit from here -->
+
+
+      <div id="offset2">
+        <div style="text-align:center"><h1> Wiki Search </h1></div>
+        <form class="form-inline" style="text-align:center" action="#">
+          <input id="keyword" type="text" style = "width:80%" placeholder="keyword" name="keyword">
+          <br><br>
+          <p>
+            <div id="slider" style="width: 200px;"></div>
+            <label for="amount">w value:</label>
+            <input type="text" id="amount" style="border: 0; color: #f6931f; font-weight: bold;">
+            <a class= "btn btn-info click_set">Set w</a>
+         </p>
+         <a class= "btn btn-success click_search">Search</a>
+        </form>
+        </div>
+
+
+    <!-- edit above -->
+    </div> <!-- /container -->
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+    <script type = "text/javascript">
+
+    $(function () {
+        $(".click_search").live("click", function(){
+          var keywrd = $("#keyword").val();
+          var w = $("#slider").slider('value');
+          var start_time = new Date().getTime() / 1000;
+          alert(keywrd+' '+w);
+
+          $.post('search_action.php', {'keywrd':keywrd, 'w':w}, function(data){
+            var list = document.getElementById("offset2");
+            list.innerHTML = data;
+            $("#time_spent").text("Time spent: " + (new Date().getTime() / 1000 - start_time).toFixed(3) + "s" );
+          });
+        });
+
+
+       $( "#slider" ).slider({
+        range: "min",
+        min: 0,
+        max: 1,
+        value: 0.5,
+        step: 0.01,
+        slide: function( event, ui ) {
+          $( "#amount" ).val( ui.value );
+        }
+      });
+
+      $( "#amount" ).val( $( "#slider" ).slider( "value" ) );
+        
+     
+        
+      $(".set_w").live("click", function() {
+          
+          $( "#amount" ).val( $slider.slider( "value" ) );
+      });
+
+      $("#show_detail").live("click", function() { 
+        if ( $(this).val() == 0 ) {
+          $(this).popover("show");
+          $(this).val(1);
+        } else {
+          $(this).popover("hide");
+          $(this).val(0);
+        }
+      });
+
+      $(".click_back").live("click", function(){
+        location.reload();
+      });
+            
+   });
+    </script>
+  </body>
 </html>
