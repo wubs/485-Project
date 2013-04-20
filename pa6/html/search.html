@@ -16,6 +16,10 @@
     overflow-y: auto;
   }
 
+  .slider {
+    margin: 0 auto;
+  }
+
 
 </style>
 
@@ -30,10 +34,10 @@
           <input id="keyword" type="text" style = "width:80%" placeholder="keyword" name="keyword">
           <br><br>
           <p>
-            <div id="slider" style="width: 200px;"></div>
+            <div id="slider" style="margin-left:auto; margin-right:auto; width: 20%; align:center;"></div><br>
             <label for="amount">w value:</label>
             <input type="text" id="amount" style="border: 0; color: #f6931f; font-weight: bold;">
-            <a class= "btn btn-info click_set">Set w</a>
+            <a class= "btn btn-info set_w">Set w</a>
          </p>
          <a class= "btn btn-success click_search">Search</a>
         </form>
@@ -79,9 +83,14 @@
      
         
       $(".set_w").live("click", function() {
-          
-          $( "#amount" ).val( $slider.slider( "value" ) );
+          var value = $("#amount").val();
+          if(isNaN(value)||value>1 || value<0){
+            alert("Please enter a valid number.");
+          }
+          else
+            $("#slider").slider("value", value);
       });
+
 
       $("#show_detail").live("click", function() { 
         if ( $(this).val() == 0 ) {
