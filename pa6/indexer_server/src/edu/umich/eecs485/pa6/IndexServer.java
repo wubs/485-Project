@@ -74,13 +74,18 @@ public class IndexServer extends GenericIndexServer {
         
         while( (line = read.readLine()) != null ){
             key_value = line.split("\\s+", 2);
-            word = key_value[0];
+            word = key_value[0].toLowerCase();
             value = key_value[1];
             
             df_list = value.split("\\s+", 2);
             df = df_list[0];
             list = df_list[1].split("\\s+");
-            mapDocItem = new HashMap<String, DocItem>();
+            
+            if ( !map.containsKey(word) ) {
+                mapDocItem = new HashMap<String, DocItem>();
+            } else {
+                mapDocItem = map.get(word);
+            }
             
             for (int j=0; j<list.length; j++) {
                 docid = list[j].split(":")[0];
@@ -129,22 +134,30 @@ public class IndexServer extends GenericIndexServer {
       String [] words = query.toLowerCase().split("\\s*[^0-9a-zA-Z']+\\s*"); 
       String word;
       int totalWords = words.length;
+      System.out.println("query words count " + totalWords);
+      
       HashSet<DocItem> union = new HashSet<DocItem>(); 
       
       for (int i=0; i<totalWords; i++) {
           word = words[i];
+          System.out.println("processing word: " + word);
+      
           
           if (map.get(word) != null) {
               union.addAll(map.get(word).values());
           }
       }
       
+      System.out.println("union length " + union.size());
       for (DocItem item: union) {
+          System.out.println("added on to result");
           result.add( new QueryHit(item.getIdentifier(), calScore(words, item, 0.5)));
       }
       
       // this will sort doc item in descending order
       Collections.sort( result, new DocItemComparator());
+      
+      System.out.println("Result length " + result.size());
       
       return result;
   }
@@ -176,11 +189,16 @@ public class IndexServer extends GenericIndexServer {
           }    
       }
 
+      System.out.println("here");
       double result = 0, temp1 = 0, temp2 = 0;
       for (int i=0; i< words.length; i++) {
           word = words[i];
+          
+          System.out.println("calscore loop word: " + word);
           temp1 = query_tfidf.get(word);
-          if(map.containsKey(word)) {
+          System.out.println(temp1);
+          
+          if(map.containsKey(word) && map.get(word).containsKey(item.getIdentifier())) {
               temp2 = map.get(word).get(item.getIdentifier()).tfidf;
           } else {
               temp2 = 0;
@@ -189,6 +207,7 @@ public class IndexServer extends GenericIndexServer {
           de1 += temp1 * temp1;
           de2 += temp2 * temp2;
       }
+      System.out.println("here2");
 
       if(de2 == 0) {
           return 0;

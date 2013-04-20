@@ -26,7 +26,7 @@
       ."<p id='time_spent'> </p>";
 
     //Set the content of showing the result
-    echo "<table class='table' align='center' valign='center'>";
+    echo "<table class='table span5' align='center' valign='center'>";
     if($number > 0){  
       foreach($myResults as $hit) { 
         $seq = $hit['id']; //the sequence # for the result
@@ -34,7 +34,7 @@
         //$img_url = $hit['img_url']; //the url for the image
         //$text = $hit['text']; //the summary for the page
         //$title = $hit['title']; //the title used to show the link ?? is it necessary?
-        echo "<tr><td>" . $seq . "</td><td><a href='$seq'>".$seq."</a></td>"
+        echo "<tr><td class=span3>" . $seq . "</td>"
           ."<td><a value=false class='btn btn-info show_detail' rel='popover' data-html='true' " 
           ."data-trigger='click' data-placement='right'"
           ."data-content='<img src=http://ruoranwang.github.io/images/bluetooth/find.png align=center/><br>$seq' >"
