@@ -77,7 +77,7 @@ public abstract class GenericIndexServer {
         // then grab the query string contents
         //
         
-        double w=0;
+        double w = 0.5;
         
         if ("/search".equals(path)) {
           String queryStr = null;
@@ -91,9 +91,6 @@ public abstract class GenericIndexServer {
             } else if("w".equals(name)) {
               w = Double.parseDouble(val);
             }
-          }
-          if (w == 0) {
-              System.exit(1);
           }
           List<QueryHit> hits = processQuery(queryStr, w);
 
