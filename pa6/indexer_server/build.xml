@@ -103,7 +103,11 @@
     <mkdir dir="${dist}/lib"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/pa6.jar" basedir="${build}"/>
+    <jar jarfile="${dist}/lib/pa6.jar" basedir="${build}">
+      <manifest>
+        <attribute name="Main-Class" value="${server-class}"/>
+      </manifest>
+    </jar>
   </target>
 
   <target name="clean"

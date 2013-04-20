@@ -32,16 +32,18 @@ import edu.umich.eecs485.pa6.utils.GenericIndexServer;
 public abstract class GenericIndexServer {
   int port;
   File fname;
+  File pr_fname;
   
   /**
    * Store members, and do the initServer() call.
    */
-  public GenericIndexServer(int port, File fname) {
+  public GenericIndexServer(int port, File fname, File pr_fname) {
     this.port = port;
     this.fname = fname;
+    this.pr_fname = pr_fname;
 
     // init student's server
-    initServer(fname);
+    initServer(fname, pr_fname);
   }
 
   /**
@@ -75,6 +77,7 @@ public abstract class GenericIndexServer {
         // then grab the query string contents
         //
         
+        double w=0;
         
         if ("/search".equals(path)) {
           String queryStr = null;
@@ -85,9 +88,14 @@ public abstract class GenericIndexServer {
             String val = URLDecoder.decode(elt.split("=")[1], "UTF-8");
             if ("q".equals(name)) {
               queryStr = val;
+            } else if("w".equals(name)) {
+              w = Double.parseDouble(val);
             }
           }
-          List<QueryHit> hits = processQuery(queryStr);
+          if (w == 0) {
+              System.exit(1);
+          }
+          List<QueryHit> hits = processQuery(queryStr, w);
 
           //
           // Now we can handle the QueryHit JSON encoding
@@ -127,6 +135,6 @@ public abstract class GenericIndexServer {
    * initServer(File fname) and processQuery(String query)
    * are abstract functions the student fills in.
    */
-  public abstract void initServer(File fname);
-  public abstract List<QueryHit> processQuery(String query);
+  public abstract void initServer(File fname, File pr_fname);
+  public abstract List<QueryHit> processQuery(String query, double w);
 }
