@@ -36,7 +36,7 @@
         echo "<tr><td>".$seq."</td><td><a href='$url'>".$title."</a></td>"
           ."<td><a value=false class='btn btn-info show_detail' rel='popover' data-html=true" 
           ." data-trigger='click' data-placement='right'"
-          ."data-content='<img src= $img_url align='center'><br>$text' >"
+          ."data-content='<img src= $img_url><br>$text' >"
           ."Details</a></td></tr>";
       }
     }
