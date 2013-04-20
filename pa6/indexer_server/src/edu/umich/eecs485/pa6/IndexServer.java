@@ -36,35 +36,36 @@ public class IndexServer extends GenericIndexServer {
    
    static HashMap<String, Double> df_map;
    
-   static long doc_length;
+   static long doc_length=0;
    
-   File pr_file;
+   static File pr_file;
     
   public IndexServer(int port, File fname, File pr_filename) throws IOException {
-    super(port, fname);
-    pr_file = pr_filename;
+    super(port, fname, pr_filename);
   }
 
-  public void initServer(File fname) {
+  public void initServer(File fname, File pr_filename) {
     // Do something!
     System.err.println("Init server with fname " + fname);
     
     // here we will load the serialized map object back into mem.
   
-    map = new HashMap<String, HashMap<String, DocItem> >();
+    map = new HashMap<String, HashMap<String, DocItem>>();
+    pr_map  = new HashMap<String, Double>();
+    df_map = new HashMap<String, Double>();
     
     try {
         BufferedReader read = new BufferedReader(new FileReader(fname));
         
         String line;
-        HashMap<String, DocItem> listDocItem;
+        HashMap<String, DocItem> mapDocItem;
         String[] key_value;
         String word;
         String value;
         
         String[] df_list;
         String df;
-        String [] list;
+        String[] list;
         String docid;
         String tfidf;
         DocItem item;
@@ -79,48 +80,49 @@ public class IndexServer extends GenericIndexServer {
             df_list = value.split("\\s+", 2);
             df = df_list[0];
             list = df_list[1].split("\\s+");
-            listDocItem = new HashMap<String, DocItem>();
+            mapDocItem = new HashMap<String, DocItem>();
             
             for (int j=0; j<list.length; j++) {
                 docid = list[j].split(":")[0];
                 tfidf = list[j].split(":")[1];
                 item = new DocItem(docid, tfidf);
-                listDocItem.put(docid, item);
+                mapDocItem.put(docid, item);
             }
             
             df_map.put(word, new Double(df));
-            map.put(word, listDocItem);
+            map.put(word, mapDocItem);
             System.out.println(i++);
         }
         
     } catch (Exception e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
+        System.out.println("Reading inverted index error!");
+        System.exit(1);
     }
     
     try {
-        BufferedReader read = new BufferedReader(new FileReader(pr_file));
+        BufferedReader read = new BufferedReader(new FileReader(pr_filename));
         
         String line;
         String docid;
         Double pr;
         
         while( (line = read.readLine()) != null ){
+            doc_length++;
             docid = line.split("\\s+")[0];
             pr = new Double(line.split("\\s+")[1]);
             pr_map.put(docid, pr);
         }
-        
     } catch (Exception e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
+        System.out.println("Reading page rank error");
     }
     
-    System.out.println("done");
+    System.out.println("PR loaded into mem");
   }
   
-  public List<QueryHit> processQuery(String query) {
-      System.out.println("Processing query '" + query + "'");
+  public List<QueryHit> processQuery(String query, double w) {
+      System.out.println("Processing query '" + query + "' w:" + w);
       ArrayList<QueryHit> result = new ArrayList<QueryHit>();
       
       // Split query String into words
@@ -138,7 +140,7 @@ public class IndexServer extends GenericIndexServer {
       }
       
       for (DocItem item: union) {
-          result.add( new QueryHit(item.getIdentifier(), calScore(words, item)) );
+          result.add( new QueryHit(item.getIdentifier(), calScore(words, item, 0.5)));
       }
       
       // this will sort doc item in descending order
@@ -147,55 +149,54 @@ public class IndexServer extends GenericIndexServer {
       return result;
   }
   
-  public static double calScore(String[] words, DocItem item) {
+  public static double calScore(String[] words, DocItem item, double w) {
 
-    HashMap<String, Double> query_tfidf = new HashMap<String, Double>();
+      HashMap<String, Double> query_tfidf = new HashMap<String, Double>();
 
-    double de1 = 0;
-    double de2 = 0;
-    double nu = 0;
-    double word_df = 0;
+      double de1 = 0;
+      double de2 = 0;
+      double nu = 0;
+      double word_df = 0;
 
-    String word;
-    for (int i=0; i< words.length; i++) {
-      word = words[i].toLowerCase();
-      if(df_map.containsKey(word))
-        word_df = df_map.get(word) + 1;
-      else
-        word_df = 1;
-      //TODO:
-      // Verify with Ruoran "doc_length" is the total number of doc
-      word_df = Math.log10((doc_length+1)/(word_df));
+      String word;
+      for (int i=0; i< words.length; i++) {
+          word = words[i].toLowerCase();
+          if(df_map.containsKey(word))
+              word_df = df_map.get(word) + 1;
+          else
+              word_df = 1;
+          //TODO:
+          // Verify with Ruoran "doc_length" is the total number of doc
+          word_df = Math.log10((doc_length+1)/(word_df));
 
-      if ( !query_tfidf.containsKey(word) ) {
-        query_tfidf.put(word, new Double(word_df)); 
-      } else {
-        query_tfidf.put(word, Double.valueOf( query_tfidf.get(word) + word_df)); 
-      }    
-    }
-
-    double result = 0, temp1 = 0, temp2 = 0;
-    for (int i=0; i< words.length; i++) {
-      word = words[i];
-      temp1 = query_tfidf.get(word);
-      if(map.containsKey(word)) {
-        temp2 = map.get(word).get(item.getIdentifier()).tfidf;
-      } else {
-        temp2 = 0;
+          if ( !query_tfidf.containsKey(word) ) {
+              query_tfidf.put(word, new Double(word_df)); 
+          } else {
+              query_tfidf.put(word, Double.valueOf( query_tfidf.get(word) + word_df)); 
+          }    
       }
-      nu += temp1 * temp2;
-      de1 += temp1 * temp1;
-      de2 += temp2 * temp2;
-    }
 
+      double result = 0, temp1 = 0, temp2 = 0;
+      for (int i=0; i< words.length; i++) {
+          word = words[i];
+          temp1 = query_tfidf.get(word);
+          if(map.containsKey(word)) {
+              temp2 = map.get(word).get(item.getIdentifier()).tfidf;
+          } else {
+              temp2 = 0;
+          }
+          nu += temp1 * temp2;
+          de1 += temp1 * temp1;
+          de2 += temp2 * temp2;
+      }
 
-    if(de2 == 0) {
-      return 0;
-    }
+      if(de2 == 0) {
+          return 0;
+      }
 
-    result = nu / (Math.sqrt(de1) * Math.sqrt(de2));
+      result = nu / (Math.sqrt(de1) * Math.sqrt(de2));
 
-    return result;
+      return result;
   }
   
   public static class DocItemComparator implements Comparator<QueryHit>{
@@ -233,6 +234,7 @@ public class IndexServer extends GenericIndexServer {
 
     // Run server.  Note that because server.serve() creates a new
     // thread, the process will not terminate even though serve() returns.
+    
     IndexServer server = new IndexServer(portnum, fname, pr_filename);
     server.serve();
   }
