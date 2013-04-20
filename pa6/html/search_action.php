@@ -35,9 +35,9 @@
         //$text = $hit['text']; //the summary for the page
         //$title = $hit['title']; //the title used to show the link ?? is it necessary?
         echo "<tr><td>" . $seq . "</td><td><a href='$seq'>".$seq."</a></td>"
-          ."<td><a value=false class='btn btn-info show_detail' rel='popover' data-html=true" 
+          ."<td><a value=false class='btn btn-info show_detail' rel='popover' data-html='true' " 
           ."data-trigger='click' data-placement='right'"
-          ."data-content='<img src=$img_url align=center><br><p>$text</p>'>"
+          ."data-content='<img src=http://ruoranwang.github.io/images/bluetooth/find.png align=center/><br>$seq' >"
           ."Details</a></td></tr>";
       }
     }
@@ -48,7 +48,7 @@
     echo "</table>";
 
     echo "<script>$(function () {"
-  . "   $('#show_detail').live('click', function() { "
+  . "   $('.show_detail').live('click', function() { "
   . "     if ( $(this).val() == 0 ) { "
   . "       $(this).popover('show');"
   . "       $(this).val(1); "
