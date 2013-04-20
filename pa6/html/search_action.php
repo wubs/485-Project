@@ -36,8 +36,13 @@
         //$title = $hit['title']; //the title used to show the link ?? is it necessary?
         echo "<tr><td>" . $seq . "</td><td><a href='$seq'>".$seq."</a></td>"
           ."<td><a value=false class='btn btn-info show_detail' rel='popover' data-html=true" 
+<<<<<<< HEAD
           ."data-trigger='click' data-placement='right'"
           ."data-content='<img src=$img_url align=center><br><p>$text</p>'>"
+=======
+          ." data-trigger='click' data-placement='right'"
+          ."data-content='<img src= $img_url><br>$text' >"
+>>>>>>> e5a331aab3691fee9da0a5caa4d2b6ce7aff1568
           ."Details</a></td></tr>";
       }
     }
