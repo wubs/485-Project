@@ -59,23 +59,23 @@ public class  XmlLoader {
             final Statement statement = conn.createStatement();
 
             // Create Table Article
-            String queryString = "CREATE TABLE IF NOT EXISTS Article ( id INT NOT NULL, title VARCHAR(50), body TEXT);";
+            String queryString = "CREATE TABLE IF NOT EXISTS Article ( id INT NOT NULL PRIMARY KEY, title VARCHAR(50), body TEXT);";
             System.out.println(queryString);
             statement.executeUpdate(queryString);
             // Create Table Category
-            queryString = "CREATE TABLE IF NOT EXISTS Category ( id INT NOT NULL PRIMARY KEY, title VARCHAR(50), category VARCHAR(50));" ;
+            queryString = "CREATE TABLE IF NOT EXISTS Category ( id INT, category VARCHAR(50), PRIMARY KEY(id, category));" ;
             System.out.println(queryString);
             statement.executeUpdate(queryString);
             // Create Table Edge
-            queryString = "CREATE TABLE IF NOT EXISTS Edge ( id_from INT NOT NULL PRIMARY KEY, id_to INT);" ;
+            queryString = "CREATE TABLE IF NOT EXISTS Edge ( id_from INT, id_to INT, PRIMARY KEY(id_from, id_to));" ;
             System.out.println(queryString);
             statement.executeUpdate(queryString);
             // Create Table imageUrl
-            queryString = "CREATE TABLE IF NOT EXISTS imageUrl ( id INT NOT NULL PRIMARY KEY, title VARCHAR(50), url VARCHAR(100));" ;
+            queryString = "CREATE TABLE IF NOT EXISTS imageUrl ( id INT NOT NULL PRIMARY KEY, url VARCHAR(100));" ;
             System.out.println(queryString);
             statement.executeUpdate(queryString);
             // Create Table infoBox
-            queryString = "CREATE TABLE IF NOT EXISTS infoBox ( id INT NOT NULL PRIMARY KEY, title VARCHAR(50), summary TEXT);" ;
+            queryString = "CREATE TABLE IF NOT EXISTS infoBox ( id INT NOT NULL PRIMARY KEY, summary TEXT);" ;
             System.out.println(queryString);
             statement.executeUpdate(queryString);
 
@@ -144,7 +144,7 @@ public class  XmlLoader {
                             stmt.setString(1, id);
                             stmt.setString(2, title);
                             stmt.setString(3, body);
-
+                            System.out.println(stmt.toString());
                             stmt.executeUpdate();
 //                            System.out.println(queryString1);
 //                            statement.executeUpdate(queryString1);
@@ -154,46 +154,55 @@ public class  XmlLoader {
                         }
 
                         if (qName.equalsIgnoreCase("eecs485_category")) {
-                            String queryString1 = String.format("INSERT IGNORE Category (id, title, category) VALUES (%s, \"%s\",\"%s\");", id, title, category); 
-
-                            System.out.println(queryString1);
-                            statement.executeUpdate(queryString1);
+                            stmt = conn.prepareStatement("INSERT IGNORE Category (id, category) VALUES (?, ?);"); 
+                            stmt.setString(1, id);
+                            stmt.setString(2, category);
+                            System.out.println(stmt.toString());
+                            stmt.executeUpdate();
+                            //System.out.println(queryString1);
+                            //statement.executeUpdate(queryString1);
                             id = null;
-                            title = null;
+                            //title = null;
                             category = null;
                         }
 
                         if (qName.equalsIgnoreCase("eecs485_edge")) {
-                            String queryString1 = String.format("INSERT IGNORE Category (id_from, id_to) VALUES (%s, %s);", from, to); 
-
-                            System.out.println(queryString1);
-                            statement.executeUpdate(queryString1);
+                            stmt = conn.prepareStatement("INSERT IGNORE Edge (id_from, id_to) VALUES (?, ?);"); 
+                            stmt.setString(1, from);
+                            stmt.setString(2, to);
+                            System.out.println(stmt.toString());
+                            stmt.executeUpdate();
                             from = null;
                             to = null;
                         }
 
                         if (qName.equalsIgnoreCase("eecs485_image")) {
                             id = null;
-                            title = null;
+                            //title = null;
                             url = null;     
                         }
 
-                        if (qName.equalsIgnoreCase("eecs485_png_url")) {
-                            String queryString1 = String.format("INSERT IGNORE imageUrl (id, title, url) VALUES (%s, \"%s\", \"%s\");", id, title, url); 
-
-                            System.out.println(queryString1);
-                            statement.executeUpdate(queryString1);
-                            url = null;		      
+                        if (qName.equalsIgnoreCase("eecs485_png_url") && bpng) {
+                            
+                            stmt = conn.prepareStatement("INSERT IGNORE imageUrl (id, url) VALUES (?, ?);"); 
+                            stmt.setString(1, id);
+                            stmt.setString(2, url);
+                            System.out.println(stmt.toString()); 
+                            stmt.executeUpdate();
+                            id = null; 
+                            url = null;	
+                            bpng = false;	      
                         }
 
 
                         if (qName.equalsIgnoreCase("eecs485_summary")) {
-                            String queryString1 = String.format("INSERT IGNORE Summary (id, title, summary) VALUES (%s, \"%s\", \"%s\");", id, title, summary); 
-
-                            System.out.println(queryString1);
-                            statement.executeUpdate(queryString1);
+                            stmt = conn.prepareStatement("INSERT IGNORE infoBox (id, summary) VALUES (?, ?);"); 
+                            stmt.setString(1, id);
+                            stmt.setString(2, summary);
+                            System.out.println(stmt.toString());
+                            stmt.executeUpdate();
                             id = null;
-                            title = null;
+                            //title = null;
                             summary = null;
                         }
                     }catch (Exception e) {
@@ -207,14 +216,12 @@ public class  XmlLoader {
 
                     if (bid) {
                         id = new String(ch, start, length);
-                        if(!bpng)
-                            bid = false;
+                        bid = false;
                     }
 
                     if (btitle) {
                         title = new String(ch, start, length);
-                        if(!bpng)
-                            btitle = false;
+                        btitle = false;
                     }
 
                     if (bbody) {
@@ -242,7 +249,7 @@ public class  XmlLoader {
                         bsummary = false;
                     }
 
-                    if (burl) {
+                    if (burl && bpng) {
                         url = new String(ch, start, length);
                         burl = false;
                     }
