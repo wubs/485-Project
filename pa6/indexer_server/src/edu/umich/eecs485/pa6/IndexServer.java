@@ -29,7 +29,6 @@ import edu.umich.eecs485.pa6.utils.GenericIndexServer;
 
 public class IndexServer extends GenericIndexServer {
     
-    
    static HashMap<String, HashMap<String, DocItem> > map;
    
    static HashMap<String, Double> pr_map;
@@ -134,13 +133,11 @@ public class IndexServer extends GenericIndexServer {
       String [] words = query.toLowerCase().split("\\s*[^0-9a-zA-Z']+\\s*"); 
       String word;
       int totalWords = words.length;
-      System.out.println("query words count " + totalWords);
       
       HashSet<DocItem> union = new HashSet<DocItem>(); 
       
       for (int i=0; i<totalWords; i++) {
           word = words[i];
-          System.out.println("processing word: " + word);
       
           
           if (map.get(word) != null) {
@@ -148,18 +145,18 @@ public class IndexServer extends GenericIndexServer {
           }
       }
       
-      System.out.println("union length " + union.size());
       for (DocItem item: union) {
-          System.out.println("added on to result");
-          result.add( new QueryHit(item.getIdentifier(), calScore(words, item, 0.5)));
+          result.add( new QueryHit(item.getIdentifier(), calScore(words, item, w)));
       }
       
       // this will sort doc item in descending order
       Collections.sort( result, new DocItemComparator());
       
-      System.out.println("Result length " + result.size());
-      
-      return result;
+      if (result.size() > 10) {
+          return result.subList(0, 10);
+      } else {
+          return result;
+      }
   }
   
   public static double calScore(String[] words, DocItem item, double w) {
@@ -174,12 +171,12 @@ public class IndexServer extends GenericIndexServer {
       String word;
       for (int i=0; i< words.length; i++) {
           word = words[i].toLowerCase();
-          if(df_map.containsKey(word))
+          if(df_map.containsKey(word)) {
               word_df = df_map.get(word) + 1;
-          else
+          }
+          else {
               word_df = 1;
-          //TODO:
-          // Verify with Ruoran "doc_length" is the total number of doc
+          }
           word_df = Math.log10((doc_length+1)/(word_df));
 
           if ( !query_tfidf.containsKey(word) ) {
@@ -189,38 +186,43 @@ public class IndexServer extends GenericIndexServer {
           }    
       }
 
-      System.out.println("here");
       double result = 0, temp1 = 0, temp2 = 0;
       for (int i=0; i< words.length; i++) {
           word = words[i];
           
-          System.out.println("calscore loop word: " + word);
           temp1 = query_tfidf.get(word);
-          System.out.println(temp1);
           
           if(map.containsKey(word) && map.get(word).containsKey(item.getIdentifier())) {
               temp2 = map.get(word).get(item.getIdentifier()).tfidf;
           } else {
               temp2 = 0;
           }
+          
+          System.out.println("id: " + item.getIdentifier() + " temp 1 " + temp1 + " temp2 " + temp2);
           nu += temp1 * temp2;
           de1 += temp1 * temp1;
           de2 += temp2 * temp2;
+          System.out.println("nu: " + nu + " de1 " + de1 + " de2 " + de2);
+          
       }
-      System.out.println("here2");
 
       if(de2 == 0) {
           return 0;
       }
 
       result = nu / (Math.sqrt(de1) * Math.sqrt(de2));
+      System.out.println("zero result: " + result);
       
       result = (1-w) * result;
+      
+      System.out.println("first result: " + result);
       
       if(pr_map.containsKey(item.getIdentifier()))
       {
         result += w * pr_map.get(item.getIdentifier());
       }
+      
+      System.out.println("second result: " + result);
 
       return result;
   }

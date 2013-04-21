@@ -1,7 +1,7 @@
 <?php 
   require('server.php');
   $port = "9010";
-  $host = "67.194.194.220";
+  $host = "67.194.205.155";
 
   $w = $_POST['w'];
   $searchterms = $_POST['keywrd'];
@@ -30,11 +30,12 @@
     if($number > 0){  
       foreach($myResults as $hit) { 
         $seq = $hit['id']; //the sequence # for the result
+        $score = $hit['score']; //the sequence # for the result
         //$url = $hit['url']; //the url for the page
         //$img_url = $hit['img_url']; //the url for the image
         //$text = $hit['text']; //the summary for the page
         //$title = $hit['title']; //the title used to show the link ?? is it necessary?
-        echo "<tr><td class=span3>" . $seq . "</td>"
+        echo "<tr><td class=span3>" . $seq . "</td><td>$score</td>"
           ."<td><a value=false class='btn btn-info show_detail' rel='popover' data-html='true' " 
           ."data-trigger='click' data-placement='right'"
           ."data-content='<img src=http://ruoranwang.github.io/images/bluetooth/find.png align=center/><br>$seq' >"
