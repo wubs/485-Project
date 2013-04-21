@@ -1,0 +1,51 @@
+<project name="XLoader" basedir="." default="main">
+  <property name="src.dir" value="src" />
+  <property name="build.dir" value="build" />
+  <property name="classes.dir" value="${build.dir}/classes" />
+  <property name="dist.dir" value="dist" />
+
+  <property name="main-class" value="XLoader" />
+
+  <property name="lib.dir" value="lib"/>
+
+  <path id="classpath">
+    <fileset dir="${lib.dir}" includes="**/*.jar"/>
+  </path>
+
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+    <delete dir="${dist.dir}"/>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${classes.dir}"/>
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+    <copy todir="${dist.dir}" file="${basedir}/mining.articles.xml"/>
+    <copy todir="${dist.dir}" file="${basedir}/mining.category.xml"/>
+    <copy todir="${dist.dir}" file="${basedir}/mining.edges.xml"/>
+    <copy todir="${dist.dir}" file="${basedir}/mining.imageUrls.xml"/>
+    <copy todir="${dist.dir}" file="${basedir}/mining.infobox.xml"/>
+  </target>
+
+  <target name="jar" depends="compile">
+    <mkdir dir="${dist.dir}"/>
+    <jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="${main-class}"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="run" depends="jar">
+    <java fork="true" classname="${main-class}">
+      <classpath>
+        <path refid="classpath"/>
+        <path location="${dist.dir}/${ant.project.name}.jar"/>
+      </classpath>
+    </java>
+  </target>
+
+  <target name="clean-build" depends="clean,jar"/>
+
+  <target name="main" depends="clean,run"/>
+</project>
