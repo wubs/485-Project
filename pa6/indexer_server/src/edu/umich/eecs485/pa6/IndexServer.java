@@ -214,6 +214,13 @@ public class IndexServer extends GenericIndexServer {
       }
 
       result = nu / (Math.sqrt(de1) * Math.sqrt(de2));
+      
+      result = (1-w) * result;
+      
+      if(pr_map.containsKey(item.getIdentifier()))
+      {
+        result += w * pr_map.get(item.getIdentifier());
+      }
 
       return result;
   }
