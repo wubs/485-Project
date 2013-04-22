@@ -57,7 +57,7 @@ Step 3. InvertedIndex
 
 `ant run_server` will run the indexer server
 
-** If you followed the previous steps, you don't need to change parameters (input file path) **
+**If you followed the previous steps, you don't need to change parameters (input file path)**
 
 ```
 <target name="run_server" depends="dist">
@@ -83,7 +83,14 @@ Step 3. InvertedIndex
 Step 4. XML Loader
 --------------------
 
-#### -- Input `../hadoop/dataset/mining.imageUrls.xml,`../hadoop/dataset/mining.infobox.xml,../hadoop/dataset/mining.category.xml,../hadoop/dataset/mining.edges.xml, ../hadoop/dataset/prod/mining.article.xml`
+#### -- Input 
+```
+../hadoop/dataset/mining.imageUrls.xml
+../hadoop/dataset/mining.infobox.xml
+../hadoop/dataset/mining.category.xml
+../hadoop/dataset/mining.edges.xml
+../hadoop/dataset/prod/mining.article.xml
+```
 
 #### -- Output: Table Article(id, title, body), Category(id, category), Edge(id_from, id_to), imageUrl(id, url), infoBox(id, summary) with entries`
 
@@ -136,7 +143,9 @@ The graph contains the following information:
    4. Name tag of the nodes: title of the article.
 
 **Implementation details:**
+
 Back end:
+We conducted inverted index on "category" and built two hash map. One hash map uses category as key and stores the document ID; the other one uses document ID as key and stores all the category it belongs to. When front end passes the input article ID, back end would use the two hash maps to find out what other articles that have the same categories as the input article, and back end would return a list of article ID as result to front end.
 
 Front end: 
   Reference library: RGraph from JIT - http://philogb.github.io/jit/
