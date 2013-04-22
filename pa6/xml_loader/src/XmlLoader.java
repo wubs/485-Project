@@ -1,5 +1,5 @@
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
+//import javax.xml.parsers.DocumentBuilder;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -7,11 +7,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.w3c.dom.Document;
+/*import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
-import java.io.File;
+import java.io.File;*/
 import java.io.IOException;
 
 import java.sql.*;
@@ -57,9 +57,13 @@ public class  XmlLoader {
             final Connection conn = DriverManager.getConnection(db_url, db_user, db_pass);
 
             final Statement statement = conn.createStatement();
-
+            
+            String queryString = "DROP TABLE IF EXISTS Article, Category, Edge, imageUrl, infoBox;";
+            System.out.println(queryString);
+            statement.executeUpdate(queryString);
+            
             // Create Table Article
-            String queryString = "CREATE TABLE IF NOT EXISTS Article ( id INT NOT NULL PRIMARY KEY, title VARCHAR(50), body TEXT);";
+            queryString = "CREATE TABLE IF NOT EXISTS Article ( id INT NOT NULL PRIMARY KEY, title VARCHAR(50), body TEXT);";
             System.out.println(queryString);
             statement.executeUpdate(queryString);
             // Create Table Category
@@ -71,7 +75,7 @@ public class  XmlLoader {
             System.out.println(queryString);
             statement.executeUpdate(queryString);
             // Create Table imageUrl
-            queryString = "CREATE TABLE IF NOT EXISTS imageUrl ( id INT NOT NULL PRIMARY KEY, url VARCHAR(100));" ;
+            queryString = "CREATE TABLE IF NOT EXISTS imageUrl ( id INT NOT NULL PRIMARY KEY, url TEXT);" ;
             System.out.println(queryString);
             statement.executeUpdate(queryString);
             // Create Table infoBox
@@ -152,7 +156,7 @@ public class  XmlLoader {
                             if ( !category.matches("^All_articles_.*") 
                                     && !category.matches("^Wikipedia_.*") 
                                     && !category.matches("^Articles.*") 
-                                    && !category.matches("^Use_.*_dates")) {
+                                    && !category.matches("^Use_mdy_dates")) {
                                 stmt = conn.prepareStatement("INSERT IGNORE Category (id, category) VALUES (?, ?);"); 
                                 stmt.setString(1, id);
                                 stmt.setString(2, category);
@@ -223,6 +227,9 @@ public class  XmlLoader {
 
                     if (bbody) {
                         body = new String(ch, start, length);
+                        if (body.length() > 450) {
+                            body.substring(450);
+                        }
                         bbody = false;
                     }
 

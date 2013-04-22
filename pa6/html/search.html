@@ -24,34 +24,35 @@
 </style>
 
 <body>
-    <div class="container">
+  <div class="container">
     <!-- start edit from here -->
 
 
-      <div id="offset2">
-        <div style="text-align:center"><h1> Wiki Search </h1></div>
-        <form class="form-inline" style="text-align:center" action="#">
-          <input id="keyword" type="text" style = "width:80%" placeholder="keyword" name="keyword">
-          <br><br>
-          <p>
-            <div id="slider" style="margin-left:auto; margin-right:auto; width: 20%; align:center;"></div><br>
-            <label for="amount">w value:</label>
-            <input type="text" id="amount" style="border: 0; color: #f6931f; font-weight: bold;">
-            <a class= "btn btn-info set_w">Set w</a>
-         </p>
-         <a class= "btn btn-success click_search">Search</a>
-        </form>
-        </div>
+    <div id="offset2">
+      <div style="text-align:center"><h1> Wiki Search </h1></div>
+      <form class="form-inline" style="text-align:center" action="#">
+        <input id="keyword" type="text" style = "width:80%" placeholder="keyword" name="keyword">
+        <br><br>
+        <p>
+        <div id="slider" style="margin-left:auto; margin-right:auto; width: 20%; align:center;"></div><br>
+        <label for="amount">w value:</label>
+        <input type="text" id="amount" style="border: 0; color: #f6931f; font-weight: bold;">
+        <a class= "btn btn-info set_w">Set w</a>
+        </p>
+        <a class= "btn btn-success click_search">Search</a>
+      </form>
+    </div>
 
+    <div class="span12 row" id="list">
+      <div class="span5 pull-right" id="summary"></div>
+    </div> 
 
-    <!-- edit above -->
-    </div> <!-- /container -->
-
+  </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
     <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
-    <script type = "text/javascript">
 
+    <script type = "text/javascript">
     $(function () {
         $(".click_search").live("click", function(){
           var keywrd = $("#keyword").val();
@@ -60,12 +61,24 @@
           alert(keywrd+' '+w);
 
           $.post('search_action.php', {'keywrd':keywrd, 'w':w}, function(data){
-            var list = document.getElementById("offset2");
+            var list = document.getElementById("list");
             list.innerHTML = data;
             $("#time_spent").text("Time spent: " + (new Date().getTime() / 1000 - start_time).toFixed(3) + "s" );
           });
         });
 
+        $('.show_detail').live('click', function(){
+          var seq = $(this).attr('seq');
+          $.post('detail.php', {'seq':seq}, function(data){
+            var list = document.getElementById('summary');
+            list.innerHTML = data; 
+          });
+        });
+
+        $('.click_close').live('click', function(){
+            var list = document.getElementById('summary');
+            list.innerHTML='';
+        });
 
        $( "#slider" ).slider({
         range: "min",
@@ -92,7 +105,7 @@
       });
 
 
-      $(".show_detail").live("click", function() { 
+      /*$(".show_detail").live("click", function() { 
         if ( $(this).val() == 0 ) {
           $(this).popover("show");
           $(this).val(1);
@@ -100,11 +113,12 @@
           $(this).popover("hide");
           $(this).val(0);
         }
-      });
+      });*/
 
       $(".click_back").live("click", function(){
         location.reload();
       });
+
             
    });
     </script>
