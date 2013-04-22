@@ -112,10 +112,10 @@ The visual graph shows the relationship among pages by the number of categories 
 Click View Visualization to trigger the graph in the detail information block.
 
 The graph contains the following information:
-   1. The central node: the page whoses detail information is shown;
+   1. The central node: the page whose detail information is shown;
    2. The surrounding node: the pages who shared categories with the central node;
    3. Weight of the edges: how many categories are shared with the central node;
-   4. The dimension of the node: 
+   4. Name tag of the nodes: title of the article.
 
 
 
