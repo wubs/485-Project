@@ -131,39 +131,36 @@ public class  XmlLoader {
                     if (qName.equalsIgnoreCase("eecs485_png_url")) {
                         burl = true;
                     }
-
-
                 }
 
                 public void endElement(String uri, String localName, String qName) throws SAXException {
                     try{
 
                         if (qName.equalsIgnoreCase("eecs485_article")) {
-//                            String queryString1 = String.format("INSERT IGNORE Article (id, title, body) VALUES (%s, \"%s\",\"%s\");", id, title, body); 
                             stmt = conn.prepareStatement("INSERT IGNORE Article (id, title, body) VALUES (?,?,?);");
                             stmt.setString(1, id);
                             stmt.setString(2, title);
                             stmt.setString(3, body);
                             System.out.println(stmt.toString());
                             stmt.executeUpdate();
-//                            System.out.println(queryString1);
-//                            statement.executeUpdate(queryString1);
                             id = null;
                             title = null;
                             body = null;
                         }
 
                         if (qName.equalsIgnoreCase("eecs485_category")) {
-                            stmt = conn.prepareStatement("INSERT IGNORE Category (id, category) VALUES (?, ?);"); 
-                            stmt.setString(1, id);
-                            stmt.setString(2, category);
-                            System.out.println(stmt.toString());
-                            stmt.executeUpdate();
-                            //System.out.println(queryString1);
-                            //statement.executeUpdate(queryString1);
-                            id = null;
-                            //title = null;
-                            category = null;
+                            if ( !category.matches("^All_articles_.*") 
+                                    && !category.matches("^Wikipedia_.*") 
+                                    && !category.matches("^Articles.*") 
+                                    && !category.matches("^Use_mdy_dates")) {
+                                stmt = conn.prepareStatement("INSERT IGNORE Category (id, category) VALUES (?, ?);"); 
+                                stmt.setString(1, id);
+                                stmt.setString(2, category);
+                                System.out.println(stmt.toString());
+                                stmt.executeUpdate();
+                                id = null;
+                                category = null;
+                            }
                         }
 
                         if (qName.equalsIgnoreCase("eecs485_edge")) {
