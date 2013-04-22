@@ -41,8 +41,8 @@
          </p>
          <a class= "btn btn-success click_search">Search</a>
         </form>
-        </div>
-
+      </div>
+      <div class="span12 row" id="list"></div>
 
     <!-- edit above -->
     </div> <!-- /container -->
@@ -60,7 +60,7 @@
           alert(keywrd+' '+w);
 
           $.post('search_action.php', {'keywrd':keywrd, 'w':w}, function(data){
-            var list = document.getElementById("offset2");
+            var list = document.getElementById("list");
             list.innerHTML = data;
             $("#time_spent").text("Time spent: " + (new Date().getTime() / 1000 - start_time).toFixed(3) + "s" );
           });
@@ -92,7 +92,7 @@
       });
 
 
-      $(".show_detail").live("click", function() { 
+      /*$(".show_detail").live("click", function() { 
         if ( $(this).val() == 0 ) {
           $(this).popover("show");
           $(this).val(1);
@@ -100,11 +100,12 @@
           $(this).popover("hide");
           $(this).val(0);
         }
-      });
+      });*/
 
       $(".click_back").live("click", function(){
         location.reload();
       });
+
             
    });
     </script>

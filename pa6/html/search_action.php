@@ -1,44 +1,45 @@
 <?php 
+  include('lib.php'); 
   require('server.php');
   $port = "9010";
-  $host = "67.194.194.220";
+  $host = "67.194.205.155";
+  $db_name = "pa1_db";
+  $db_host = "localhost";
+  $db_user = "ruoran";
+  $db_passwd ="1216";
 
   $w = $_POST['w'];
   $searchterms = $_POST['keywrd'];
-
+  
+  $conn = mysql_connect($db_host, $db_user, $db_passwd) or die("Connect Error: " . mysql_error());  
+  mysql_select_db($db_name) or die("Could not select:" . $db_name);
   //$searchterms indicates the keyword, $w indicate the w value
   $myResults = queryIndex($port, $host, $searchterms, $w);
   $number=sizeof($myResults);
-  //$number=0;
-  //$myResult=array();
-
+  
   //Change the html in List
-  //resize the search textboxes
-  echo "<div style='text-align:left'><h3> Wiki Search Result</h3></div>"
-    ."<form class='form-inline' style='text-align:left' action='#'>"
-    ."<input id='keyword' type='text' style = 'width:40%' placeholder='".$searchterms."' name='keyword'>"
-    ."<br><br><p>"
-    ."<a class= 'btn btn-success click_back'>Back</a>"
-    ."</form></div><hr>";
 
-    //Give a summary of the search result
-    echo "<p>Number of hits: $number</p>"
-      ."<p id='time_spent'> </p>";
+  //Give a summary of the search result
+  //echo "<p>Number of hits: $number</p>"
+  //  ."<p id='time_spent'> </p>";
 
     //Set the content of showing the result
-    echo "<table class='table span5' align='center' valign='center'>";
+  //echo "<table class='table span5' align='center' valign='center'>";
+  echo "<table class='table span5' align='center' valign='center'>";
+
     if($number > 0){  
       foreach($myResults as $hit) { 
         $seq = $hit['id']; //the sequence # for the result
-        //$url = $hit['url']; //the url for the page
-        //$img_url = $hit['img_url']; //the url for the image
-        //$text = $hit['text']; //the summary for the page
-        //$title = $hit['title']; //the title used to show the link ?? is it necessary?
+        $query = "SELECT title FROM Article WHERE id=$seq";
+        $result = mysql_query($query) or die("Query failed: " . mysql_error());
+        $row = mysql_fetch_array($result, MYSQL_ASSOC);
+        $title = $row['title'];
+        $url = "http://en.wikipedia.org/wiki/".$title;       
+        
         echo "<tr><td class=span3>" . $seq . "</td>"
-          ."<td><a value=false class='btn btn-info show_detail' rel='popover' data-html='true' " 
-          ."data-trigger='click' data-placement='right'"
-          ."data-content='<img src=http://ruoranwang.github.io/images/bluetooth/find.png align=center/><br>$seq' >"
-          ."Details</a></td></tr>";
+            ."<td><a href='".$url."'>".$title."</a></td>"
+            ."<td><a class='btn btn-info show_detail'>Details</a></td></tr>"
+            ."</div><div class='span5'><div class='span5' id='summary'></div>"; 
       }
     }
     else{
@@ -47,7 +48,7 @@
 
     echo "</table>";
 
-    echo "<script>$(function () {"
+    /*echo "<script>$(function () {"
   . "   $('.show_detail').live('click', function() { "
   . "     if ( $(this).val() == 0 ) { "
   . "       $(this).popover('show');"
@@ -57,7 +58,17 @@
   . "       $(this).val(0); "
   . "     } "
   . "   }); "
-  . " });</script> "
+  . " });</script> ";*/
+
+    echo "<script>$(function () {"
+      ."$('.show_detail').live('click', function(){"
+      ."var seq = $seq;"
+      ."$.post('detail.php', {'seq':seq}, function(data){"
+      ."  var list = document.getElementById('summary');"
+      ."  list.innerHTML = data; "
+      ."   });"
+      ."  });"
+      ."});</script>";
    
 
     //mysql_close($conn);
