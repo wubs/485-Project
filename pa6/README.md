@@ -1,6 +1,8 @@
 PA6 
 ===
 
+**This project is completed under Chrome browser**
+
 Step 1. MapReduce Indexer 
 ----------------------
 
@@ -77,7 +79,23 @@ Step 3. InvertedIndex
 </target>
 ```
 
-Step 4. Front end
+
+Step 4. XML Loader
+--------------------
+
+#### -- Input `../hadoop/dataset/mining.imageUrls.xml,`../hadoop/dataset/mining.infobox.xml,../hadoop/dataset/mining.category.xml,../hadoop/dataset/mining.edges.xml, ../hadoop/dataset/prod/mining.article.xml`
+
+#### -- Output: Table Article(id, title, body), Category(id, category), Edge(id_from, id_to), imageUrl(id, url), infoBox(id, summary) with entries`
+
+**Base Directory**  `pa6/xml_loader` **This is an ant project**
+`ant` will compile and run the code
+
+`db.cfg` contains the parameters of database connection.
+Please change `dbName`, `dbUser`, `dbPass`, `dbHost` accordingly.
+
+
+
+Step 5. Front end
 ------------------
 
 `search.html` is the entry point.
@@ -102,14 +120,14 @@ Some meaningless categories like 'Article_uncensored_since_xx_xx' are eliminated
 When clicking "Close" in the summary block, the summary will be closed. 
 
 
-Step 5. New interface feature
+Step 6. Extra Credits
 ------------------------------
 
 The feature we implemented is category visualization. 
 
-The visual graph shows the relationship among pages by the number of categories sharing.
+The visual graph shows the relationship among pages by the number of shared categories.
 
-Click View Visualization to trigger the graph in the detail information block.
+Click 'Visualize Similar' to trigger the graph in the detail information block.
 
 The graph contains the following information:
    1. The central node: the page whose detail information is shown;
@@ -117,5 +135,10 @@ The graph contains the following information:
    3. Weight of the edges: how many categories are shared with the central node;
    4. Name tag of the nodes: title of the article.
 
+**Implementation details:**
+Back end:
+
+Front end: 
+  Reference library: RGraph from JIT - http://philogb.github.io/jit/
 
 
