@@ -72,7 +72,7 @@ public class IndexServer extends GenericIndexServer {
     df_map = new HashMap<String, Double>();
     cat_art_map = new HashMap<String, ArrayList<String> >();
     art_cat_map = new HashMap<String, ArrayList<String> >();
-/*
+
     try {
         BufferedReader read = new BufferedReader(new FileReader(fname));
         
@@ -141,7 +141,7 @@ public class IndexServer extends GenericIndexServer {
         e.printStackTrace();
         System.out.println("Reading page rank error");
     }
-*/
+
     try {
 
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -171,25 +171,27 @@ public class IndexServer extends GenericIndexServer {
                                     && !category.matches("^Wikipedia_.*") 
                                     && !category.matches("^Articles.*") 
                                     && !category.matches("^Use_.*_dates")) {
-                                /*if(cat_art_map.containsKey(category))
-                                {
-                                  cat_art_map.get(category).add(id);
-                                }else
-                                {
-                                  ArrayList<String> ToBeAdd = new ArrayList<String>();
-                                  ToBeAdd.add(id);
-                                  cat_art_map.put(category, ToBeAdd);
-                                }
+                                
+                              if(cat_art_map.containsKey(category))
+                              {
+                                cat_art_map.get(category).add(id);
+                              }else
+                              {
+                                ArrayList<String> ToBeAdd = new ArrayList<String>();
+                                ToBeAdd.add(id);
+                                cat_art_map.put(category, ToBeAdd);
+                              }
 
-                                if(art_cat_map.containsKey(id))
-                                {
-                                  art_cat_map.get(id).add(category);
-                                }else
-                                {
-                                  ArrayList<String> ToBeAdd = new ArrayList<String>();
-                                  ToBeAdd.add(category);
-                                  cat_art_map.put(id, ToBeAdd);
-                                }*/
+                              if(art_cat_map.containsKey(id))
+                              {
+                                art_cat_map.get(id).add(category);
+                              }else
+                              {
+                                ArrayList<String> ToBeAdd = new ArrayList<String>();
+                                ToBeAdd.add(category);
+                                art_cat_map.put(id, ToBeAdd);
+                              }
+
                             }
                         }
                     }catch (Exception e) {
