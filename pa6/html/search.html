@@ -64,19 +64,22 @@
     -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
   }
+  #vis_container {
+    margin-top: 25px;
+  }
 </style>
 
 <body>
   <div class="container">
     <!-- start edit from here -->
-    <div style='display:none' id="vis_container">
+    <div class="span12" style='display:none' id="vis_container">
 
-      <a class= "btn btn-danger show_other">Close</a>
-      <div id="center-container">
+      <a class="btn btn-danger show_other pull-left">Close</a>
+      <div style='position:relative;' class="span7" id="center-container">
         <div id="infovis"></div>
       </div>
-      <div id="inner-details"></div>
-      <div id="log"></div>
+      <div class="span4 pull-right" id="inner-details"></div>
+      <div style='display:none' id="log"></div>
     </div>
 
 
@@ -131,8 +134,8 @@
           });
 
           $.post('vis.php', {'id': seq}, function(data){
-            init(data);
-            document.getElementById('infovis').innerHTML=data;
+            the_data = data;
+//            document.getElementById('infovis').innerHTML=data;
           });
 
         });
@@ -140,6 +143,8 @@
         $('.show_vis').live('click', function(){
             $("#vis_container").css("display" , "block");
             $("#other_container").css("display" , "none");
+            $("#infovis").text("");
+            init($.parseJSON(the_data));
         });
 
         $('.show_other').live('click', function(){

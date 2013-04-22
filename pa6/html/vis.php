@@ -17,23 +17,49 @@
   $myResults = queryVis($port, $host, $id);
   $number=sizeof($myResults);
   
-  echo "<table class='table span6' align='center' valign='center'>";
 
-    if($number > 0){  
-      foreach($myResults as $hit) { 
-        $seq = $hit['id']; //the sequence # for the result
-        $weight = $hit['score']; //the sequence # for the result
-        
-        echo "<tr><td class=span3>" . $seq . "</td>"
-            ."<td>$weight</td>"
-            ."<td><a class='btn show_detail' seq='$seq'>Details</a></td></tr>"; 
-      }
+
+  $node_list = array();
+
+  $query = "SELECT title FROM Article WHERE id=$id";
+  $result = mysql_query($query) or die("Query failed: " . mysql_error());
+  $row = mysql_fetch_array($result, MYSQL_ASSOC);
+  $r_title = $row['title'];
+  $r_data = array('$dim'=>'15');
+  $r_adj = array();
+
+  
+
+  if($number > 0){  
+    foreach($myResults as $hit) { 
+      $seq = $hit['id']; //the sequence # for the result
+      $weight = $hit['score']; //the sequence # for the result
+
+      $query = "SELECT title FROM Article WHERE id=$seq";
+      $result = mysql_query($query) or die("Query failed: " . mysql_error());
+      $row = mysql_fetch_array($result, MYSQL_ASSOC);
+
+      $title = $row['title'];
+
+      $data = array('$dim'=>'5');
+
+      $adj_data = array('weight' => $weight);
+      $adj = array('nodeTo' => $id, 'data' => $adj_data);
+      
+      $node = array('id' => $seq, 'name' => $title, 'data' => $data, 'adjacencies' => $adj);
+
+      array_push($node_list, $node);
+
+      $r_adj_data = array('weight' => $weight);
+      $r_adj_one = array('nodeTo' => $seq, 'data' => $r_adj_data);
+      array_push($r_adj, $r_adj_one); 
     }
-    else{
-       echo "<p> Result not found.</p>"; 
-    }
+    $root_node = array('id' => $id, 'name' => $r_title, 'data' => $r_data, 'adjacencies' => $r_adj);
+  }
 
-    echo "</table>";
+  array_unshift($node_list, $root_node);
 
-    mysql_close($conn);
+  echo json_encode($node_list);
+
+  mysql_close($conn);
 ?>
