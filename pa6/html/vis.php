@@ -1,11 +1,6 @@
 <?php 
   require('server.php');
-  $port = "9010";
-  $host = "67.194.200.182";
-  $db_name = "pa1_db";
-  $db_host = "localhost";
-  $db_user = "ruoran";
-  $db_passwd ="1216";
+  require('db.php');
 
   $id = $_POST['id'];
   
