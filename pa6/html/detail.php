@@ -1,9 +1,6 @@
 <?php 
 
-  $db_name = "pa1_db";
-  $db_host = "localhost";
-  $db_user = "ruoran";
-  $db_passwd ="1216";
+  require('db.php');
 
   $seq = $_POST['seq'];
   
