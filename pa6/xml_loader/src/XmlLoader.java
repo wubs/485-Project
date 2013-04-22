@@ -45,7 +45,6 @@ public class  XmlLoader {
         loadCfg();
 
         try {
-
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
 
@@ -95,7 +94,14 @@ public class  XmlLoader {
                 boolean bpng = false;
                 boolean burl = false;
 
-                String id, title, body, category, from, to, summary, url;
+                StringBuilder id = new StringBuilder();
+                StringBuilder title = new StringBuilder();
+                StringBuilder body= new StringBuilder();
+                StringBuilder category= new StringBuilder();
+                StringBuilder from= new StringBuilder();
+                StringBuilder to= new StringBuilder();
+                StringBuilder summary = new StringBuilder();
+                StringBuilder url= new StringBuilder();
 
                 public void startElement(String uri, String localName,String qName, 
                         Attributes attributes) throws SAXException {
@@ -140,71 +146,67 @@ public class  XmlLoader {
                 public void endElement(String uri, String localName, String qName) throws SAXException {
                     try{
 
-                        if (qName.equalsIgnoreCase("eecs485_article")) {
+                        if (qName.equalsIgnoreCase("eecs485_article_body")) {
                             stmt = conn.prepareStatement("INSERT IGNORE Article (id, title, body) VALUES (?,?,?);");
-                            stmt.setString(1, id);
-                            stmt.setString(2, title);
-                            stmt.setString(3, body);
+                            stmt.setString(1, id.toString());
+                            stmt.setString(2, title.toString());
+                            stmt.setString(3, body.toString());
                             System.out.println(stmt.toString());
                             stmt.executeUpdate();
-                            id = null;
-                            title = null;
-                            body = null;
+                            id = new StringBuilder(); 
+                            title = new StringBuilder();
+                            body = new StringBuilder();
+                            bbody = false;
                         }
 
                         if (qName.equalsIgnoreCase("eecs485_category")) {
-                            if ( !category.matches("^All_articles_.*") 
-                                    && !category.matches("^Wikipedia_.*") 
-                                    && !category.matches("^Articles.*") 
-                                    && !category.matches("^Use_mdy_dates")) {
+                            if ( !category.toString().matches("^All_articles_.*") 
+                                    && !category.toString().matches("^Wikipedia_.*") 
+                                    && !category.toString().matches("^Articles.*") 
+                                    && !category.toString().matches("^Use_mdy_dates")) {
                                 stmt = conn.prepareStatement("INSERT IGNORE Category (id, category) VALUES (?, ?);"); 
-                                stmt.setString(1, id);
-                                stmt.setString(2, category);
+                                stmt.setString(1, id.toString());
+                                stmt.setString(2, category.toString());
                                 System.out.println(stmt.toString());
                                 stmt.executeUpdate();
-                                id = null;
-                                category = null;
+                                category = new StringBuilder();
+                                bcategory = false;
                             }
                         }
 
                         if (qName.equalsIgnoreCase("eecs485_edge")) {
                             stmt = conn.prepareStatement("INSERT IGNORE Edge (id_from, id_to) VALUES (?, ?);"); 
-                            stmt.setString(1, from);
-                            stmt.setString(2, to);
+                            stmt.setString(1, from.toString());
+                            stmt.setString(2, to.toString());
                             System.out.println(stmt.toString());
                             stmt.executeUpdate();
-                            from = null;
-                            to = null;
-                        }
-
-                        if (qName.equalsIgnoreCase("eecs485_image")) {
-                            id = null;
-                            //title = null;
-                            url = null;     
+                            from = new StringBuilder();
+                            to = new StringBuilder();
+                            bfrom = false;
+                            bto = false;
                         }
 
                         if (qName.equalsIgnoreCase("eecs485_png_url") && bpng) {
                             
                             stmt = conn.prepareStatement("INSERT IGNORE imageUrl (id, url) VALUES (?, ?);"); 
-                            stmt.setString(1, id);
-                            stmt.setString(2, url);
+                            stmt.setString(1, id.toString());
+                            stmt.setString(2, url.toString());
                             System.out.println(stmt.toString()); 
                             stmt.executeUpdate();
-                            id = null; 
-                            url = null;	
+                            url = new StringBuilder();
                             bpng = false;	      
+                            burl = false;	      
                         }
 
 
                         if (qName.equalsIgnoreCase("eecs485_summary")) {
                             stmt = conn.prepareStatement("INSERT IGNORE infoBox (id, summary) VALUES (?, ?);"); 
-                            stmt.setString(1, id);
-                            stmt.setString(2, summary);
+                            stmt.setString(1, id.toString());
+                            stmt.setString(2, summary.toString());
                             System.out.println(stmt.toString());
                             stmt.executeUpdate();
-                            id = null;
-                            //title = null;
-                            summary = null;
+                            summary = new StringBuilder();
+                            bsummary = false;
                         }
                     }catch (Exception e) {
                         e.printStackTrace();
@@ -216,49 +218,44 @@ public class  XmlLoader {
                 public void characters(char ch[], int start, int length) throws SAXException {
 
                     if (bid) {
-                        id = new String(ch, start, length);
+                        id = new StringBuilder(new String(ch, start, length));
                         bid = false;
                     }
 
                     if (btitle) {
-                        title = new String(ch, start, length);
+                        title = new StringBuilder(new String(ch, start, length));
                         btitle = false;
                     }
 
                     if (bbody) {
-                        body = new String(ch, start, length);
-                        if (body.length() > 450) {
-                            body.substring(450);
+                        if (body.length() > 500) {
+                            bbody = false;
+                        } else {
+                            body.append(new String(ch, start, length));
                         }
-                        bbody = false;
                     }
 
                     if (bcategory) {
-                        category = new String(ch, start, length);
+                        category = new StringBuilder( new String(ch, start, length));
                         bcategory = false;
                     }
 
                     if (bfrom) {
-                        from = new String(ch, start, length);
+                        from = new StringBuilder(new String(ch, start, length));
                         bfrom = false;
                     }
 
                     if (bto) {
-                        to = new String(ch, start, length);
+                        to = new StringBuilder(new String(ch, start, length));
                         bto = false;
                     }
 
                     if (bsummary) {
-                        summary = new String(ch, start, length);
-                        System.out.println("--------------------------");
-                        System.out.println(summary);
-                        System.out.println("---------------  !!! Length:" + length);
-                        System.out.println("**************************");
-                        bsummary = false;
+                        summary.append(new String(ch, start, length));
                     }
 
-                    if (burl && bpng) {
-                        url = new String(ch, start, length);
+                    if (burl) {
+                        url = new StringBuilder(new String(ch, start, length));
                         burl = false;
                     }
 
