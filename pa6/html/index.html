@@ -116,7 +116,7 @@
           var keywrd = $("#keyword").val();
           var w = $("#slider").slider('value');
           var start_time = new Date().getTime() / 1000;
-          alert(keywrd+' '+w);
+          //alert(keywrd+' '+w);
 
           $.post('search_action.php', {'keywrd':keywrd, 'w':w}, function(data){
             var list = document.getElementById("list");
