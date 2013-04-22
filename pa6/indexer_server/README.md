@@ -1,10 +1,6 @@
 This is a fork of PA4 indexer and server 
 ========================================
 
-
-
-
-
 Below is the old doc from PA4 
 
 1. run indexer

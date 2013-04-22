@@ -152,7 +152,7 @@ public class  XmlLoader {
                             if ( !category.matches("^All_articles_.*") 
                                     && !category.matches("^Wikipedia_.*") 
                                     && !category.matches("^Articles.*") 
-                                    && !category.matches("^Use_.*_dates")) {
+                                    && !category.matches("^Use_mdy_dates")) {
                                 stmt = conn.prepareStatement("INSERT IGNORE Category (id, category) VALUES (?, ?);"); 
                                 stmt.setString(1, id);
                                 stmt.setString(2, category);
