@@ -77,7 +77,7 @@ Step 3. InvertedIndex
 </target>
 ```
 
-Step 4. Front end.
+Step 4. Front end
 ------------------
 
 `search.html` is the entry point.
@@ -85,10 +85,37 @@ Step 4. Front end.
 
 When clicking search, query and w will be sent via a ajax POST to `/search_action.php`.
 
+Value w can be changed via the slider or the input in the textbox. Click "set_w" to submit the change.
+
 `/search_action.php` will use `server.php` to connect to `indexer server` (Java)
 
 
+When clicking "Detail", id will be sent via POST to `/detail.php`.
 
+`/detail.php` will handle sql queries and show detail information on `search.html`.
+
+Detail information includes: 1. The first picture; 2. An infoBox; 3. Some paragraphs from the article; 4. Selected categories.
+
+Some meaningless categories like 'Article_uncensored_since_xx_xx' are eliminated.
+
+
+When clicking "Close" in the summary block, the summary will be closed. 
+
+
+Step 5. New interface feature
+------------------------------
+
+The feature we implemented is category visualization. 
+
+The visual graph shows the relationship among pages by the number of categories sharing.
+
+Click View Visualization to trigger the graph in the detail information block.
+
+The graph contains the following information:
+   1. The central node: the page whose detail information is shown;
+   2. The surrounding node: the pages who shared categories with the central node;
+   3. Weight of the edges: how many categories are shared with the central node;
+   4. Name tag of the nodes: title of the article.
 
 
 

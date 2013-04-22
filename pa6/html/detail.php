@@ -35,15 +35,16 @@
 
   $query = "SELECT category FROM Category WHERE id=$seq";
   $result = mysql_query($query) or die("Query failed 4: " . mysql_error());
+  echo "<h2>Categories</h2>";
   while ($row = mysql_fetch_array($result, MYSQL_ASSOC) ) { 
     echo "<div class='catWell'>".$row['category']."</div>";
   }
 
   if ($summary != "\n") {
-    echo "<div class='myWell'>$summary</div><br>";
+    echo "<h2>Info Box</h2><div class='myWell'>$summary</div><br>";
   }
 
-  echo "<div class='myWell'>$body</div>";
+  echo "<h2>Abstract</h2><div class='myWell'>$body</div>";
     
 
   
