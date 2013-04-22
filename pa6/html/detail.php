@@ -43,22 +43,7 @@
   
   echo "</div>";
 
-  //Set the content of showing the result
-  //echo "<table class='table span5' align='center' valign='center'>";
-  echo "<div class='span12 row' id='list'>"
-    ."<div class='span5' id='result'>"
-    ."<table class='table span5' align='center' valign='center'>";
 
-
-
-    echo "<script>$(function () {"
-      ."$('.click_close').live('click', function(){"
-      ."   var list = document.getElementById('summary');"
-      ."   list.innerHTML='';"
-      ."  });"
-      ."}); </script>";
-   
-
-    //mysql_close($conn);
+    mysql_close($conn);
     //echo json_encode($load);
 ?>

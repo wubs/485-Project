@@ -1,7 +1,7 @@
 <?php 
   require('server.php');
   $port = "9010";
-  $host = "67.194.205.155";
+  $host = "67.194.200.182";
   $db_name = "pa1_db";
   $db_host = "localhost";
   $db_user = "ruoran";
@@ -24,8 +24,8 @@
 
     //Set the content of showing the result
   //echo "<table class='table span5' align='center' valign='center'>";
-  echo " <div class='span5 pull-right' id='summary'></div>";
-  echo "<table class='table span5' align='center' valign='center'>";
+  echo " <div class='span6 pull-right' id='summary'></div>";
+  echo "<table class='table span6' align='center' valign='center'>";
 
     if($number > 0){  
       foreach($myResults as $hit) { 
