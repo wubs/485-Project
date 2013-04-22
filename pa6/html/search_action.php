@@ -1,5 +1,4 @@
 <?php 
-  include('lib.php'); 
   require('server.php');
   $port = "9010";
   $host = "67.194.205.155";
@@ -25,6 +24,7 @@
 
     //Set the content of showing the result
   //echo "<table class='table span5' align='center' valign='center'>";
+  echo " <div class='span5 pull-right' id='summary'></div>";
   echo "<table class='table span5' align='center' valign='center'>";
 
     if($number > 0){  
@@ -38,8 +38,7 @@
         
         echo "<tr><td class=span3>" . $seq . "</td>"
             ."<td><a href='".$url."'>".$title."</a></td>"
-            ."<td><a class='btn btn-info show_detail'>Details</a></td></tr>"
-            ."</div><div class='span5'><div class='span5' id='summary'></div>"; 
+            ."<td><a class='btn btn-info show_detail' seq='$seq'>Details</a></td></tr>"; 
       }
     }
     else{
@@ -48,29 +47,5 @@
 
     echo "</table>";
 
-    /*echo "<script>$(function () {"
-  . "   $('.show_detail').live('click', function() { "
-  . "     if ( $(this).val() == 0 ) { "
-  . "       $(this).popover('show');"
-  . "       $(this).val(1); "
-  . "     } else { "
-  . "       $(this).popover('hide'); "
-  . "       $(this).val(0); "
-  . "     } "
-  . "   }); "
-  . " });</script> ";*/
-
-    echo "<script>$(function () {"
-      ."$('.show_detail').live('click', function(){"
-      ."var seq = $seq;"
-      ."$.post('detail.php', {'seq':seq}, function(data){"
-      ."  var list = document.getElementById('summary');"
-      ."  list.innerHTML = data; "
-      ."   });"
-      ."  });"
-      ."});</script>";
-   
-
-    //mysql_close($conn);
-    //echo json_encode($load);
+    mysql_close($conn);
 ?>

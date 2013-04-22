@@ -57,9 +57,13 @@ public class  XmlLoader {
             final Connection conn = DriverManager.getConnection(db_url, db_user, db_pass);
 
             final Statement statement = conn.createStatement();
-
+            
+            String queryString = "DROP TABLE IF EXISTS Article, Category, Edge, imageUrl, infoBox;";
+            System.out.println(queryString);
+            statement.executeUpdate(queryString);
+            
             // Create Table Article
-            String queryString = "CREATE TABLE IF NOT EXISTS Article ( id INT NOT NULL PRIMARY KEY, title VARCHAR(50), body TEXT);";
+            queryString = "CREATE TABLE IF NOT EXISTS Article ( id INT NOT NULL PRIMARY KEY, title VARCHAR(50), body TEXT);";
             System.out.println(queryString);
             statement.executeUpdate(queryString);
             // Create Table Category
@@ -71,7 +75,7 @@ public class  XmlLoader {
             System.out.println(queryString);
             statement.executeUpdate(queryString);
             // Create Table imageUrl
-            queryString = "CREATE TABLE IF NOT EXISTS imageUrl ( id INT NOT NULL PRIMARY KEY, url VARCHAR(100));" ;
+            queryString = "CREATE TABLE IF NOT EXISTS imageUrl ( id INT NOT NULL PRIMARY KEY, url TEXT);" ;
             System.out.println(queryString);
             statement.executeUpdate(queryString);
             // Create Table infoBox
@@ -223,6 +227,9 @@ public class  XmlLoader {
 
                     if (bbody) {
                         body = new String(ch, start, length);
+                        if (body.length() > 450) {
+                            body.substring(450);
+                        }
                         bbody = false;
                     }
 

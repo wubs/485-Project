@@ -1,8 +1,9 @@
 <?php 
-  include('lib.php'); 
-  require('server.php');
-  $port = "9010";
-  $host = "67.194.194.220";
+
+  $db_name = "pa1_db";
+  $db_host = "localhost";
+  $db_user = "ruoran";
+  $db_passwd ="1216";
 
   $seq = $_POST['seq'];
   
@@ -11,30 +12,32 @@
   
   //Get variables from database
   $query = "SELECT url FROM imageUrl WHERE id=$seq";
-  $result = mysql_query($query) or die("Query failed: " . mysql_error());
+  error_log($query);
+  $result = mysql_query($query) or die("Query failed 1: $query " . mysql_error());
   $row = mysql_fetch_array($result, MYSQL_ASSOC);
   $img_url = $row['url'];
  
   $query = "SELECT body FROM Article WHERE id=$seq";
-  $result = mysql_query($query) or die("Query failed: " . mysql_error());
+  $result = mysql_query($query) or die("Query failed 2: " . mysql_error());
   $row = mysql_fetch_array($result, MYSQL_ASSOC);
   $body = $row['body'];
   
   $query = "SELECT summary FROM infoBox WHERE id=$seq";
-  $result = mysql_query($query) or die("Query failed: " . mysql_error());
+  $result = mysql_query($query) or die("Query failed 3: " . mysql_error());
   $row = mysql_fetch_array($result, MYSQL_ASSOC);
   $summary = $row['summary'];
   
-  echo "<div class='span5' id='close'>"
+  echo "<div class='span5' style='margin-bottom: 20px;' id='close'>"
     ."<a class='btn btn-danger click_close pull-right' style='align:right;'>Close</a>"
     ."</div><div class='span5 row' id='summary'>"
-    ."<div class=span2><img src='".$img_url."'/></div>"
-    ."<div class=span2>".$summary."</div>"
-    ."<div>".$body."</div>";
+    ."<div><img src='$img_url'/></div><br>"
+    ."<div>$summary</div><br>"
+    ."<div>$body</div>";
     
   $query = "SELECT category FROM Category WHERE id=$seq";
-  $result = mysql_query($query) or die("Query failed: " . mysql_error());
-  for($row = mysql_fetch_array($result, MYSQL_ASSOC)){
+  $result = mysql_query($query) or die("Query failed 4: " . mysql_error());
+
+  while ($row = mysql_fetch_array($result, MYSQL_ASSOC) ) { 
     echo "<div>".$row['category']."</div>";
   }
   
@@ -50,9 +53,10 @@
 
     echo "<script>$(function () {"
       ."$('.click_close').live('click', function(){"
-      ."var list = document.getElementById('summary');"
-      ."list.innerHTML='';"
-      ." });</script>";
+      ."   var list = document.getElementById('summary');"
+      ."   list.innerHTML='';"
+      ."  });"
+      ."}); </script>";
    
 
     //mysql_close($conn);
