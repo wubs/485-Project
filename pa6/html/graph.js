@@ -26,13 +26,17 @@ var Log = {
 };
 
 
-function init(){
+function init(json_data){
     //init data
     //If a node in this JSON structure
     //has the "$type" or "$dim" parameters
     //defined it will override the "type" and
     //"dim" parameters globally defined in the
     //RGraph constructor.
+    
+
+    var json = json_data;
+    /*
     var json = [{
         "id": "node0",
         "name": "node0 name",
@@ -234,6 +238,7 @@ function init(){
             }
         }]
     }];
+    */
     //end
     //init RGraph
     var rgraph = new $jit.RGraph({

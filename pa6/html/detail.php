@@ -28,18 +28,24 @@
   $summary = $row['summary'];
   
   echo "<div class='span5' style='margin-bottom: 20px;' id='close'>"
-    ."<a class='btn btn-danger click_close pull-right' style='align:right;'>Close</a>"
+    ."<a class='btn btn-danger click_close pull-right' style='align:right;margin-left:15px'>Close</a>"
+    ."<a class='span2 btn btn-success show_vis pull-right' style='align:right;'>Visulize similar</a>"
     ."</div><div class='span5 row' id='summary'>"
-    ."<div><img src='$img_url'/></div><br>"
-    ."<div>$summary</div><br>"
-    ."<div>$body</div>";
-    
+    ."<div><img src='$img_url'/></div><br>";
+
   $query = "SELECT category FROM Category WHERE id=$seq";
   $result = mysql_query($query) or die("Query failed 4: " . mysql_error());
-
   while ($row = mysql_fetch_array($result, MYSQL_ASSOC) ) { 
-    echo "<div>".$row['category']."</div>";
+    echo "<div class='catWell'>".$row['category']."</div>";
   }
+
+  if ($summary != "\n") {
+    echo "<div class='myWell'>$summary</div><br>";
+  }
+
+  echo "<div class='myWell'>$body</div>";
+    
+
   
   echo "</div>";
 

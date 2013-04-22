@@ -9,6 +9,15 @@
   <!-- Le styles -->
   <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+  <!-- CSS Files -->
+  <link type="text/css" href="base.css" rel="stylesheet" />
+  <link type="text/css" href="RGraph.css" rel="stylesheet" />
+
+  <!-- JIT Library File -->
+  <script language="javascript" type="text/javascript" src="jit-yc.js"></script>
+
+  <!-- Example File -->
+  <script language="javascript" type="text/javascript" src="graph.js"></script>
 </head>
 <style>
   .popover {
@@ -21,12 +30,12 @@
   }
 
   .myWell {
-    padding: 20px;
+    padding: 10px;
     height: auto;
-    width: 50%;
+    width: 100%;
     margin: 0px auto;
-    margin-top: 10px;
-    margin-bottom: 40px;
+    margin-top: 8px;
+    margin-bottom: 8px;
     background-color: #f5f5f5;
     border: 1px solid #e3e3e3;
     -webkit-border-radius: 6px;
@@ -37,32 +46,61 @@
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
   }
 
-
+  .catWell {
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: auto;
+    width: 100%;
+    margin: 0px auto;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    background-color: #eeeeee;
+    border: 1px solid #e3e3e3;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+  }
 </style>
 
 <body>
   <div class="container">
     <!-- start edit from here -->
+    <div style='display:none' id="vis_container">
 
-
-    <div id="offset2">
-      <div style="text-align:center"><h1> Wiki Search </h1></div>
-      <form class="form-inline" style="text-align:center" action="#">
-        <input id="keyword" type="text" style = "width:80%" placeholder="keyword" name="keyword">
-        <br><br>
-        <p>
-        <div id="slider" style="margin-left:auto; margin-right:auto; width: 20%; align:center;"></div><br>
-        <label for="amount">w value:</label>
-        <input type="text" id="amount" style="border: 0; color: #f6931f; font-weight: bold;">
-        <a class= "btn btn-info set_w">Set w</a>
-        </p>
-        <a class= "btn btn-success click_search">Search</a>
-      </form>
+      <a class= "btn btn-danger show_other">Close</a>
+      <div id="center-container">
+        <div id="infovis"></div>
+      </div>
+      <div id="inner-details"></div>
+      <div id="log"></div>
     </div>
 
-    <div class="row" id="list">
-      <div class="span7 pull-right" id="summary"></div>
-    </div> 
+
+    <div id="other_container">
+      <div id="offset2">
+        <div style="text-align:center"><h1> Wiki Search </h1></div>
+        <form class="form-inline" style="text-align:center" action="#">
+          <input id="keyword" type="text" style = "width:80%" placeholder="keyword" name="keyword">
+          <br><br>
+          <p>
+          <div id="slider" style="margin-left:auto; margin-right:auto; width: 20%; align:center;"></div><br>
+          <label for="amount">w value:</label>
+          <input type="text" id="amount" style="border: 0; color: #f6931f; font-weight: bold;">
+          <a class= "btn set_w">Set w</a>
+          </p>
+          <a class= "btn btn-success click_search">Search</a>
+        </form>
+        <div id="time_spent"> </div>
+      </div>
+
+      <div class="row" id="list">
+        <div class="span7 pull-right" id="summary"></div>
+      </div> 
+    </div>
 
   </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
@@ -86,10 +124,28 @@
 
         $('.show_detail').live('click', function(){
           var seq = $(this).attr('seq');
+
           $.post('detail.php', {'seq':seq}, function(data){
             var list = document.getElementById('summary');
             list.innerHTML = data; 
           });
+
+          $.post('vis.php', {'id': seq}, function(data){
+            init(data);
+            document.getElementById('infovis').innerHTML=data;
+          });
+
+        });
+
+        $('.show_vis').live('click', function(){
+            $("#vis_container").css("display" , "block");
+            $("#other_container").css("display" , "none");
+        });
+
+        $('.show_other').live('click', function(){
+            $("#vis_container").css("display" , "none");
+            $("#other_container").css("display" , "block");
+
         });
 
         $('.click_close').live('click', function(){
