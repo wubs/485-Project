@@ -115,6 +115,41 @@ public abstract class GenericIndexServer {
           resultObj.writeJSONString(out);
           responseBody.write((out.toString()).getBytes());
         }
+        
+        if ("/cat".equals(path)) {
+          String queryStr = null;
+          String query = uri.getQuery();
+          String elements[] = query.split("&");
+          for (String elt: elements) {
+            String name = elt.split("=")[0];
+            String val = URLDecoder.decode(elt.split("=")[1], "UTF-8");
+            if ("q".equals(name)) {
+              queryStr = val;
+            } 
+          }
+          List<QueryHit> hits = processQuery2(queryStr);
+
+          //
+          // Now we can handle the QueryHit JSON encoding
+          //
+          JSONArray hitlist = new JSONArray();
+          for (QueryHit qh: hits) {
+            JSONObject hitObj = new JSONObject();
+            hitObj.put("id", qh.getIdentifier());
+            hitObj.put("score", qh.getScore());
+            hitlist.add(hitObj);
+          }
+          
+          JSONObject resultObj = new JSONObject();
+          resultObj.put("hits", hitlist);
+
+          //
+          // Emit the text
+          //
+          StringWriter out = new StringWriter();
+          resultObj.writeJSONString(out);
+          responseBody.write((out.toString()).getBytes());
+        }
         responseBody.close();
       } 
     }
@@ -134,4 +169,5 @@ public abstract class GenericIndexServer {
    */
   public abstract void initServer(File fname, File pr_fname);
   public abstract List<QueryHit> processQuery(String query, double w);
+  public abstract List<QueryHit> processQuery2(String query);
 }

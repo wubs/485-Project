@@ -250,6 +250,10 @@ public class  XmlLoader {
 
                     if (bsummary) {
                         summary = new String(ch, start, length);
+                        System.out.println("--------------------------");
+                        System.out.println(summary);
+                        System.out.println("---------------  !!! Length:" + length);
+                        System.out.println("**************************");
                         bsummary = false;
                     }
 
@@ -260,11 +264,11 @@ public class  XmlLoader {
 
                 }
             }; 
-            saxParser.parse("../hadoop/dataset/prod/mining.articles.xml", handler);
-            saxParser.parse("../hadoop/dataset/mining.category.xml", handler);
-            saxParser.parse("../hadoop/dataset/mining.edges.xml", handler);
-            saxParser.parse("../hadoop/dataset/mining.imageUrls.xml", handler);
-            saxParser.parse("../hadoop/dataset/mining.infobox.xml", handler);
+//            saxParser.parse("../hadoop/dataset/prod/mining.articles.xml", handler);
+//            saxParser.parse("../hadoop/dataset/mining.category.xml", handler);
+//            saxParser.parse("../hadoop/dataset/mining.edges.xml", handler);
+//            saxParser.parse("../hadoop/dataset/mining.imageUrls.xml", handler);
+            saxParser.parse("../hadoop/dataset/small.infobox.xml", handler);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

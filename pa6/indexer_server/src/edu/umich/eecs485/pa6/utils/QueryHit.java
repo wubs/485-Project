@@ -8,6 +8,11 @@ public class QueryHit {
         this.id = id;
         this.score = score;
     }
+    
+    public QueryHit(String id) {
+        this.id = id;
+        this.score = 0;
+    }
 
     public String getIdentifier() {
         return id;
@@ -15,6 +20,18 @@ public class QueryHit {
 
     public double getScore() {
         return score;
+    }
+    
+    public boolean equals(QueryHit other) {
+        if (this.id.equals(other.id)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public void addOne() {
+        this.score += 1;
     }
     
     public int compare(QueryHit that) {

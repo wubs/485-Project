@@ -52,10 +52,13 @@ public class IndexServer extends GenericIndexServer {
    static HashMap<String, ArrayList<String> > cat_art_map;
 
    static HashMap<String, ArrayList<String> > art_cat_map; 
+   
+   static HashSet<String> stop_words;
 
    static long doc_length=0;
    
    static File pr_file;
+   
     
   public IndexServer(int port, File fname, File pr_filename) throws IOException {
     super(port, fname, pr_filename);
@@ -72,6 +75,21 @@ public class IndexServer extends GenericIndexServer {
     df_map = new HashMap<String, Double>();
     cat_art_map = new HashMap<String, ArrayList<String> >();
     art_cat_map = new HashMap<String, ArrayList<String> >();
+
+    
+    try {
+        stop_words = new HashSet<String>();
+        BufferedReader read = new BufferedReader(new FileReader(new File("english.stop")));
+        String line;
+       
+        while( (line = read.readLine()) != null ) {
+            stop_words.add(line.trim().toLowerCase());
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.out.println("Reading inverted index error!");
+        System.exit(1);
+    }
 
     try {
         BufferedReader read = new BufferedReader(new FileReader(fname));
@@ -94,6 +112,11 @@ public class IndexServer extends GenericIndexServer {
         while( (line = read.readLine()) != null ){
             key_value = line.split("\\s+", 2);
             word = key_value[0].toLowerCase();
+            
+            if (stop_words.contains(word)) {
+                continue;
+            }
+            
             value = key_value[1];
             
             df_list = value.split("\\s+", 2);
@@ -141,9 +164,8 @@ public class IndexServer extends GenericIndexServer {
         e.printStackTrace();
         System.out.println("Reading page rank error");
     }
-
+    
     try {
-
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
             DefaultHandler handler = new DefaultHandler() {
@@ -255,6 +277,55 @@ public class IndexServer extends GenericIndexServer {
       }
   }
   
+  public List<QueryHit> processQuery2(String query) {
+      System.out.println("Processing query sim cat '" + query );
+      HashMap<String, Integer> result_map = new HashMap<String, Integer>();
+      ArrayList<QueryHit> result = new ArrayList<QueryHit>();
+      
+      // Split query String into ids 
+      String [] words = query.toLowerCase().split("\\s*[^0-9a-zA-Z']+\\s*"); 
+      String ArticleID;
+      int totalWords = words.length;
+      
+      QueryHit temp;
+      
+      for (int i=0; i<totalWords; i++) {
+          ArticleID = words[i];
+          if(art_cat_map.containsKey(ArticleID))
+          {
+              for(String categoryID : art_cat_map.get(ArticleID))
+              {
+                  for(String OtherArticleId : cat_art_map.get(categoryID))
+                  {
+                      if (!OtherArticleId.equals(ArticleID)) {
+                          if(result_map.containsKey(OtherArticleId))
+                          {
+                              result_map.put(OtherArticleId, new Integer( result_map.get(OtherArticleId) + 1));
+                          } else
+                          {
+                              result_map.put(OtherArticleId, new Integer(1));
+                          }
+                      }
+                  }
+              }
+          } 
+      }
+      
+      for (String key : result_map.keySet()) {
+         result.add(new QueryHit(key, Double.parseDouble(result_map.get(key).toString()))); 
+      }
+      
+      // this will sort doc item in descending order
+      Collections.sort( result, new DocItemComparator());
+      
+      System.out.println(result.size());
+      if (result.size() > 20) {
+          return result.subList(0, 20);
+      } else {
+          return result;
+      }
+      
+  }
   public static double calScore(String[] words, DocItem item, double w) {
 
       HashMap<String, Double> query_tfidf = new HashMap<String, Double>();
