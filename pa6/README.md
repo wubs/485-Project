@@ -48,6 +48,8 @@ A detailed help at `pa6/pagerank/readme.txt`
 Step 3. InvertedIndex 
 ----------------------
 
+**Important** Change the host ip accordingly in `pa6/html/db.php`
+
 #### -- Input `pa6/pagerank/output.txt` & `pa6/map_reduce_indexer/inv4_out/part-r-00000`
 
 
@@ -105,7 +107,9 @@ Please change `dbName`, `dbUser`, `dbPass`, `dbHost` accordingly.
 Step 5. Front end
 ------------------
 
-`search.html` is the entry point.
+`index.html` is the entry point.
+
+**Important** Change db configuration accordingly in `pa6/html/db.php`
 
 
 When clicking search, query and w will be sent via a ajax POST to `/search_action.php`.
