@@ -1,7 +1,7 @@
 <?php 
   require('server.php');
   $port = "9010";
-  $host = "67.194.205.155";
+  $host = "67.194.200.182";
   $db_name = "pa1_db";
   $db_host = "localhost";
   $db_user = "ruoran";
