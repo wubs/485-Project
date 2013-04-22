@@ -264,11 +264,11 @@ public class  XmlLoader {
 
                 }
             }; 
-//            saxParser.parse("../hadoop/dataset/prod/mining.articles.xml", handler);
-//            saxParser.parse("../hadoop/dataset/mining.category.xml", handler);
-//            saxParser.parse("../hadoop/dataset/mining.edges.xml", handler);
-//            saxParser.parse("../hadoop/dataset/mining.imageUrls.xml", handler);
-            saxParser.parse("../hadoop/dataset/small.infobox.xml", handler);
+            saxParser.parse("../hadoop/dataset/prod/mining.articles.xml", handler);
+            saxParser.parse("../hadoop/dataset/mining.category.xml", handler);
+            saxParser.parse("../hadoop/dataset/mining.edges.xml", handler);
+            saxParser.parse("../hadoop/dataset/mining.imageUrls.xml", handler);
+            saxParser.parse("../hadoop/dataset/mining.infobox.xml", handler);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
