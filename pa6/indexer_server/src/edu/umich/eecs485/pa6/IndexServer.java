@@ -369,7 +369,7 @@ public class IndexServer extends GenericIndexServer {
           nu += temp1 * temp2;
           de1 += temp1 * temp1;
           de2 += temp2 * temp2;
-          System.out.println("nu: " + nu + " de1 " + de1 + " de2 " + de2);
+//          System.out.println("nu: " + nu + " de1 " + de1 + " de2 " + de2);
           
       }
 
@@ -378,18 +378,18 @@ public class IndexServer extends GenericIndexServer {
       }
 
       result = nu / (Math.sqrt(de1) * Math.sqrt(de2));
-      System.out.println("zero result: " + result);
+//      System.out.println("zero result: " + result);
       
       result = (1-w) * result;
       
-      System.out.println("first result: " + result);
+//      System.out.println("first result: " + result);
       
       if(pr_map.containsKey(item.getIdentifier()))
       {
         result += w * pr_map.get(item.getIdentifier());
       }
       
-      System.out.println("second result: " + result);
+//      System.out.println("second result: " + result);
 
       return result;
   }
