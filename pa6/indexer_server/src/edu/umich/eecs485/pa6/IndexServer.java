@@ -1,5 +1,19 @@
 package edu.umich.eecs485.pa6;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
+import java.io.File;
+import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,6 +49,10 @@ public class IndexServer extends GenericIndexServer {
    
    static HashMap<String, Double> df_map;
    
+   static HashMap<String, ArrayList<String> > cat_art_map;
+
+   static HashMap<String, ArrayList<String> > art_cat_map; 
+
    static long doc_length=0;
    
    static File pr_file;
@@ -52,7 +70,9 @@ public class IndexServer extends GenericIndexServer {
     map = new HashMap<String, HashMap<String, DocItem>>();
     pr_map  = new HashMap<String, Double>();
     df_map = new HashMap<String, Double>();
-    
+    cat_art_map = new HashMap<String, ArrayList<String> >();
+    art_cat_map = new HashMap<String, ArrayList<String> >();
+/*
     try {
         BufferedReader read = new BufferedReader(new FileReader(fname));
         
@@ -121,8 +141,82 @@ public class IndexServer extends GenericIndexServer {
         e.printStackTrace();
         System.out.println("Reading page rank error");
     }
-    
-    System.out.println("PR loaded into mem");
+*/
+    try {
+
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            DefaultHandler handler = new DefaultHandler() {
+
+               boolean bcategory = false;
+               boolean bid = false;
+
+               String category, id;
+
+                public void startElement(String uri, String localName,String qName, 
+                        Attributes attributes) throws SAXException {
+                    if (qName.equalsIgnoreCase("eecs485_article_category")) {
+                        bcategory = true;
+                    }
+                    if (qName.equalsIgnoreCase("eecs485_article_id")) {
+                        bid = true;
+                    }
+               }
+
+                public void endElement(String uri, String localName, String qName) throws SAXException {
+                    try{
+
+                        if (qName.equalsIgnoreCase("eecs485_category")) {
+                            if ( !category.matches("^All_articles_.*") 
+                                    && !category.matches("^Wikipedia_.*") 
+                                    && !category.matches("^Articles.*") 
+                                    && !category.matches("^Use_.*_dates")) {
+                                /*if(cat_art_map.containsKey(category))
+                                {
+                                  cat_art_map.get(category).add(id);
+                                }else
+                                {
+                                  ArrayList<String> ToBeAdd = new ArrayList<String>();
+                                  ToBeAdd.add(id);
+                                  cat_art_map.put(category, ToBeAdd);
+                                }
+
+                                if(art_cat_map.containsKey(id))
+                                {
+                                  art_cat_map.get(id).add(category);
+                                }else
+                                {
+                                  ArrayList<String> ToBeAdd = new ArrayList<String>();
+                                  ToBeAdd.add(category);
+                                  cat_art_map.put(id, ToBeAdd);
+                                }*/
+                            }
+                        }
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                        System.exit(1); 
+                    }
+
+                }
+
+                public void characters(char ch[], int start, int length) throws SAXException {
+
+                  if (bcategory) {
+                    category = new String(ch, start, length);
+                    bcategory = false;
+                  }
+
+                   if (bid) {
+                    id = new String(ch, start, length);
+                    bid = false;
+                  }
+                }
+            }; 
+            saxParser.parse("../hadoop/dataset/mining.category.xml", handler);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
   }
   
   public List<QueryHit> processQuery(String query, double w) {
